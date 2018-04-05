@@ -6,10 +6,10 @@ Desktop.ini
 .DS_Store
 
 # Code Editors
-.idea
-.vscode
-*.csproj
-*.sln
+/.idea
+/.vscode
+/*.csproj
+/*.sln
 *.swp
 
 # Unity
