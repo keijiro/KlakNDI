@@ -10,7 +10,6 @@ namespace Klak.Ndi
 
        void Start()
        {
-           PluginEntry.NDI_Initialize();
            _sender = PluginEntry.NDI_CreateSender("NDI Test");
        }
 

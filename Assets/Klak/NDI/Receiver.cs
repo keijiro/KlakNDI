@@ -9,11 +9,6 @@ namespace Klak.Ndi
 
         Texture2D _texture;
 
-        void Start()
-        {
-            PluginEntry.NDI_Initialize();
-        }
-
         void OnDestroy()
         {
             if (_receiver != IntPtr.Zero)

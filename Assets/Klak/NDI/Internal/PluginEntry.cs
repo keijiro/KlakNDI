@@ -5,16 +5,6 @@ namespace Klak.Ndi
 {
     internal static class PluginEntry
     {
-        #region Global functions
-
-        [DllImport("KlakNDI")]
-        public static extern bool NDI_Initialize();
-
-        [DllImport("KlakNDI")]
-        public static extern void NDI_Finalize();
-
-        #endregion
-
         #region Sender functions
 
         [DllImport("KlakNDI")]

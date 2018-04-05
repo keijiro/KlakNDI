@@ -17,25 +17,12 @@ namespace KlakNDI
 			return instance;
 		}
 
-		// Initialize and start observing.
-		void start()
+		// Constructor
+		Observer()
 		{
-			// If the previous instance is still running, wait for its termination.
-			if (finderThread_.joinable())
-			{
-				finderShouldStop_ = true;
-				finderThread_.join();
-			}
-
-			// Start a new observer thread.
-			finderShouldStop_ = false;
-			finderThread_ = std::thread(&Observer::ObserverThread, this);
-		}
-
-		// Request stopping the observer.
-		void stop()
-		{
-			finderShouldStop_ = true;
+			NDIlib_initialize();
+			finder_ = NDIlib_find_create_v2(&NDIlib_find_create_t());
+			finderThread_ = std::thread(&Observer::FinderThread, this);
 		}
 
 		// Get a found source.
@@ -50,24 +37,11 @@ namespace KlakNDI
 	private:
 
 		NDIlib_find_instance_t finder_;
-
 		std::thread finderThread_;
-		bool finderShouldStop_;
 
-		void ObserverThread()
+		void FinderThread()
 		{
-			NDIlib_initialize();
-
-			finder_ = NDIlib_find_create_v2(&NDIlib_find_create_t());
-			if (finder_ == nullptr) return;
-
-			while (!finderShouldStop_)
-				NDIlib_find_wait_for_sources(finder_, 100);
-
-			NDIlib_find_destroy(finder_);
-			finder_ = nullptr;
-
-			NDIlib_destroy();
+			while (true) NDIlib_find_wait_for_sources(finder_, 5000);
 		}
 	};
 }
