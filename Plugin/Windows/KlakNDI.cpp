@@ -7,7 +7,13 @@
 
 extern "C" void UNITY_INTERFACE_EXPORT NDI_Initialize()
 {
-    KlakNDI::Observer::getInstance().start();
+	static bool initialized;
+
+	if (!initialized)
+	{
+		KlakNDI::Observer::getInstance().start();
+		initialized = true;
+	}
 }
 
 extern "C" void UNITY_INTERFACE_EXPORT NDI_Finalize()
