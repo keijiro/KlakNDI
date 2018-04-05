@@ -11,7 +11,7 @@ namespace KlakNDI
 
 		Receiver(const NDIlib_source_t& source)
 		{
-			instance_ = NDIlib_recv_create_v2(&NDIlib_recv_create_t(source));
+			instance_ = NDIlib_recv_create_v2(&NDIlib_recv_create_t(source, NDIlib_recv_color_format_BGRX_BGRA, NDIlib_recv_bandwidth_highest, false));
 		}
 
 		~Receiver()

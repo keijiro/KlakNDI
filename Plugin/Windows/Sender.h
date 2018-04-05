@@ -25,10 +25,12 @@ namespace KlakNDI
 
 			frame.xres = width;
 			frame.yres = height;
-			frame.FourCC = NDIlib_FourCC_type_BGRX;
+			frame.FourCC = NDIlib_FourCC_type_RGBX;
 			frame.frame_format_type = NDIlib_frame_format_type_progressive;
-			frame.frame_rate_N = 60;
-			frame.frame_rate_D = 1;
+			frame.frame_rate_N = 30000;
+			frame.frame_rate_D = 1001;
+			frame.picture_aspect_ratio = 16.0f / 9.0f;
+			frame.timecode = 0LL;
 			frame.p_data = static_cast<uint8_t*>(data);
 			frame.line_stride_in_bytes = width * 4;
 

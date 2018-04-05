@@ -33,8 +33,8 @@ namespace Klak.Ndi
             var data = PluginEntry.NDI_GetFrameData(_receiver);
 
             if (_texture != null) Destroy(_texture);
-            _texture = new Texture2D(width, height / 2, TextureFormat.RGBA32, false);
-            _texture.LoadRawTextureData(data, width * height * 2);
+            _texture = new Texture2D(width, height, TextureFormat.BGRA32, false);
+            _texture.LoadRawTextureData(data, width * height * 4);
             _texture.Apply();
 
             GetComponent<Renderer>().material.mainTexture = _texture;
