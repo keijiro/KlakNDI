@@ -1,41 +1,80 @@
-using System.Runtime.InteropServices;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Klak.Ndi
 {
     public class Sender : MonoBehaviour
     {
-       IntPtr _sender;
+        IntPtr _instance;
 
-       void Start()
-       {
-           _sender = PluginEntry.NDI_CreateSender("NDI Test");
-       }
+        struct Frame
+        {
+            public int width, height;
+            public AsyncGPUReadbackRequest readback;
+        }
 
-       void OnDestroy()
-       {
-           PluginEntry.NDI_DestroySender(_sender);
-       }
+        Queue<Frame> _frameQueue;
 
-       void OnRenderImage(RenderTexture source, RenderTexture destination)
-       {
-           var tempRT = RenderTexture.GetTemporary(source.width, source.height);
-           Graphics.Blit(source, tempRT);
+        void Start()
+        {
+            _instance = PluginEntry.NDI_CreateSender(gameObject.name);
+            _frameQueue = new Queue<Frame>(4);
+        }
 
-           var tempTex = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
-           tempTex.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0, false);
-           tempTex.Apply();
+        void OnDestroy()
+        {
+            PluginEntry.NDI_DestroySender(_instance);
+        }
 
-           var data = tempTex.GetRawTextureData();
-           var pin = GCHandle.Alloc(data, GCHandleType.Pinned);
-           PluginEntry.NDI_SendFrame(_sender, pin.AddrOfPinnedObject(), source.width, source.height);
-           pin.Free();
+        void Update()
+        {
+            while (_frameQueue.Count > 0)
+            {
+                var frame = _frameQueue.Peek();
 
-           Destroy(tempTex);
-           RenderTexture.ReleaseTemporary(tempRT);
+                if (frame.readback.hasError)
+                {
+                    Debug.LogWarning("GPU readback error was detected.");
+                    _frameQueue.Dequeue();
+                }
+                else if (frame.readback.done)
+                {
+                    var array = frame.readback.GetData<Byte>();
+                    unsafe {
+                        PluginEntry.NDI_SendFrame(
+                            _instance, (IntPtr)array.GetUnsafeReadOnlyPtr(),
+                            frame.width, frame.height
+                        );
+                    }
+                    _frameQueue.Dequeue();
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
 
-           Graphics.Blit(source, destination);
-       }
+        void OnRenderImage(RenderTexture source, RenderTexture destination)
+        {
+            if (_frameQueue.Count < 4)
+            {
+                _frameQueue.Enqueue(new Frame{
+                    width = source.width, height = source.height,
+                    readback = AsyncGPUReadback.Request(source)
+                });
+            }
+            else
+            {
+                Debug.LogWarning("Too many GPU readback requests.");
+            }
+
+            Graphics.Blit(source, destination);
+        }
     }
 }
