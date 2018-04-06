@@ -153,7 +153,7 @@
     <ClCompile Include="KlakNDI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Observer.h" />
+    <ClInclude Include="Finder.h" />
     <ClInclude Include="Receiver.h" />
     <ClInclude Include="Sender.h" />
     <ClInclude Include="Unity\IUnityEventQueue.h" />

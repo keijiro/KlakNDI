@@ -47,13 +47,13 @@
     <ClInclude Include="Unity\IUnityShaderCompilerAccess.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Observer.h">
+    <ClInclude Include="Receiver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Receiver.h">
+    <ClInclude Include="Finder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

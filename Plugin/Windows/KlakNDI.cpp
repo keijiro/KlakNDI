@@ -1,4 +1,4 @@
-#include "Observer.h"
+#include "Finder.h"
 #include "Receiver.h"
 #include "Sender.h"
 #include "Unity/IUnityInterface.h"
@@ -9,7 +9,6 @@ using namespace KlakNDI;
 
 extern "C" Sender UNITY_INTERFACE_EXPORT *NDI_CreateSender(const char* name)
 {
-	Observer::getInstance();
 	return new Sender(name);
 }
 
@@ -27,7 +26,7 @@ extern "C" void UNITY_INTERFACE_EXPORT NDI_SendFrame(Sender* sender, void* data,
 
 extern "C" Receiver UNITY_INTERFACE_EXPORT *NDI_CreateReceiver()
 {
-	auto source = Observer::getInstance().getFoundSource();
+	auto source = Finder::getInstance().getFoundSource();
 	return source.p_ndi_name != nullptr ? new Receiver(source) : nullptr;
 }
 

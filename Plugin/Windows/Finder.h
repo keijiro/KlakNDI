@@ -5,25 +5,18 @@
 
 namespace KlakNDI
 {
-	// NDI global observer class
-	class Observer
+	// NDI singleton finder class
+	class Finder
 	{
 	public:
 
 		// Get the singleton instance.
-		static Observer& getInstance()
+		static Finder& getInstance()
 		{
-			static Observer instance;
+			static Finder instance;
 			return instance;
 		}
 
-		// Constructor
-		Observer()
-		{
-			NDIlib_initialize();
-			finder_ = NDIlib_find_create_v2(&NDIlib_find_create_t());
-			finderThread_ = std::thread(&Observer::FinderThread, this);
-		}
 
 		// Get a found source.
 		NDIlib_source_t getFoundSource() const
@@ -37,7 +30,12 @@ namespace KlakNDI
 	private:
 
 		NDIlib_find_instance_t finder_;
-		std::thread finderThread_;
+
+		Finder()
+		{
+			finder_ = NDIlib_find_create_v2(&NDIlib_find_create_t());
+			std::thread(&Finder::FinderThread, this).detach();
+		}
 
 		void FinderThread()
 		{
