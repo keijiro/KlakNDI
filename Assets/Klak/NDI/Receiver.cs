@@ -5,41 +5,63 @@ namespace Klak.Ndi
 {
     public class Receiver : MonoBehaviour
     {
-        IntPtr _receiver;
+        [SerializeField] Renderer _targetRenderer;
+        MaterialPropertyBlock _targetOverrides;
 
-        Texture2D _texture;
+        [SerializeField, HideInInspector] Shader _shader;
+        Material _material;
+        RenderTexture _tempRT;
+
+        IntPtr _instance;
+
+        void Start()
+        {
+            _targetOverrides = new MaterialPropertyBlock();
+            _material = new Material(_shader);
+        }
 
         void OnDestroy()
         {
-            if (_receiver != IntPtr.Zero)
-                PluginEntry.NDI_DestroyReceiver(_receiver);
+            if (_instance != IntPtr.Zero)
+                PluginEntry.NDI_DestroyReceiver(_instance);
 
-            if (_texture != null) Destroy(_texture);
+            if (_tempRT != null) RenderTexture.ReleaseTemporary(_tempRT);
+            Destroy(_material);
         }
 
         void Update()
         {
-            if (_receiver == IntPtr.Zero)
+            if (_targetRenderer == null) return;
+
+            if (_instance == IntPtr.Zero)
             {
-                _receiver = PluginEntry.NDI_CreateReceiver();
-                if (_receiver == IntPtr.Zero) return;
+                _instance = PluginEntry.NDI_CreateReceiver();
+                if (_instance == IntPtr.Zero) return;
             }
 
-            var ready = PluginEntry.NDI_ReceiveFrame(_receiver);
+            var ready = PluginEntry.NDI_ReceiveFrame(_instance);
             if (!ready) return;
 
-            var width = PluginEntry.NDI_GetFrameWidth(_receiver);
-            var height = PluginEntry.NDI_GetFrameHeight(_receiver);
-            var data = PluginEntry.NDI_GetFrameData(_receiver);
+            var width = PluginEntry.NDI_GetFrameWidth(_instance);
+            var height = PluginEntry.NDI_GetFrameHeight(_instance);
+            var data = PluginEntry.NDI_GetFrameData(_instance);
 
-            if (_texture != null) Destroy(_texture);
-            _texture = new Texture2D(width, height, TextureFormat.BGRA32, false);
-            _texture.LoadRawTextureData(data, width * height * 4);
-            _texture.Apply();
+            var texture = new Texture2D(width / 2, height, TextureFormat.RGBA32, false, true);
+            texture.filterMode = FilterMode.Point;
+            texture.LoadRawTextureData(data, width * 2 * height);
+            texture.Apply();
 
-            GetComponent<Renderer>().material.mainTexture = _texture;
+            PluginEntry.NDI_FreeFrame(_instance);
 
-            PluginEntry.NDI_FreeFrame(_receiver);
+            if (_tempRT != null) RenderTexture.ReleaseTemporary(_tempRT);
+            _tempRT = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+
+            Graphics.Blit(texture, _tempRT, _material, 0);
+            Destroy(texture);
+
+            _targetRenderer.GetPropertyBlock(_targetOverrides);
+            _targetOverrides.SetTexture("_MainTex", _tempRT);
+            _targetRenderer.SetPropertyBlock(_targetOverrides);
         }
     }
 }
