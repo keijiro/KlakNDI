@@ -11,7 +11,7 @@ namespace KlakNDI
 
 		Sender(const char* name)
 		{
-			instance_ = NDIlib_send_create(&NDIlib_send_create_t(name));
+			instance_ = NDIlib_send_create(&NDIlib_send_create_t(name, nullptr, false));
 		}
 
 		~Sender()
@@ -21,20 +21,16 @@ namespace KlakNDI
 
 		void sendFrame(void* data, int width, int height)
 		{
-			NDIlib_video_frame_v2_t frame;
+			static NDIlib_video_frame_v2_t frame;
 
 			frame.xres = width;
 			frame.yres = height;
-			frame.FourCC = NDIlib_FourCC_type_RGBX;
-			frame.frame_format_type = NDIlib_frame_format_type_progressive;
-			frame.frame_rate_N = 30000;
-			frame.frame_rate_D = 1001;
-			frame.picture_aspect_ratio = 16.0f / 9.0f;
-			frame.timecode = 0LL;
+			frame.FourCC = NDIlib_FourCC_type_UYVY;
+			frame.frame_format_type = NDIlib_frame_format_type_interleaved;
 			frame.p_data = static_cast<uint8_t*>(data);
-			frame.line_stride_in_bytes = width * 4;
+			frame.line_stride_in_bytes = width * 2;
 
-			NDIlib_send_send_video_v2(instance_, &frame);
+			NDIlib_send_send_video_async_v2(instance_, &frame);
 		}
 
 	private:

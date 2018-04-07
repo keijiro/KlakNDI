@@ -10,6 +10,10 @@ namespace Klak.Ndi
 {
     public class Sender : MonoBehaviour
     {
+        [SerializeField, HideInInspector] Shader _shader;
+        Material _material;
+        RenderTexture _tempRT;
+
         IntPtr _instance;
 
         struct Frame
@@ -22,12 +26,15 @@ namespace Klak.Ndi
 
         void Start()
         {
+            _material = new Material(_shader);
             _instance = PluginEntry.NDI_CreateSender(gameObject.name);
             _frameQueue = new Queue<Frame>(4);
         }
 
         void OnDestroy()
         {
+            if (_tempRT != null) RenderTexture.ReleaseTemporary(_tempRT);
+            Destroy(_material);
             PluginEntry.NDI_DestroySender(_instance);
         }
 
@@ -64,9 +71,17 @@ namespace Klak.Ndi
         {
             if (_frameQueue.Count < 4)
             {
+                if (_tempRT != null) RenderTexture.ReleaseTemporary(_tempRT);
+                _tempRT = RenderTexture.GetTemporary(
+                    source.width / 2, source.height, 0,
+                    RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear
+                );
+
+                Graphics.Blit(source, _tempRT, _material, 0);
+
                 _frameQueue.Enqueue(new Frame{
                     width = source.width, height = source.height,
-                    readback = AsyncGPUReadback.Request(source)
+                    readback = AsyncGPUReadback.Request(_tempRT)
                 });
             }
             else
