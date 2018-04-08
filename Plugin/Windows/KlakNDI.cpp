@@ -64,6 +64,11 @@ extern "C" UnityRenderingEventAndData UNITY_INTERFACE_EXPORT NDI_GetTextureUpdat
 	return TextureUpdateFunction;
 }
 
+extern "C" int UNITY_INTERFACE_EXPORT NDI_RetrieveSourceNames(const char* destination[], int maxCount)
+{
+	return Finder::getInstance().retrieveSourceNames(destination, maxCount);
+}
+
 // Sender functions
 
 extern "C" Sender UNITY_INTERFACE_EXPORT *NDI_CreateSender(const char* name)
@@ -83,9 +88,9 @@ extern "C" void UNITY_INTERFACE_EXPORT NDI_SendFrame(Sender* sender, void* data,
 
 // Receiver functions
 
-extern "C" Receiver UNITY_INTERFACE_EXPORT *NDI_CreateReceiver()
+extern "C" Receiver UNITY_INTERFACE_EXPORT *NDI_TryCreateReceiverWithClause(const char* clause)
 {
-	auto source = Finder::getInstance().getFoundSource();
+	auto source = Finder::getInstance().getSourceWithClause(clause);
 	return source.p_ndi_name != nullptr ? new Receiver(source) : nullptr;
 }
 

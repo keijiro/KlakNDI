@@ -6,6 +6,12 @@ namespace Klak.Ndi
 {
     public class Receiver : MonoBehaviour
     {
+        #region Editable properties
+
+        [SerializeField] string _nameFilter;
+
+        #endregion
+
         #region Renderer override
 
         [SerializeField] Renderer _targetRenderer;
@@ -58,7 +64,7 @@ namespace Klak.Ndi
             // Plugin lazy initialization
             if (_instance == IntPtr.Zero)
             {
-                _instance = PluginEntry.NDI_CreateReceiver();
+                _instance = PluginEntry.NDI_TryCreateReceiverWithClause(_nameFilter);
                 if (_instance == IntPtr.Zero) return;
             }
 

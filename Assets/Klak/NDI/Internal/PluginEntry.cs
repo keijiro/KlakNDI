@@ -3,12 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace Klak.Ndi
 {
-    internal static class PluginEntry
+    public static class PluginEntry
     {
         #region Plugin functions
 
         [DllImport("KlakNDI")]
         public static extern IntPtr NDI_GetTextureUpdateFunction();
+
+        [DllImport("KlakNDI")]
+        public static extern int NDI_RetrieveSourceNames(IntPtr[] destination, int maxCount);
 
         #endregion
 
@@ -28,7 +31,7 @@ namespace Klak.Ndi
         #region Receiver functions
 
         [DllImport("KlakNDI")]
-        public static extern IntPtr NDI_CreateReceiver();
+        public static extern IntPtr NDI_TryCreateReceiverWithClause(string clause);
 
         [DllImport("KlakNDI")]
         public static extern void NDI_DestroyReceiver(IntPtr receiver);
