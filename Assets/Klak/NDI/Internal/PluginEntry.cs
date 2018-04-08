@@ -5,6 +5,13 @@ namespace Klak.Ndi
 {
     internal static class PluginEntry
     {
+        #region Plugin functions
+
+        [DllImport("KlakNDI")]
+        public static extern IntPtr NDI_GetTextureUpdateFunction();
+
+        #endregion
+
         #region Sender functions
 
         [DllImport("KlakNDI")]
@@ -18,19 +25,6 @@ namespace Klak.Ndi
 
         #endregion
 
-        #region Receiver frame accessors
-
-        [DllImport("KlakNDI")]
-        public static extern int NDI_GetFrameWidth(IntPtr receiver);
-
-        [DllImport("KlakNDI")]
-        public static extern int NDI_GetFrameHeight(IntPtr receiver);
-
-        [DllImport("KlakNDI")]
-        public static extern IntPtr NDI_GetFrameData(IntPtr receiver);
-
-        #endregion
-
         #region Receiver functions
 
         [DllImport("KlakNDI")]
@@ -40,10 +34,13 @@ namespace Klak.Ndi
         public static extern void NDI_DestroyReceiver(IntPtr receiver);
 
         [DllImport("KlakNDI")]
-        public static extern bool NDI_ReceiveFrame(IntPtr receiver);
+        public static extern uint NDI_GetReceiverID(IntPtr receiver);
 
         [DllImport("KlakNDI")]
-        public static extern void NDI_FreeFrame(IntPtr receiver);
+        public static extern int NDI_GetFrameWidth(IntPtr receiver);
+
+        [DllImport("KlakNDI")]
+        public static extern int NDI_GetFrameHeight(IntPtr receiver);
 
         #endregion
     }

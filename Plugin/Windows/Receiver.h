@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Processing.NDI.Lib.h>
+#include <unordered_map>
 
 namespace KlakNDI
 {
@@ -10,12 +11,15 @@ namespace KlakNDI
 	public:
 
 		Receiver(const NDIlib_source_t& source)
+			: instance_(NDIlib_recv_create_v2(&NDIlib_recv_create_t(source, NDIlib_recv_color_format_fastest))),
+			  id_(getNewID())
 		{
-			instance_ = NDIlib_recv_create_v2(&NDIlib_recv_create_t(source, NDIlib_recv_color_format_fastest));
+			getInstanceMap()[id_] = this;
 		}
 
 		~Receiver()
 		{
+			getInstanceMap().erase(id_);
 			NDIlib_recv_destroy(instance_);
 		}
 
@@ -30,6 +34,11 @@ namespace KlakNDI
 			NDIlib_recv_free_video_v2(instance_, &frame_);
 		}
 
+		uint32_t getID() const
+		{
+			return id_;
+		}
+
 		int getFrameWidth() const
 		{
 			return frame_.xres;
@@ -40,15 +49,32 @@ namespace KlakNDI
 			return frame_.yres;
 		}
 
-		void* getFrameData() const
+		const void* getFrameData() const
 		{
 			return frame_.p_data;
+		}
 
+		static Receiver* getInstanceFromID(uint32_t id)
+		{
+			return getInstanceMap()[id];
 		}
 
 	private:
 
 		NDIlib_recv_instance_t instance_;
 		NDIlib_video_frame_v2_t frame_;
+		uint32_t id_;
+
+		static uint32_t getNewID()
+		{
+			static uint32_t counter;
+			return counter++;
+		}
+
+		static std::unordered_map<uint32_t, Receiver*>& getInstanceMap()
+		{
+			static std::unordered_map<uint32_t, Receiver*> map;
+			return map;
+		}
 	};
 }
