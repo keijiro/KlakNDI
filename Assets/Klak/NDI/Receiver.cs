@@ -64,13 +64,13 @@ namespace Klak.Ndi
             // Plugin lazy initialization
             if (_instance == IntPtr.Zero)
             {
-                _instance = PluginEntry.NDI_TryCreateReceiverWithClause(_nameFilter);
+                _instance = PluginEntry.NDI_TryOpenSourceNamedLike(_nameFilter);
                 if (_instance == IntPtr.Zero) return;
             }
 
             // Texture update command
             _commandBuffer.IssuePluginCustomTextureUpdate(
-                PluginEntry.NDI_GetTextureUpdateFunction(),
+                PluginEntry.NDI_GetTextureUpdateCallback(),
                 _sourceTexture,
                 PluginEntry.NDI_GetReceiverID(_instance)
             );

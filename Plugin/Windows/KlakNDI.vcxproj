@@ -154,7 +154,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="KlakNDI.cpp" />
+    <ClCompile Include="Callback.cpp" />
+    <ClCompile Include="PluginEntry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Finder.h" />

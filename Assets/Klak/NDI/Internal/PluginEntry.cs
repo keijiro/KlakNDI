@@ -5,10 +5,10 @@ namespace Klak.Ndi
 {
     public static class PluginEntry
     {
-        #region Plugin functions
+        #region Common functions
 
         [DllImport("KlakNDI")]
-        public static extern IntPtr NDI_GetTextureUpdateFunction();
+        public static extern IntPtr NDI_GetTextureUpdateCallback();
 
         [DllImport("KlakNDI")]
         public static extern int NDI_RetrieveSourceNames(IntPtr[] destination, int maxCount);
@@ -31,7 +31,7 @@ namespace Klak.Ndi
         #region Receiver functions
 
         [DllImport("KlakNDI")]
-        public static extern IntPtr NDI_TryCreateReceiverWithClause(string clause);
+        public static extern IntPtr NDI_TryOpenSourceNamedLike(string clause);
 
         [DllImport("KlakNDI")]
         public static extern void NDI_DestroyReceiver(IntPtr receiver);

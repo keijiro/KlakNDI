@@ -5,76 +5,75 @@
 
 namespace KlakNDI
 {
-	// NDI receiver class
-	class Receiver
-	{
-	public:
+    // NDI receiver class
+    class Receiver
+    {
+    public:
 
-		Receiver(const NDIlib_source_t& source)
-			: instance_(NDIlib_recv_create_v2(&NDIlib_recv_create_t(source, NDIlib_recv_color_format_fastest))),
-			  id_(getNewID())
-		{
-			getInstanceMap()[id_] = this;
-		}
+        Receiver(const NDIlib_source_t& source)
+        {
+            instance_ = NDIlib_recv_create_v2(&NDIlib_recv_create_t(source, NDIlib_recv_color_format_fastest));
+            id_ = generateID();
+            getInstanceMap()[id_] = this;
+        }
 
-		~Receiver()
-		{
-			getInstanceMap().erase(id_);
-			NDIlib_recv_destroy(instance_);
-		}
+        ~Receiver()
+        {
+            NDIlib_recv_destroy(instance_);
+            getInstanceMap().erase(id_);
+        }
 
-		bool receiveFrame()
-		{
-			auto type = NDIlib_recv_capture_v2(instance_, &frame_, nullptr, nullptr, 0);
-			return type == NDIlib_frame_type_video;
-		}
+        uint32_t getID() const
+        {
+            return id_;
+        }
 
-		void freeFrame()
-		{
-			NDIlib_recv_free_video_v2(instance_, &frame_);
-		}
+        bool receiveFrame()
+        {
+            return NDIlib_recv_capture_v2(instance_, &frame_, nullptr, nullptr, 0) == NDIlib_frame_type_video;
+        }
 
-		uint32_t getID() const
-		{
-			return id_;
-		}
+        void freeFrame()
+        {
+            NDIlib_recv_free_video_v2(instance_, &frame_);
+        }
 
-		int getFrameWidth() const
-		{
-			return frame_.xres;
-		}
+        int getFrameWidth() const
+        {
+            return frame_.xres;
+        }
 
-		int getFrameHeight() const
-		{
-			return frame_.yres;
-		}
+        int getFrameHeight() const
+        {
+            return frame_.yres;
+        }
 
-		const void* getFrameData() const
-		{
-			return frame_.p_data;
-		}
+        const void* getFrameData() const
+        {
+            return frame_.p_data;
+        }
 
-		static Receiver* getInstanceFromID(uint32_t id)
-		{
-			return getInstanceMap()[id];
-		}
+        static Receiver* getInstanceFromID(uint32_t id)
+        {
+            return getInstanceMap()[id];
+        }
 
-	private:
+    private:
 
-		NDIlib_recv_instance_t instance_;
-		NDIlib_video_frame_v2_t frame_;
-		uint32_t id_;
+        NDIlib_recv_instance_t instance_;
+        NDIlib_video_frame_v2_t frame_;
+        uint32_t id_;
 
-		static uint32_t getNewID()
-		{
-			static uint32_t counter;
-			return counter++;
-		}
+        static uint32_t generateID()
+        {
+            static uint32_t counter;
+            return counter++;
+        }
 
-		static std::unordered_map<uint32_t, Receiver*>& getInstanceMap()
-		{
-			static std::unordered_map<uint32_t, Receiver*> map;
-			return map;
-		}
-	};
+        static std::unordered_map<uint32_t, Receiver*>& getInstanceMap()
+        {
+            static std::unordered_map<uint32_t, Receiver*> map;
+            return map;
+        }
+    };
 }
