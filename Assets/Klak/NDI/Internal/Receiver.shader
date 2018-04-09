@@ -28,7 +28,7 @@ Shader "Hidden/KlakNDI/Receiver"
         uv.y = 1 - uv.y;
 
         half4 uyvy = tex2D(_MainTex, uv);
-        bool second = frac(uv.x * _MainTex_TexelSize.z ) > 0.4;
+        bool second = frac(uv.x * _MainTex_TexelSize.z) > 0.49999;
         half3 yuv = second ? uyvy.wxz : uyvy.yxz;
 
         return half4(GammaToLinearSpace(YUV2RGB(yuv)), 1);
