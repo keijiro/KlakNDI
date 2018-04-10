@@ -10,10 +10,12 @@ namespace Klak.Ndi
     public class NdiSenderEditor : Editor
     {
         SerializedProperty _sourceTexture;
+        SerializedProperty _alphaSupport;
 
         void OnEnable()
         {
             _sourceTexture = serializedObject.FindProperty("_sourceTexture");
+            _alphaSupport = serializedObject.FindProperty("_alphaSupport");
         }
 
         public override void OnInspectorGUI()
@@ -39,6 +41,8 @@ namespace Klak.Ndi
 
                 EditorGUILayout.PropertyField(_sourceTexture);
             }
+
+            EditorGUILayout.PropertyField(_alphaSupport);
 
             serializedObject.ApplyModifiedProperties();
         }

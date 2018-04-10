@@ -48,6 +48,11 @@ namespace KlakNDI
             return frame_.yres;
         }
 
+        uint32_t getFrameFourCC() const
+        {
+            return frame_.FourCC;
+        }
+
         const void* getFrameData() const
         {
             return frame_.p_data;

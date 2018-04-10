@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace Klak.Ndi
 {
+    public enum FourCC : uint
+    {
+        UYVY = 0x59565955,
+        UYVA = 0x41565955
+    }
+
     public static class PluginEntry
     {
         #region Common functions
@@ -24,7 +30,7 @@ namespace Klak.Ndi
         public static extern void NDI_DestroySender(IntPtr sender);
 
         [DllImport("KlakNDI")]
-        public static extern void NDI_SendFrame(IntPtr sender, IntPtr data, int width, int height);
+        public static extern void NDI_SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC);
 
         #endregion
 
@@ -44,6 +50,9 @@ namespace Klak.Ndi
 
         [DllImport("KlakNDI")]
         public static extern int NDI_GetFrameHeight(IntPtr receiver);
+
+        [DllImport("KlakNDI")]
+        public static extern FourCC NDI_GetFrameFourCC(IntPtr receiver);
 
         #endregion
     }

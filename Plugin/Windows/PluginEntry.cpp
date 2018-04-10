@@ -38,9 +38,9 @@ extern "C" void UNITY_INTERFACE_EXPORT NDI_DestroySender(Sender* sender)
     delete sender;
 }
 
-extern "C" void UNITY_INTERFACE_EXPORT NDI_SendFrame(Sender* sender, void* data, int width, int height)
+extern "C" void UNITY_INTERFACE_EXPORT NDI_SendFrame(Sender* sender, void* data, int width, int height, uint32_t fourCC)
 {
-    sender->sendFrame(data, width, height);
+    sender->sendFrame(data, width, height, fourCC);
 }
 
 // Receiver functions
@@ -69,4 +69,9 @@ extern "C" int UNITY_INTERFACE_EXPORT NDI_GetFrameWidth(Receiver* receiver)
 extern "C" int UNITY_INTERFACE_EXPORT NDI_GetFrameHeight(Receiver* receiver)
 {
     return receiver->getFrameHeight();
+}
+
+extern "C" uint32_t UNITY_INTERFACE_EXPORT NDI_GetFrameFourCC(Receiver* receiver)
+{
+    return receiver->getFrameFourCC();
 }

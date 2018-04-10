@@ -22,6 +22,17 @@ namespace Klak.Ndi
 
         #endregion
 
+        #region Format option
+
+        [SerializeField] bool _alphaSupport;
+
+        public bool alphaSupport {
+            get { return _alphaSupport; }
+            set { _alphaSupport = value; }
+        }
+
+        #endregion
+
         #region Conversion shader
 
         [SerializeField, HideInInspector] Shader _shader;
@@ -35,6 +46,7 @@ namespace Klak.Ndi
         struct Frame
         {
             public int width, height;
+            public bool alpha;
             public AsyncGPUReadbackRequest readback;
         }
 
@@ -53,16 +65,17 @@ namespace Klak.Ndi
 
             // Allocate a new render texture.
             _converted = RenderTexture.GetTemporary(
-                source.width / 2, source.height, 0,
+                source.width / 2, (_alphaSupport ? 6 : 4) * source.height / 4, 0,
                 RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear
             );
 
             // Apply the conversion shader.
-            Graphics.Blit(source, _converted, _material, 0);
+            Graphics.Blit(source, _converted, _material, _alphaSupport ? 1 : 0);
 
             // Request readback.
             _frameQueue.Enqueue(new Frame{
                 width = source.width, height = source.height,
+                alpha = _alphaSupport,
                 readback = AsyncGPUReadback.Request(_converted)
             });
         }
@@ -111,7 +124,8 @@ namespace Klak.Ndi
                     unsafe {
                         PluginEntry.NDI_SendFrame(
                             _plugin, (IntPtr)array.GetUnsafeReadOnlyPtr(),
-                            frame.width, frame.height
+                            frame.width, frame.height,
+                            frame.alpha ? FourCC.UYVA : FourCC.UYVY
                         );
                     }
                     _frameQueue.Dequeue();

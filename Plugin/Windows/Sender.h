@@ -19,13 +19,13 @@ namespace KlakNDI
             NDIlib_send_destroy(instance_);
         }
 
-        void sendFrame(void* data, int width, int height)
+        void sendFrame(void* data, int width, int height, uint32_t fourCC)
         {
             static NDIlib_video_frame_v2_t frame;
 
             frame.xres = width;
             frame.yres = height;
-            frame.FourCC = NDIlib_FourCC_type_UYVY;
+            frame.FourCC = static_cast<NDIlib_FourCC_type_e>(fourCC);
             frame.frame_format_type = NDIlib_frame_format_type_interleaved;
             frame.p_data = static_cast<uint8_t*>(data);
             frame.line_stride_in_bytes = width * 2;
