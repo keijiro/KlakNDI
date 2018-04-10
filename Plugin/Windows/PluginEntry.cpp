@@ -7,6 +7,8 @@ using namespace KlakNDI;
 
 #if defined(_DEBUG)
 
+#include <consoleapi.h>
+
 extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces* interfaces)
 {
     // Open a new console for debug logging.
