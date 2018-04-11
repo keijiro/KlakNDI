@@ -1,7 +1,7 @@
 KlakNDI
 =======
 
-![gif](https://i.imgur.com/aIOe8RG.gif)
+![gif](https://i.imgur.com/k3Bwcoq.gif)
 ![screenshot](https://i.imgur.com/RSmmzxpm.jpg)
 
 **KlakNDI** is a [NewTek NDI] protocol plugin for Unity that allows
@@ -23,10 +23,13 @@ System requirements
 -------------------
 
 - Unity 2018.1 or later
-- Windows, Direct3D 11
+- Windows 64-bit, Direct3D 11
 
 KlakNDI is only available with D3D11 because it's the only environment that
 supports the GPU async readback functionality at the moment.
+
+The current version of KlakNDI only included 64-bit (x64) binary DLLs. Please
+note that it doesn't work with 32-bit (x86) Unity players.
 
 Installation
 ------------
