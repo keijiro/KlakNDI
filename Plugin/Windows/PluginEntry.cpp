@@ -43,6 +43,11 @@ extern "C" void UNITY_INTERFACE_EXPORT NDI_SendFrame(Sender* sender, void* data,
     sender->sendFrame(data, width, height, fourCC);
 }
 
+extern "C" void UNITY_INTERFACE_EXPORT NDI_SyncSender(Sender* sender)
+{
+    sender->synchronize();
+}
+
 // Receiver functions
 
 extern "C" Receiver UNITY_INTERFACE_EXPORT *NDI_TryOpenSourceNamedLike(const char* name)

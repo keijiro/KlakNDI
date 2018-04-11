@@ -33,6 +33,11 @@ namespace KlakNDI
             NDIlib_send_send_video_async_v2(instance_, &frame);
         }
 
+        void synchronize()
+        {
+            NDIlib_send_send_video_async_v2(instance_, nullptr);
+        }
+
     private:
 
         NDIlib_send_instance_t instance_;

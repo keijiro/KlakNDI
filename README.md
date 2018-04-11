@@ -77,9 +77,6 @@ UYVA format (4:2:2 color + alpha) that supports alpha channel. It requires an
 extra bandwidth and processing resources, so that it's recommended disabling
 when alpha channel is not actually needed.
 
-The current implementation of the plugin has a problem with alpha channel
-support. Please check the "Known issues" section bellow.
-
 NDI Receiver component
 ----------------------
 
@@ -129,14 +126,6 @@ The NDI source list view is a handy way to check what NDI sources are
 currently available in the network. To open the list view, from the
 application menu select "Window" - "Klak" - "NDI Source List". The list is
 updated even in the edit mode.
-
-Known issues
-------------
-
-- The plugin crashes when trying to send a large NPOT (non-power-of-two) frame
-  with alpha channel support. The cause of the problem is unknown and still
-  under investigation. At the moment, it's recommended using POT dimensions
-  when using alpha supported video.
 
 License
 -------

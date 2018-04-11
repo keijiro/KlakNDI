@@ -5,6 +5,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Klak.Ndi
@@ -91,12 +92,20 @@ namespace Klak.Ndi
 
         #region MonoBehaviour implementation
 
-        void Start()
+        IEnumerator Start()
         {
             _material = new Material(_shader);
             _frameQueue = new Queue<Frame>(4);
             _plugin = PluginEntry.NDI_CreateSender(gameObject.name);
             _hasCamera = (GetComponent<Camera>() != null);
+
+            // Synchronize with async send at the end of every frame.
+            var wait = new WaitForEndOfFrame();
+            while (true)
+            {
+                yield return wait;
+                if (enabled) PluginEntry.NDI_SyncSender(_plugin);
+            }
         }
 
         void OnDestroy()

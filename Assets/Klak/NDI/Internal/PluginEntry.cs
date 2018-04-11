@@ -32,6 +32,9 @@ namespace Klak.Ndi
         [DllImport("KlakNDI")]
         public static extern void NDI_SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC);
 
+        [DllImport("KlakNDI")]
+        public static extern void NDI_SyncSender(IntPtr sender);
+
         #endregion
 
         #region Receiver functions

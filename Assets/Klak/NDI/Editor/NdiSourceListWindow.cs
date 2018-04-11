@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 namespace Klak.Ndi
 {
     // NDI source list window
-    public class SourceListWindow : EditorWindow
+    public class NdiSourceListWindow : EditorWindow
     {
         [MenuItem("Window/Klak/NDI Source List")]
         static void Init()
         {
-            EditorWindow.GetWindow<SourceListWindow>("NDI Sources").Show();
+            EditorWindow.GetWindow<NdiSourceListWindow>("NDI Sources").Show();
         }
 
         IntPtr[] _sources;
