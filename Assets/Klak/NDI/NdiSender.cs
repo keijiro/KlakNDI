@@ -65,7 +65,7 @@ namespace Klak.Ndi
 
             // Allocate a new render texture.
             _converted = RenderTexture.GetTemporary(
-                source.width / 2, (_alphaSupport ? 6 : 4) * source.height / 4, 0,
+                source.width / 2, (_alphaSupport ? 3 : 2) * source.height / 2, 0,
                 RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear
             );
 

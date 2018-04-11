@@ -48,7 +48,7 @@ namespace KlakNDI
             return frame_.yres;
         }
 
-        uint32_t getFrameFourCC() const
+        NDIlib_FourCC_type_e getFrameFourCC() const
         {
             return frame_.FourCC;
         }

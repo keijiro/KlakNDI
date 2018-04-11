@@ -18,17 +18,18 @@ namespace
 
             if (receiver->receiveFrame())
             {
+                // Check if it's an alpha supported frame.
+                auto alpha = (receiver->getFrameFourCC() == NDIlib_FourCC_type_UYVA);
+
+                // Calculate the texture dimensions.
+                auto width = receiver->getFrameWidth() / 2;
+                auto height = receiver->getFrameHeight() * (alpha ? 3 : 2) / 2;
+
                 // Check if the texture dimensions match.
-                if (params->width == receiver->getFrameWidth() / 2 &&
-                    params->height == receiver->getFrameHeight())
-                {
+                if (params->width == width && params->height == height)
                     params->texData = const_cast<void*>(receiver->getFrameData());
-                }
                 else
-                {
-                    // Not match: Let this frame drop.
-                    receiver->freeFrame();
-                }
+                    receiver->freeFrame(); // Not match: Let this frame drop.
             }
         }
         else if (event == kUnityRenderingExtEventUpdateTextureEnd)

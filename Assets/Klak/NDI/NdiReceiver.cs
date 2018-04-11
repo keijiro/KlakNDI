@@ -112,11 +112,16 @@ namespace Klak.Ndi
             var height = PluginEntry.NDI_GetFrameHeight(_plugin);
             if (width == 0 || height == 0) return; // not yet ready
 
+            // Calculate the source data dimensions.
+            var alpha = PluginEntry.NDI_GetFrameFourCC(_plugin) == FourCC.UYVA;
+            var sw = width / 2;
+            var sh = height * (alpha ? 3 : 2) / 2;
+
             // Renew the texture when the dimensions are changed.
-            if (_sourceTexture.width != width / 2 || _sourceTexture.height != height)
+            if (_sourceTexture.width != sw || _sourceTexture.height != sh)
             {
                 Destroy(_sourceTexture);
-                _sourceTexture = new Texture2D(width / 2, height, TextureFormat.RGBA32, false, true);
+                _sourceTexture = new Texture2D(sw, sh, TextureFormat.RGBA32, false, true);
                 _sourceTexture.filterMode = FilterMode.Point;
             }
 
@@ -125,12 +130,12 @@ namespace Klak.Ndi
 
             if (_targetTexture != null)
             {
-                Graphics.Blit(_sourceTexture, _targetTexture, _material, 0);
+                Graphics.Blit(_sourceTexture, _targetTexture, _material, alpha ? 1 : 0);
             }
             else
             {
                 _converted = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-                Graphics.Blit(_sourceTexture, _converted, _material, 0);
+                Graphics.Blit(_sourceTexture, _converted, _material, alpha ? 1 : 0);
             }
 
             if (_targetRenderer != null)
