@@ -2,7 +2,7 @@ KlakNDI
 =======
 
 ![gif](https://i.imgur.com/k3Bwcoq.gif)
-![screenshot](https://i.imgur.com/RSmmzxpm.jpg)
+![photo](https://i.imgur.com/HY1NMYm.jpg)
 
 **KlakNDI** is a [NewTek NDI] protocol plugin for Unity that allows
 sending/receiving video between multiple computers via a local area network.
