@@ -133,7 +133,7 @@ updated even in the edit mode.
 License
 -------
 
-[MIT](LICENSE.md)
+[MIT](LICENSE)
 
 The NDI DLL file (`Processing.NDI.Lib.x64.dll`) placed in the plugin internal
 directory is provided by NewTek, Inc under the NDI® SDK License Agreement.
