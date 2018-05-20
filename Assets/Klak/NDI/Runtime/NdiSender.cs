@@ -8,8 +8,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+#if UNITY_EDITOR
+using UnityEditor; // Needed to use delayCall
+#endif
+
 namespace Klak.Ndi
 {
+    [ExecuteInEditMode]
     public class NdiSender : MonoBehaviour
     {
         #region Source texture
@@ -51,7 +56,7 @@ namespace Klak.Ndi
             public AsyncGPUReadbackRequest readback;
         }
 
-        Queue<Frame> _frameQueue;
+        Queue<Frame> _frameQueue = new Queue<Frame>(4);
 
         void QueueFrame(RenderTexture source)
         {
@@ -70,6 +75,13 @@ namespace Klak.Ndi
                 RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear
             );
 
+            // Lazy initialization of the conversion shader.
+            if (_material == null)
+            {
+                _material = new Material(_shader);
+                _material.hideFlags = HideFlags.DontSave;
+            }
+
             // Apply the conversion shader.
             Graphics.Blit(source, _converted, _material, _alphaSupport ? 1 : 0);
 
@@ -80,6 +92,64 @@ namespace Klak.Ndi
                 readback = AsyncGPUReadback.Request(_converted)
             });
         }
+
+        void ProcessQueue()
+        {
+            while (_frameQueue.Count > 0)
+            {
+                var frame = _frameQueue.Peek();
+
+                // Skip error frames.
+                if (frame.readback.hasError)
+                {
+                    Debug.LogWarning("GPU readback error was detected.");
+                    _frameQueue.Dequeue();
+                    continue;
+                }
+
+                // Edit mode: Wait for readback completion every frame.
+                if (!Application.isPlaying) frame.readback.WaitForCompletion();
+
+                // Break when found a frame that hasn't been read back yet.
+                if (!frame.readback.done) break;
+
+                // Okay, we're going to send this frame.
+
+                // Lazy initialization of the plugin sender instance.
+                if (_plugin == IntPtr.Zero) _plugin = PluginEntry.NDI_CreateSender(gameObject.name);
+
+                // Feed the frame data to the sender.
+                // It starts encoding/sending the frame asynchronously.
+                var array = frame.readback.GetData<Byte>();
+                unsafe {
+                    PluginEntry.NDI_SendFrame(
+                        _plugin, (IntPtr)array.GetUnsafeReadOnlyPtr(),
+                        frame.width, frame.height, frame.alpha ? FourCC.UYVA : FourCC.UYVY
+                    );
+                }
+
+                // Edit mode: Actially we don't like to do things in an async
+                // fashion, so let's immediately synchronize with the sender.
+                if (!Application.isPlaying) PluginEntry.NDI_SyncSender(_plugin);
+
+                // Done. Remove the frame from the queue.
+                _frameQueue.Dequeue();
+            }
+        }
+
+        #if UNITY_EDITOR
+
+        void DelayedUpdate()
+        {
+            // Check if it's in the render texture mode.
+            if (GetComponent<Camera>() != null || _sourceTexture == null) return;
+
+            // Queue the current frame and immediately send it.
+            QueueFrame(_sourceTexture);
+            ProcessQueue();
+        }
+
+        #endif
 
         #endregion
 
@@ -94,65 +164,67 @@ namespace Klak.Ndi
 
         IEnumerator Start()
         {
-            _material = new Material(_shader);
-            _frameQueue = new Queue<Frame>(4);
-            _plugin = PluginEntry.NDI_CreateSender(gameObject.name);
             _hasCamera = (GetComponent<Camera>() != null);
 
-            // Synchronize with async send at the end of every frame.
-            var wait = new WaitForEndOfFrame();
-            while (true)
+            // Only run the sync coroutine in the play mode.
+            if (!Application.isPlaying) yield break;
+
+            // Synchronize with the async sender at the end of every frame.
+            for (var wait = new WaitForEndOfFrame();;)
             {
                 yield return wait;
-                if (enabled) PluginEntry.NDI_SyncSender(_plugin);
+                if (enabled && _plugin != IntPtr.Zero) PluginEntry.NDI_SyncSender(_plugin);
             }
         }
 
         void OnDestroy()
         {
-            Destroy(_material);
-            if (_converted != null) RenderTexture.ReleaseTemporary(_converted);
-            PluginEntry.NDI_DestroySender(_plugin);
+            if (Application.isPlaying)
+                Destroy(_material);
+            else
+                DestroyImmediate(_material);
+        }
+
+        void OnDisable()
+        {
+            if (_converted != null)
+            {
+                RenderTexture.ReleaseTemporary(_converted);
+                _converted = null;
+            }
+
+            if (_plugin != IntPtr.Zero)
+            {
+                PluginEntry.NDI_DestroySender(_plugin);
+                _plugin = IntPtr.Zero;
+            }
         }
 
         void Update()
         {
-            // Process the readback queue.
-            while (_frameQueue.Count > 0)
+        #if UNITY_EDITOR
+            // Edit mode: Use delayed update.
+            if (!Application.isPlaying)
             {
-                var frame = _frameQueue.Peek();
-
-                if (frame.readback.hasError)
-                {
-                    Debug.LogWarning("GPU readback error was detected.");
-                    _frameQueue.Dequeue();
-                }
-                else if (frame.readback.done)
-                {
-                    var array = frame.readback.GetData<Byte>();
-                    unsafe {
-                        PluginEntry.NDI_SendFrame(
-                            _plugin, (IntPtr)array.GetUnsafeReadOnlyPtr(),
-                            frame.width, frame.height,
-                            frame.alpha ? FourCC.UYVA : FourCC.UYVY
-                        );
-                    }
-                    _frameQueue.Dequeue();
-                }
-                else
-                {
-                    break;
-                }
+                EditorApplication.delayCall += DelayedUpdate;
+                return;
             }
+        #endif
 
-            // Request frame readback when in render texture mode.
+            ProcessQueue();
+
+            // Request frame readback when in the render texture mode.
             if (!_hasCamera && _sourceTexture != null) QueueFrame(_sourceTexture);
         }
 
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            QueueFrame(source);
+            if (source != null) QueueFrame(source);
+
             Graphics.Blit(source, destination);
+
+            // Edit mode: Process this frame immediately.
+            if (!Application.isPlaying) ProcessQueue();
         }
 
         #endregion
