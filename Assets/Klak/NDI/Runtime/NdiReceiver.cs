@@ -63,6 +63,8 @@ namespace Klak.Ndi
 
         #region Private members
 
+        static IntPtr _callback = PluginEntry.NDI_GetTextureUpdateCallback();
+
         CommandBuffer _commandBuffer;
         Texture2D _sourceTexture;
         MaterialPropertyBlock _propertyBlock;
@@ -100,11 +102,10 @@ namespace Klak.Ndi
 
             // Invoke the texture update callback in the plugin.
             _commandBuffer.IssuePluginCustomTextureUpdate(
-                PluginEntry.NDI_GetTextureUpdateCallback(),
-                _sourceTexture,
-                PluginEntry.NDI_GetReceiverID(_plugin)
+                _callback, _sourceTexture, PluginEntry.NDI_GetReceiverID(_plugin)
             );
             Graphics.ExecuteCommandBuffer(_commandBuffer);
+            _sourceTexture.IncrementUpdateCount();
             _commandBuffer.Clear();
 
             // Check the frame dimensions.
@@ -131,6 +132,7 @@ namespace Klak.Ndi
             if (_targetTexture != null)
             {
                 Graphics.Blit(_sourceTexture, _targetTexture, _material, alpha ? 1 : 0);
+                _targetTexture.IncrementUpdateCount();
             }
             else
             {
