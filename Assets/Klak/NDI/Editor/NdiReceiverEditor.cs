@@ -98,11 +98,26 @@ namespace Klak.Ndi
             _cachedShader = null;
         }
 
+        public override bool RequiresConstantRepaint()
+        {
+            return true;
+        }
+
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(_nameFilter);
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.DelayedTextField(_nameFilter);
+            if (EditorGUI.EndChangeCheck())
+            {
+                // Flip-flipping the target to reset the connection.
+                // It's needed to apply the new name filter value.
+                var recv = (NdiReceiver)target;
+                recv.enabled = false;
+                recv.enabled = true;
+            }
+
             EditorGUILayout.PropertyField(_targetTexture);
             EditorGUILayout.PropertyField(_targetRenderer);
 

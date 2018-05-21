@@ -7,6 +7,7 @@ using System;
 
 namespace Klak.Ndi
 {
+    [ExecuteInEditMode]
     public class NdiReceiver : MonoBehaviour
     {
         #region Source settings
@@ -63,42 +64,90 @@ namespace Klak.Ndi
 
         #region Private members
 
-        static IntPtr _callback = PluginEntry.NDI_GetTextureUpdateCallback();
+        static IntPtr _callback;
+        IntPtr _plugin;
 
         CommandBuffer _commandBuffer;
         Texture2D _sourceTexture;
         MaterialPropertyBlock _propertyBlock;
-        IntPtr _plugin;
+
+        void DestroyAsset(UnityEngine.Object o)
+        {
+            if (Application.isPlaying)
+                Destroy(o);
+            else
+                DestroyImmediate(o);
+        }
 
         #endregion
 
         #region MonoBehaviour implementation
 
-        void Start()
+        void OnDisable()
         {
-            _material = new Material(_shader);
-            _commandBuffer = new CommandBuffer();
-            _sourceTexture = new Texture2D(8, 8); // placeholder texture
-            _propertyBlock = new MaterialPropertyBlock();
+            if (_commandBuffer != null)
+            {
+                _commandBuffer.Dispose();
+                _commandBuffer = null;
+            }
+
+            if (_plugin != IntPtr.Zero)
+            {
+                PluginEntry.NDI_DestroyReceiver(_plugin);
+                _plugin = IntPtr.Zero;
+            }
         }
 
         void OnDestroy()
         {
-            Destroy(_material);
-            _commandBuffer.Dispose();
-            Destroy(_sourceTexture);
-            if (_converted != null) RenderTexture.ReleaseTemporary(_converted);
-            if (_plugin != IntPtr.Zero) PluginEntry.NDI_DestroyReceiver(_plugin);
+            if (_material != null)
+            {
+                DestroyAsset(_material);
+                _material = null;
+            }
+
+            if (_converted != null)
+            {
+                RenderTexture.ReleaseTemporary(_converted);
+                _converted = null;
+            }
+
+            if (_sourceTexture != null)
+            {
+                DestroyAsset(_sourceTexture);
+                _sourceTexture = null;
+            }
         }
 
         void Update()
         {
-            // Plugin lazy initialization
+            // Lazy initialization
+            if (_material == null)
+            {
+                _material = new Material(_shader);
+                _material.hideFlags = HideFlags.DontSave;
+            }
+
+            if (_callback == IntPtr.Zero)
+                _callback = PluginEntry.NDI_GetTextureUpdateCallback();
+
             if (_plugin == IntPtr.Zero)
             {
                 _plugin = PluginEntry.NDI_TryOpenSourceNamedLike(_nameFilter);
                 if (_plugin == IntPtr.Zero) return;
             }
+
+            if (_commandBuffer == null)
+                _commandBuffer = new CommandBuffer();
+
+            if (_sourceTexture == null)
+            {
+                _sourceTexture = new Texture2D(8, 8); // placeholder
+                _sourceTexture.hideFlags = HideFlags.DontSave;
+            }
+
+            if (_propertyBlock == null)
+                _propertyBlock = new MaterialPropertyBlock();
 
             // Invoke the texture update callback in the plugin.
             _commandBuffer.IssuePluginCustomTextureUpdate(
@@ -121,8 +170,9 @@ namespace Klak.Ndi
             // Renew the texture when the dimensions are changed.
             if (_sourceTexture.width != sw || _sourceTexture.height != sh)
             {
-                Destroy(_sourceTexture);
+                DestroyAsset(_sourceTexture);
                 _sourceTexture = new Texture2D(sw, sh, TextureFormat.RGBA32, false, true);
+                _sourceTexture.hideFlags = HideFlags.DontSave;
                 _sourceTexture.filterMode = FilterMode.Point;
             }
 

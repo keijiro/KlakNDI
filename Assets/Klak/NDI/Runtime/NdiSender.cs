@@ -190,10 +190,14 @@ namespace Klak.Ndi
 
         void OnDestroy()
         {
-            if (Application.isPlaying)
-                Destroy(_material);
-            else
-                DestroyImmediate(_material);
+            if (_material != null)
+            {
+                if (Application.isPlaying)
+                    Destroy(_material);
+                else
+                    DestroyImmediate(_material);
+                _material = null;
+            }
         }
 
         void OnDisable()
