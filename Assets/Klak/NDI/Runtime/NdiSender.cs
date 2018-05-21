@@ -87,8 +87,7 @@ namespace Klak.Ndi
 
             // Request readback.
             _frameQueue.Enqueue(new Frame{
-                width = source.width, height = source.height,
-                alpha = _alphaSupport,
+                width = source.width, height = source.height, alpha = _alphaSupport,
                 readback = AsyncGPUReadback.Request(_converted)
             });
         }
@@ -99,6 +98,9 @@ namespace Klak.Ndi
             {
                 var frame = _frameQueue.Peek();
 
+                // Edit mode: Wait for readback completion every frame.
+                if (!Application.isPlaying) frame.readback.WaitForCompletion();
+
                 // Skip error frames.
                 if (frame.readback.hasError)
                 {
@@ -106,9 +108,6 @@ namespace Klak.Ndi
                     _frameQueue.Dequeue();
                     continue;
                 }
-
-                // Edit mode: Wait for readback completion every frame.
-                if (!Application.isPlaying) frame.readback.WaitForCompletion();
 
                 // Break when found a frame that hasn't been read back yet.
                 if (!frame.readback.done) break;
@@ -118,34 +117,46 @@ namespace Klak.Ndi
                 // Lazy initialization of the plugin sender instance.
                 if (_plugin == IntPtr.Zero) _plugin = PluginEntry.NDI_CreateSender(gameObject.name);
 
-                // Feed the frame data to the sender.
-                // It starts encoding/sending the frame asynchronously.
-                var array = frame.readback.GetData<Byte>();
+                // Feed the frame data to the sender. It encodes/sends the
+                // frame asynchronously.
                 unsafe {
                     PluginEntry.NDI_SendFrame(
-                        _plugin, (IntPtr)array.GetUnsafeReadOnlyPtr(),
+                        _plugin, (IntPtr)frame.readback.GetData<Byte>().GetUnsafeReadOnlyPtr(),
                         frame.width, frame.height, frame.alpha ? FourCC.UYVA : FourCC.UYVY
                     );
                 }
 
-                // Edit mode: Actially we don't like to do things in an async
-                // fashion, so let's immediately synchronize with the sender.
-                if (!Application.isPlaying) PluginEntry.NDI_SyncSender(_plugin);
-
                 // Done. Remove the frame from the queue.
                 _frameQueue.Dequeue();
             }
+
+            // Edit mode: We're not sure when the readback buffer will be
+            // disposed, so let's synchronize with the sender to prevent it
+            // from accessing disposed memory area.
+            if (!Application.isPlaying && _plugin != IntPtr.Zero) PluginEntry.NDI_SyncSender(_plugin);
         }
 
         #if UNITY_EDITOR
 
+        // Delayed update callback
+        // The readback queue works on the assumption that the next update will
+        // come in a short period of time. In editor, this assumption is not
+        // guaranteed -- updates can be discontinuous. The last update before
+        // a pause won't be shown immediately, and it will be delayed until the
+        // next user action. This can mess up editor interactivity.
+        // To solve this problem, we use EditorApplication.delayUpdate to send
+        // discontinuous updates in a synchronous fashion.
+
+        bool _delayUpdateAdded;
+
         void DelayedUpdate()
         {
-            // Check if it's in the render texture mode.
-            if (GetComponent<Camera>() != null || _sourceTexture == null) return;
+            _delayUpdateAdded = false;
 
-            // Queue the current frame and immediately send it.
-            QueueFrame(_sourceTexture);
+            // Queue the last update in the render texture mode.
+            if (!_hasCamera && _sourceTexture != null) QueueFrame(_sourceTexture);
+
+            // Process the readback queue to send the last update.
             ProcessQueue();
         }
 
@@ -198,33 +209,48 @@ namespace Klak.Ndi
                 PluginEntry.NDI_DestroySender(_plugin);
                 _plugin = IntPtr.Zero;
             }
+
+            _delayUpdateAdded = false;
         }
 
         void Update()
         {
         #if UNITY_EDITOR
-            // Edit mode: Use delayed update.
-            if (!Application.isPlaying)
+            // Edit mode: Register the delayed update callback.
+            if (!Application.isPlaying && !_delayUpdateAdded)
             {
                 EditorApplication.delayCall += DelayedUpdate;
-                return;
+                _delayUpdateAdded = true;
             }
         #endif
 
-            ProcessQueue();
+            // Edit mode: Check the camera capture mode every frame.
+            if (!Application.isPlaying) _hasCamera = (GetComponent<Camera>() != null);
 
-            // Request frame readback when in the render texture mode.
-            if (!_hasCamera && _sourceTexture != null) QueueFrame(_sourceTexture);
+            // Check if in the render texture mode.
+            if (!_hasCamera && _sourceTexture != null)
+            {
+                // Process the readback queue before enqueuing.
+                ProcessQueue();
+
+                // Push the source texture into the readback queue.
+                QueueFrame(_sourceTexture);
+            }
         }
 
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            if (source != null) QueueFrame(source);
+            if (source != null)
+            {
+                // Process the readback queue before enqueuing.
+                ProcessQueue();
 
+                // Push the source image into the readback queue.
+                QueueFrame(source);
+            }
+
+            // Dumb blit
             Graphics.Blit(source, destination);
-
-            // Edit mode: Process this frame immediately.
-            if (!Application.isPlaying) ProcessQueue();
         }
 
         #endregion
