@@ -210,7 +210,9 @@ namespace Klak.Ndi
                 _plugin = IntPtr.Zero;
             }
 
+        #if UNITY_EDITOR
             _delayUpdateAdded = false;
+        #endif
         }
 
         void Update()
