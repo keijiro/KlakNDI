@@ -1,0 +1,10 @@
+{
+    "name": "jp.keijiro.klak.ndi.Runtime",
+    "references": [
+        "jp.keijiro.klak.ndi.Plugin"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}
