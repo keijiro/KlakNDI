@@ -1,3 +1,4 @@
+#include "Common.h"
 #include "Receiver.h"
 #include "Unity/IUnityRenderingExtensions.h"
 

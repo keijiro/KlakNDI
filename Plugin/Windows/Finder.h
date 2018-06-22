@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <thread>
-#include <Processing.NDI.Lib.h>
 
 namespace KlakNDI
 {

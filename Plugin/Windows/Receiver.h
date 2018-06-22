@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Processing.NDI.Lib.h>
 #include <unordered_map>
 
 namespace KlakNDI
@@ -12,7 +11,7 @@ namespace KlakNDI
 
         Receiver(const NDIlib_source_t& source)
         {
-            instance_ = NDIlib_recv_create_v2(&NDIlib_recv_create_t(source, NDIlib_recv_color_format_fastest));
+            instance_ = NDIlib_recv_create_v3(&NDIlib_recv_create_v3_t(source, NDIlib_recv_color_format_fastest));
             id_ = generateID();
             getInstanceMap()[id_] = this;
         }
