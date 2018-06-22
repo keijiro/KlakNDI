@@ -14,7 +14,8 @@ Shader "Hidden/KlakNDI/Receiver"
 
     half3 YUV2RGB(half3 yuv)
     {
-        yuv.yz -= 0.5;
+        yuv.yz -= 128.0 / 255;
+        yuv.x = (yuv.x - 4.0 / 255) * 255 / 231;
         return half3(
             yuv.x + 1.403 * yuv.z,
             yuv.x - 0.344 * yuv.y - 0.714 * yuv.z,
@@ -28,7 +29,7 @@ Shader "Hidden/KlakNDI/Receiver"
         half4 uyvy = tex2D(_MainTex, uv);
         bool sel = frac(uv.x * _MainTex_TexelSize.z) < 0.5;
         half3 yuv = sel ? uyvy.yxz : uyvy.wxz;
-        return GammaToLinearSpace(YUV2RGB(yuv));
+        return pow(YUV2RGB(yuv), 2.4);
     }
 
     half4 Fragment_UYVY(v2f_img input) : SV_Target

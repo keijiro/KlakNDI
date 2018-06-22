@@ -14,10 +14,11 @@ Shader "Hidden/KlakNDI/Sender"
 
     half3 RGB2YUV(half3 rgb)
     {
-        rgb = LinearToGammaSpace(rgb);
+        rgb = pow(rgb, 1 / 2.4);
         half y = dot(half3(0.299, 0.587, 0.114), rgb);
-        half u = (rgb.b - y) * 0.565 + 0.5;
-        half v = (rgb.r - y) * 0.713 + 0.5;
+        half u = (rgb.b - y) * 0.565 + 128.0 / 255;
+        half v = (rgb.r - y) * 0.713 + 128.0 / 255;
+        y = y * 231 / 255 + 4.0 / 255;
         return half3(y, u, v);
     }
 
