@@ -1,0 +1,12 @@
+{
+    "name": "jp.keijiro.testcards.Editor",
+    "references": [
+        "jp.keijiro.testcards.Runtime"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
