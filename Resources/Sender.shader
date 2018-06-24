@@ -12,12 +12,20 @@ Shader "Hidden/KlakNDI/Sender"
     sampler2D _MainTex;
     float4 _MainTex_TexelSize;
 
+    // Adobe-esque HDTV Rec.709 (2.2 gamma, 16-235 limit)
     half3 RGB2YUV(half3 rgb)
     {
+        const half K_B = 0.0722;
+        const half K_R = 0.2126;
+
         rgb = LinearToGammaSpace(rgb);
-        half y = dot(half3(0.299, 0.587, 0.114), rgb);
-        half u = (rgb.b - y) * 0.565 + 0.5;
-        half v = (rgb.r - y) * 0.713 + 0.5;
+
+        half y = dot(half3(K_R, 1 - K_B - K_R, K_B), rgb);
+        half u = ((rgb.b - y) / (1 - K_B) * 112 + 128) / 255;
+        half v = ((rgb.r - y) / (1 - K_R) * 112 + 128) / 255;
+
+        y = (y * 219 + 16) / 255;
+
         return half3(y, u, v);
     }
 
