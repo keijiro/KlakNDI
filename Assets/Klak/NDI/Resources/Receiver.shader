@@ -12,15 +12,21 @@ Shader "Hidden/KlakNDI/Receiver"
     sampler2D _MainTex;
     float4 _MainTex_TexelSize;
 
+    // Adobe-esque HDTV Rec.709 (2.2 gamma, 16-235 limit)
     half3 YUV2RGB(half3 yuv)
     {
-        yuv.yz -= 128.0 / 255;
-        yuv.x = (yuv.x - 4.0 / 255) * 255 / 231;
-        return half3(
-            yuv.x + 1.403 * yuv.z,
-            yuv.x - 0.344 * yuv.y - 0.714 * yuv.z,
-            yuv.x + 1.770 * yuv.y
-        );
+        const half K_B = 0.0722;
+        const half K_R = 0.2126;
+
+        half y = (yuv.x - 16.0 / 255) * 255 / 219;
+        half u = (yuv.y - 128.0 / 255) * 255 / 112;
+        half v = (yuv.z - 128.0 / 255) * 255 / 112;
+
+        half r = y + v * (1 - K_R);
+        half g = y - v * K_R / (1 - K_R) - u * K_B / (1 - K_B);
+        half b = y + u * (1 - K_B);
+
+        return GammaToLinearSpace(half3(r, g, b));
     }
 
     // 4:2:2 subsampling
@@ -29,7 +35,7 @@ Shader "Hidden/KlakNDI/Receiver"
         half4 uyvy = tex2D(_MainTex, uv);
         bool sel = frac(uv.x * _MainTex_TexelSize.z) < 0.5;
         half3 yuv = sel ? uyvy.yxz : uyvy.wxz;
-        return pow(YUV2RGB(yuv), 2.4);
+        return YUV2RGB(yuv);
     }
 
     half4 Fragment_UYVY(v2f_img input) : SV_Target
