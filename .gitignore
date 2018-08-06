@@ -18,5 +18,5 @@ Desktop.ini
 
 # Visual Studio
 /Plugin/Windows/.vs
-/Plugin/Windows/Debug
 /Plugin/Windows/x64
+/Plugin/Windows/Win32

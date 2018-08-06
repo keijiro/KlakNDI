@@ -7,7 +7,7 @@ using namespace KlakNDI;
 namespace
 {
     // Callback for texture update events
-    void TextureUpdateCallback(int eventID, void* data)
+    void UNITY_INTERFACE_API TextureUpdateCallback(int eventID, void* data)
     {
         auto event = static_cast<UnityRenderingExtEventType>(eventID);
 
