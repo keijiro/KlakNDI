@@ -59,7 +59,7 @@
 
 //     These events will be propagated to all plugins that implement void UnityRenderingExtEvent(UnityRenderingExtEventType event, void* data);
 
-enum UnityRenderingExtEventType
+typedef enum UnityRenderingExtEventType
 {
     kUnityRenderingExtEventSetStereoTarget,                 // issued during SetStereoTarget and carrying the current 'eye' index as parameter
     kUnityRenderingExtEventSetStereoEye,                    // issued during stereo rendering at the beginning of each eye's rendering loop. It carries the current 'eye' index as parameter
@@ -70,28 +70,32 @@ enum UnityRenderingExtEventType
                                                             //      when custom rendering is used - we need to let plugin handle this. It carries over
                                                             //      a UnityRenderingExtCustomBlitParams params = { X, source, dest, 0, 0 } ( X means it's irrelevant )
     kUnityRenderingExtEventCustomBlit,                      // issued by plugin to insert custom blits. It carries over UnityRenderingExtCustomBlitParams as param.
-    kUnityRenderingExtEventUpdateTextureBegin,              // issued to update a texture. It carries over UnityRenderingExtTextureUpdateParams
-    kUnityRenderingExtEventUpdateTextureEnd,                // issued to signal the plugin that the texture update has finished. It carries over the same UnityRenderingExtTextureUpdateParams as kUnityRenderingExtEventUpdateTextureBegin
+    kUnityRenderingExtEventUpdateTextureBegin,                                                  // Deprecated.
+    kUnityRenderingExtEventUpdateTextureEnd,                                                    // Deprecated.
+    kUnityRenderingExtEventUpdateTextureBeginV1 = kUnityRenderingExtEventUpdateTextureBegin,    // Deprecated. Issued to update a texture. It carries over UnityRenderingExtTextureUpdateParamsV1
+    kUnityRenderingExtEventUpdateTextureEndV1 = kUnityRenderingExtEventUpdateTextureEnd,        // Deprecated. Issued to signal the plugin that the texture update has finished. It carries over the same UnityRenderingExtTextureUpdateParamsV1 as kUnityRenderingExtEventUpdateTextureBeginV1
+    kUnityRenderingExtEventUpdateTextureBeginV2,                                                // Issued to update a texture. It carries over UnityRenderingExtTextureUpdateParamsV2
+    kUnityRenderingExtEventUpdateTextureEndV2,                                                  // Issued to signal the plugin that the texture update has finished. It carries over the same UnityRenderingExtTextureUpdateParamsV2 as kUnityRenderingExtEventUpdateTextureBeginV2
 
     // keep this last
     kUnityRenderingExtEventCount,
     kUnityRenderingExtUserEventsStart = kUnityRenderingExtEventCount
-};
+} UnityRenderingExtEventType;
 
 
-enum UnityRenderingExtCustomBlitCommands
+typedef enum UnityRenderingExtCustomBlitCommands
 {
     kUnityRenderingExtCustomBlitVRFlush,                    // This event is mostly used in multi GPU configurations ( SLI, etc ) in order to allow the plugin to flush all GPU's targets
 
     // keep this last
     kUnityRenderingExtCustomBlitCount,
     kUnityRenderingExtUserCustomBlitStart = kUnityRenderingExtCustomBlitCount
-};
+} UnityRenderingExtCustomBlitCommands;
 
 /*
     This will be propagated to all plugins implementing UnityRenderingExtQuery.
 */
-enum UnityRenderingExtQueryType
+typedef enum UnityRenderingExtQueryType
 {
     kUnityRenderingExtQueryOverrideViewport             = 1 << 0,           // The plugin handles setting up the viewport rects. Unity will skip its internal SetViewport calls
     kUnityRenderingExtQueryOverrideScissor              = 1 << 1,           // The plugin handles setting up the scissor rects. Unity will skip its internal SetScissor calls
@@ -100,168 +104,170 @@ enum UnityRenderingExtQueryType
                                                                             //      and it will clear the whole render target not just per-eye on demand.
     kUnityRenderingExtQueryKeepOriginalDoubleWideWidth_DEPRECATED  = 1 << 4,           // Instructs unity to keep the original double wide width. By default unity will try and have a power-of-two width for mip-mapping requirements.
     kUnityRenderingExtQueryRequestVRFlushCallback       = 1 << 5,           // Instructs unity to provide callbacks when the VR eye textures need flushing. Useful for multi GPU synchronization.
-};
+} UnityRenderingExtQueryType;
 
 
-enum UnityRenderingExtTextureFormat
+typedef enum UnityRenderingExtTextureFormat
 {
     kUnityRenderingExtFormatNone = 0, kUnityRenderingExtFormatFirst = kUnityRenderingExtFormatNone,
 
     // sRGB formats
     kUnityRenderingExtFormatR8_SRGB,
-    kUnityRenderingExtFormatRG8_SRGB,
-    kUnityRenderingExtFormatRGB8_SRGB,
-    kUnityRenderingExtFormatRGBA8_SRGB,
+    kUnityRenderingExtFormatR8G8_SRGB,
+    kUnityRenderingExtFormatR8G8B8_SRGB,
+    kUnityRenderingExtFormatR8G8B8A8_SRGB,
 
     // 8 bit integer formats
     kUnityRenderingExtFormatR8_UNorm,
-    kUnityRenderingExtFormatRG8_UNorm,
-    kUnityRenderingExtFormatRGB8_UNorm,
-    kUnityRenderingExtFormatRGBA8_UNorm,
+    kUnityRenderingExtFormatR8G8_UNorm,
+    kUnityRenderingExtFormatR8G8B8_UNorm,
+    kUnityRenderingExtFormatR8G8B8A8_UNorm,
     kUnityRenderingExtFormatR8_SNorm,
-    kUnityRenderingExtFormatRG8_SNorm,
-    kUnityRenderingExtFormatRGB8_SNorm,
-    kUnityRenderingExtFormatRGBA8_SNorm,
+    kUnityRenderingExtFormatR8G8_SNorm,
+    kUnityRenderingExtFormatR8G8B8_SNorm,
+    kUnityRenderingExtFormatR8G8B8A8_SNorm,
     kUnityRenderingExtFormatR8_UInt,
-    kUnityRenderingExtFormatRG8_UInt,
-    kUnityRenderingExtFormatRGB8_UInt,
-    kUnityRenderingExtFormatRGBA8_UInt,
+    kUnityRenderingExtFormatR8G8_UInt,
+    kUnityRenderingExtFormatR8G8B8_UInt,
+    kUnityRenderingExtFormatR8G8B8A8_UInt,
     kUnityRenderingExtFormatR8_SInt,
-    kUnityRenderingExtFormatRG8_SInt,
-    kUnityRenderingExtFormatRGB8_SInt,
-    kUnityRenderingExtFormatRGBA8_SInt,
+    kUnityRenderingExtFormatR8G8_SInt,
+    kUnityRenderingExtFormatR8G8B8_SInt,
+    kUnityRenderingExtFormatR8G8B8A8_SInt,
 
     // 16 bit integer formats
     kUnityRenderingExtFormatR16_UNorm,
-    kUnityRenderingExtFormatRG16_UNorm,
-    kUnityRenderingExtFormatRGB16_UNorm,
-    kUnityRenderingExtFormatRGBA16_UNorm,
+    kUnityRenderingExtFormatR16G16_UNorm,
+    kUnityRenderingExtFormatR16G16B16_UNorm,
+    kUnityRenderingExtFormatR16G16B16A16_UNorm,
     kUnityRenderingExtFormatR16_SNorm,
-    kUnityRenderingExtFormatRG16_SNorm,
-    kUnityRenderingExtFormatRGB16_SNorm,
-    kUnityRenderingExtFormatRGBA16_SNorm,
+    kUnityRenderingExtFormatR16G16_SNorm,
+    kUnityRenderingExtFormatR16G16B16_SNorm,
+    kUnityRenderingExtFormatR16G16B16A16_SNorm,
     kUnityRenderingExtFormatR16_UInt,
-    kUnityRenderingExtFormatRG16_UInt,
-    kUnityRenderingExtFormatRGB16_UInt,
-    kUnityRenderingExtFormatRGBA16_UInt,
+    kUnityRenderingExtFormatR16G16_UInt,
+    kUnityRenderingExtFormatR16G16B16_UInt,
+    kUnityRenderingExtFormatR16G16B16A16_UInt,
     kUnityRenderingExtFormatR16_SInt,
-    kUnityRenderingExtFormatRG16_SInt,
-    kUnityRenderingExtFormatRGB16_SInt,
-    kUnityRenderingExtFormatRGBA16_SInt,
+    kUnityRenderingExtFormatR16G16_SInt,
+    kUnityRenderingExtFormatR16G16B16_SInt,
+    kUnityRenderingExtFormatR16G16B16A16_SInt,
 
     // 32 bit integer formats
     kUnityRenderingExtFormatR32_UInt,
-    kUnityRenderingExtFormatRG32_UInt,
-    kUnityRenderingExtFormatRGB32_UInt,
-    kUnityRenderingExtFormatRGBA32_UInt,
+    kUnityRenderingExtFormatR32G32_UInt,
+    kUnityRenderingExtFormatR32G32B32_UInt,
+    kUnityRenderingExtFormatR32G32B32A32_UInt,
     kUnityRenderingExtFormatR32_SInt,
-    kUnityRenderingExtFormatRG32_SInt,
-    kUnityRenderingExtFormatRGB32_SInt,
-    kUnityRenderingExtFormatRGBA32_SInt,
+    kUnityRenderingExtFormatR32G32_SInt,
+    kUnityRenderingExtFormatR32G32B32_SInt,
+    kUnityRenderingExtFormatR32G32B32A32_SInt,
 
     // HDR formats
     kUnityRenderingExtFormatR16_SFloat,
-    kUnityRenderingExtFormatRG16_SFloat,
-    kUnityRenderingExtFormatRGB16_SFloat,
-    kUnityRenderingExtFormatRGBA16_SFloat,
+    kUnityRenderingExtFormatR16G16_SFloat,
+    kUnityRenderingExtFormatR16G16B16_SFloat,
+    kUnityRenderingExtFormatR16G16B16A16_SFloat,
     kUnityRenderingExtFormatR32_SFloat,
-    kUnityRenderingExtFormatRG32_SFloat,
-    kUnityRenderingExtFormatRGB32_SFloat,
-    kUnityRenderingExtFormatRGBA32_SFloat,
+    kUnityRenderingExtFormatR32G32_SFloat,
+    kUnityRenderingExtFormatR32G32B32_SFloat,
+    kUnityRenderingExtFormatR32G32B32A32_SFloat,
 
-    // Packed formats
-    kUnityRenderingExtFormatRGB10A2_UNorm,
-    kUnityRenderingExtFormatRGB10A2_UInt,
-    kUnityRenderingExtFormatRGB10A2_SInt,
-    kUnityRenderingExtFormatRGB9E5_UFloat,
-    kUnityRenderingExtFormatRG11B10_UFloat,
-
-    // Alpha format
+    // Luminance and Alpha format
+    kUnityRenderingExtFormatL8_UNorm,
     kUnityRenderingExtFormatA8_UNorm,
     kUnityRenderingExtFormatA16_UNorm,
 
     // BGR formats
-    kUnityRenderingExtFormatBGR8_SRGB,
-    kUnityRenderingExtFormatBGRA8_SRGB,
-    kUnityRenderingExtFormatBGR8_UNorm,
-    kUnityRenderingExtFormatBGRA8_UNorm,
-    kUnityRenderingExtFormatBGR8_SNorm,
-    kUnityRenderingExtFormatBGRA8_SNorm,
-    kUnityRenderingExtFormatBGR8_UInt,
-    kUnityRenderingExtFormatBGRA8_UInt,
-    kUnityRenderingExtFormatBGR8_SInt,
-    kUnityRenderingExtFormatBGRA8_SInt,
+    kUnityRenderingExtFormatB8G8R8_SRGB,
+    kUnityRenderingExtFormatB8G8R8A8_SRGB,
+    kUnityRenderingExtFormatB8G8R8_UNorm,
+    kUnityRenderingExtFormatB8G8R8A8_UNorm,
+    kUnityRenderingExtFormatB8G8R8_SNorm,
+    kUnityRenderingExtFormatB8G8R8A8_SNorm,
+    kUnityRenderingExtFormatB8G8R8_UInt,
+    kUnityRenderingExtFormatB8G8R8A8_UInt,
+    kUnityRenderingExtFormatB8G8R8_SInt,
+    kUnityRenderingExtFormatB8G8R8A8_SInt,
 
-    kUnityRenderingExtFormatBGR10A2_UNorm,
-    kUnityRenderingExtFormatBGR10A2_UInt,
-    kUnityRenderingExtFormatBGR10A2XR_SRGB,
-    kUnityRenderingExtFormatBGR10A2XR_UNorm,
-    kUnityRenderingExtFormatBGR10XR_SRGB,
-    kUnityRenderingExtFormatBGR10XR_UNorm,
-    kUnityRenderingExtFormatBGRA10XR_SRGB,
-    kUnityRenderingExtFormatBGRA10XR_UNorm,
+    // 16 bit packed formats
+    kUnityRenderingExtFormatR4G4B4A4_UNormPack16,
+    kUnityRenderingExtFormatB4G4R4A4_UNormPack16,
+    kUnityRenderingExtFormatR5G6B5_UNormPack16,
+    kUnityRenderingExtFormatB5G6R5_UNormPack16,
+    kUnityRenderingExtFormatR5G5B5A1_UNormPack16,
+    kUnityRenderingExtFormatB5G5R5A1_UNormPack16,
+    kUnityRenderingExtFormatA1R5G5B5_UNormPack16,
 
-    // 16 bit formats
-    kUnityRenderingExtFormatRGBA4_UNorm,
-    kUnityRenderingExtFormatBGRA4_UNorm,
-    kUnityRenderingExtFormatR5G6B5_UNorm,
-    kUnityRenderingExtFormatB5G6R5_UNorm,
-    kUnityRenderingExtFormatRGB5A1_UNorm,
-    kUnityRenderingExtFormatBGR5A1_UNorm,
-    kUnityRenderingExtFormatA1RGB5_UNorm,
+    // Packed formats
+    kUnityRenderingExtFormatE5B9G9R9_UFloatPack32,
+    kUnityRenderingExtFormatB10G11R11_UFloatPack32,
+
+    kUnityRenderingExtFormatA2B10G10R10_UNormPack32,
+    kUnityRenderingExtFormatA2B10G10R10_UIntPack32,
+    kUnityRenderingExtFormatA2B10G10R10_SIntPack32,
+    kUnityRenderingExtFormatA2R10G10B10_UNormPack32,
+    kUnityRenderingExtFormatA2R10G10B10_UIntPack32,
+    kUnityRenderingExtFormatA2R10G10B10_SIntPack32,
+    kUnityRenderingExtFormatA2R10G10B10_XRSRGBPack32,
+    kUnityRenderingExtFormatA2R10G10B10_XRUNormPack32,
+    kUnityRenderingExtFormatR10G10B10_XRSRGBPack32,
+    kUnityRenderingExtFormatR10G10B10_XRUNormPack32,
+    kUnityRenderingExtFormatA10R10G10B10_XRSRGBPack32,
+    kUnityRenderingExtFormatA10R10G10B10_XRUNormPack32,
 
     // ARGB formats... TextureFormat legacy
-    kUnityRenderingExtFormatARGB8_SRGB,
-    kUnityRenderingExtFormatARGB8_UNorm,
-    kUnityRenderingExtFormatARGB32_SFloat,
+    kUnityRenderingExtFormatA8R8G8B8_SRGB,
+    kUnityRenderingExtFormatA8R8G8B8_UNorm,
+    kUnityRenderingExtFormatA32R32G32B32_SFloat,
 
     // Depth Stencil for formats
-    kUnityRenderingExtFormatDepth16_UInt,
-    kUnityRenderingExtFormatDepth24_UInt,
-    kUnityRenderingExtFormatDepth24_UInt_Stencil8_UInt,
-    kUnityRenderingExtFormatDepth32_SFloat,
-    kUnityRenderingExtFormatD32_SFloat_Stencil8_Uint,
-    kUnityRenderingExtFormatStencil8_Uint,
+    kUnityRenderingExtFormatD16_UNorm,
+    kUnityRenderingExtFormatD24_UNorm,
+    kUnityRenderingExtFormatD24_UNorm_S8_UInt,
+    kUnityRenderingExtFormatD32_SFloat,
+    kUnityRenderingExtFormatD32_SFloat_S8_Uint,
+    kUnityRenderingExtFormatS8_Uint,
 
     // Compression formats
-    kUnityRenderingExtFormatRGB_DXT1_SRGB, kUnityRenderingExtFormatDXTCFirst = kUnityRenderingExtFormatRGB_DXT1_SRGB,
-    kUnityRenderingExtFormatRGB_DXT1_UNorm,
+    kUnityRenderingExtFormatRGBA_DXT1_SRGB,
+    kUnityRenderingExtFormatRGBA_DXT1_UNorm,
     kUnityRenderingExtFormatRGBA_DXT3_SRGB,
     kUnityRenderingExtFormatRGBA_DXT3_UNorm,
     kUnityRenderingExtFormatRGBA_DXT5_SRGB,
-    kUnityRenderingExtFormatRGBA_DXT5_UNorm, kUnityRenderingExtFormatDXTCLast = kUnityRenderingExtFormatRGBA_DXT5_UNorm,
-    kUnityRenderingExtFormatR_BC4_UNorm, kUnityRenderingExtFormatRGTCFirst = kUnityRenderingExtFormatR_BC4_UNorm,
+    kUnityRenderingExtFormatRGBA_DXT5_UNorm,
+    kUnityRenderingExtFormatR_BC4_UNorm,
     kUnityRenderingExtFormatR_BC4_SNorm,
     kUnityRenderingExtFormatRG_BC5_UNorm,
-    kUnityRenderingExtFormatRG_BC5_SNorm, kUnityRenderingExtFormatRGTCLast = kUnityRenderingExtFormatRG_BC5_SNorm,
-    kUnityRenderingExtFormatRGB_BC6H_UFloat, kUnityRenderingExtFormatBPTCFirst = kUnityRenderingExtFormatRGB_BC6H_UFloat,
+    kUnityRenderingExtFormatRG_BC5_SNorm,
+    kUnityRenderingExtFormatRGB_BC6H_UFloat,
     kUnityRenderingExtFormatRGB_BC6H_SFloat,
     kUnityRenderingExtFormatRGBA_BC7_SRGB,
-    kUnityRenderingExtFormatRGBA_BC7_UNorm, kUnityRenderingExtFormatBPTCLast = kUnityRenderingExtFormatRGBA_BC7_UNorm,
+    kUnityRenderingExtFormatRGBA_BC7_UNorm,
 
-    kUnityRenderingExtFormatRGB_PVRTC_2Bpp_SRGB, kUnityRenderingExtFormatPVRTCFirst = kUnityRenderingExtFormatRGB_PVRTC_2Bpp_SRGB,
+    kUnityRenderingExtFormatRGB_PVRTC_2Bpp_SRGB,
     kUnityRenderingExtFormatRGB_PVRTC_2Bpp_UNorm,
     kUnityRenderingExtFormatRGB_PVRTC_4Bpp_SRGB,
     kUnityRenderingExtFormatRGB_PVRTC_4Bpp_UNorm,
     kUnityRenderingExtFormatRGBA_PVRTC_2Bpp_SRGB,
     kUnityRenderingExtFormatRGBA_PVRTC_2Bpp_UNorm,
     kUnityRenderingExtFormatRGBA_PVRTC_4Bpp_SRGB,
-    kUnityRenderingExtFormatRGBA_PVRTC_4Bpp_UNorm, kUnityRenderingExtFormatPVRTCLast = kUnityRenderingExtFormatRGBA_PVRTC_4Bpp_UNorm,
+    kUnityRenderingExtFormatRGBA_PVRTC_4Bpp_UNorm,
 
-    kUnityRenderingExtFormatRGB_ETC_UNorm, kUnityRenderingExtFormatETCFirst = kUnityRenderingExtFormatRGB_ETC_UNorm,
+    kUnityRenderingExtFormatRGB_ETC_UNorm,
     kUnityRenderingExtFormatRGB_ETC2_SRGB,
     kUnityRenderingExtFormatRGB_ETC2_UNorm,
     kUnityRenderingExtFormatRGB_A1_ETC2_SRGB,
     kUnityRenderingExtFormatRGB_A1_ETC2_UNorm,
     kUnityRenderingExtFormatRGBA_ETC2_SRGB,
-    kUnityRenderingExtFormatRGBA_ETC2_UNorm, kUnityRenderingExtFormatETCLast = kUnityRenderingExtFormatRGBA_ETC2_UNorm,
+    kUnityRenderingExtFormatRGBA_ETC2_UNorm,
 
-    kUnityRenderingExtFormatR_EAC_UNorm, kUnityRenderingExtFormatEACFirst = kUnityRenderingExtFormatR_EAC_UNorm,
+    kUnityRenderingExtFormatR_EAC_UNorm,
     kUnityRenderingExtFormatR_EAC_SNorm,
     kUnityRenderingExtFormatRG_EAC_UNorm,
-    kUnityRenderingExtFormatRG_EAC_SNorm, kUnityRenderingExtFormatEACLast = kUnityRenderingExtFormatRG_EAC_SNorm,
+    kUnityRenderingExtFormatRG_EAC_SNorm,
 
-    kUnityRenderingExtFormatRGBA_ASTC4X4_SRGB, kUnityRenderingExtFormatASTCFirst = kUnityRenderingExtFormatRGBA_ASTC4X4_SRGB,
+    kUnityRenderingExtFormatRGBA_ASTC4X4_SRGB,
     kUnityRenderingExtFormatRGBA_ASTC4X4_UNorm,
     kUnityRenderingExtFormatRGBA_ASTC5X5_SRGB,
     kUnityRenderingExtFormatRGBA_ASTC5X5_UNorm,
@@ -272,7 +278,7 @@ enum UnityRenderingExtTextureFormat
     kUnityRenderingExtFormatRGBA_ASTC10X10_SRGB,
     kUnityRenderingExtFormatRGBA_ASTC10X10_UNorm,
     kUnityRenderingExtFormatRGBA_ASTC12X12_SRGB,
-    kUnityRenderingExtFormatRGBA_ASTC12X12_UNorm, kUnityRenderingExtFormatASTCLast = kUnityRenderingExtFormatRGBA_ASTC12X12_UNorm,
+    kUnityRenderingExtFormatRGBA_ASTC12X12_UNorm,
 
     // Video formats
     kUnityRenderingExtFormatYUV2,
@@ -282,11 +288,11 @@ enum UnityRenderingExtTextureFormat
     kUnityRenderingExtFormatHDRAuto,
     kUnityRenderingExtFormatDepthAuto,
     kUnityRenderingExtFormatShadowAuto,
-    kUnityRenderingExtFormatVideoAuto, kUnityRenderingExtFormatLast = kUnityRenderingExtFormatVideoAuto,
-};
+    kUnityRenderingExtFormatVideoAuto, kUnityRenderingExtFormatLast = kUnityRenderingExtFormatVideoAuto, // Remove?
+} UnityRenderingExtTextureFormat;
 
 
-struct UnityRenderingExtBeforeDrawCallParams
+typedef struct UnityRenderingExtBeforeDrawCallParams
 {
     void*   vertexShader;                           // bound vertex shader (platform dependent)
     void*   fragmentShader;                         // bound fragment shader (platform dependent)
@@ -294,19 +300,21 @@ struct UnityRenderingExtBeforeDrawCallParams
     void*   hullShader;                             // bound hull shader (platform dependent)
     void*   domainShader;                           // bound domain shader (platform dependent)
     int     eyeIndex;                               // the index of the current stereo "eye" being currently rendered.
-};
+} UnityRenderingExtBeforeDrawCallParams;
 
 
-struct UnityRenderingExtCustomBlitParams
+typedef struct UnityRenderingExtCustomBlitParams
 {
     UnityTextureID source;                          // source texture
     UnityRenderBuffer destination;                  // destination surface
     unsigned int command;                           // command for the custom blit - could be any UnityRenderingExtCustomBlitCommands command or custom ones.
     unsigned int commandParam;                      // custom parameters for the command
     unsigned int commandFlags;                      // custom flags for the command
-};
+} UnityRenderingExtCustomBlitParams;
 
-struct UnityRenderingExtTextureUpdateParams
+// Deprecated. Use UnityRenderingExtTextureUpdateParamsV2 and CommandBuffer.IssuePluginCustomTextureUpdateV2 instead.
+// Only supports DX11, GLES, Metal
+typedef struct UnityRenderingExtTextureUpdateParamsV1
 {
     void*        texData;                           // source data for the texture update. Must be set by the plugin
     unsigned int userData;                          // user defined data. Set by the plugin
@@ -316,7 +324,24 @@ struct UnityRenderingExtTextureUpdateParams
     unsigned int width;                             // width of the texture
     unsigned int height;                            // height of the texture
     unsigned int bpp;                               // texture bytes per pixel.
-};
+} UnityRenderingExtTextureUpdateParamsV1;
+
+// Deprecated. Use UnityRenderingExtTextureUpdateParamsV2 and CommandBuffer.IssuePluginCustomTextureUpdateV2 instead.
+// Only supports DX11, GLES, Metal
+typedef UnityRenderingExtTextureUpdateParamsV1 UnityRenderingExtTextureUpdateParams;
+
+// Type of the "data" parameter passed when callbacks registered with CommandBuffer.IssuePluginCustomTextureUpdateV2 are called.
+// Supports DX11, GLES, Metal, and Switch (also possibly PS4, PSVita in the future)
+typedef struct UnityRenderingExtTextureUpdateParamsV2
+{
+    void*        texData;                           // source data for the texture update. Must be set by the plugin
+    intptr_t     textureID;                         // texture ID of the texture to be updated.
+    unsigned int userData;                          // user defined data. Set by the plugin
+    UnityRenderingExtTextureFormat format;          // format of the texture to be updated
+    unsigned int width;                             // width of the texture
+    unsigned int height;                            // height of the texture
+    unsigned int bpp;                               // texture bytes per pixel.
+} UnityRenderingExtTextureUpdateParamsV2;
 
 
 // Certain Unity APIs (GL.IssuePluginEventAndData, CommandBuffer.IssuePluginEventAndData) can callback into native plugins.

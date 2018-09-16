@@ -173,14 +173,12 @@
     <ClInclude Include="Finder.h" />
     <ClInclude Include="Receiver.h" />
     <ClInclude Include="Sender.h" />
-    <ClInclude Include="Unity\IUnityEventQueue.h" />
     <ClInclude Include="Unity\IUnityGraphics.h" />
     <ClInclude Include="Unity\IUnityGraphicsD3D11.h" />
     <ClInclude Include="Unity\IUnityGraphicsD3D12.h" />
     <ClInclude Include="Unity\IUnityGraphicsMetal.h" />
     <ClInclude Include="Unity\IUnityInterface.h" />
     <ClInclude Include="Unity\IUnityRenderingExtensions.h" />
-    <ClInclude Include="Unity\IUnityShaderCompilerAccess.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
