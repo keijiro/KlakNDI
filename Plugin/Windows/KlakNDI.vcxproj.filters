@@ -18,42 +18,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Unity\IUnityGraphics.h">
+    <ClInclude Include="..\Include\Unity\IUnityGraphics.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\IUnityGraphicsD3D11.h">
+    <ClInclude Include="..\Include\Unity\IUnityGraphicsD3D11.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\IUnityGraphicsD3D12.h">
+    <ClInclude Include="..\Include\Unity\IUnityGraphicsD3D12.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\IUnityGraphicsMetal.h">
+    <ClInclude Include="..\Include\Unity\IUnityGraphicsMetal.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\IUnityInterface.h">
+    <ClInclude Include="..\Include\Unity\IUnityInterface.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\IUnityRenderingExtensions.h">
+    <ClInclude Include="..\Include\Unity\IUnityRenderingExtensions.h">
       <Filter>Header Files\Unity</Filter>
     </ClInclude>
-    <ClInclude Include="Receiver.h">
+    <ClInclude Include="..\Include\Receiver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sender.h">
+    <ClInclude Include="..\Include\Sender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Finder.h">
+    <ClInclude Include="..\Include\Finder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
+    <ClInclude Include="..\Include\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PluginEntry.cpp">
+    <ClCompile Include="..\Source\PluginEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Callback.cpp">
+    <ClCompile Include="..\Source\Callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

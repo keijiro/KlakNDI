@@ -72,26 +72,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(NDI_SDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(NDI_SDK_DIR)\Include;$(ProjectDir)..\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(NDI_SDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(NDI_SDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(NDI_SDK_DIR)\Include;$(ProjectDir)..\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(NDI_SDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(NDI_SDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(NDI_SDK_DIR)\Include;$(ProjectDir)..\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(NDI_SDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(NDI_SDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(NDI_SDK_DIR)\Include;$(ProjectDir)..\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(NDI_SDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -165,20 +165,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Callback.cpp" />
-    <ClCompile Include="PluginEntry.cpp" />
+    <ClCompile Include="..\Source\Callback.cpp" />
+    <ClCompile Include="..\Source\PluginEntry.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common.h" />
-    <ClInclude Include="Finder.h" />
-    <ClInclude Include="Receiver.h" />
-    <ClInclude Include="Sender.h" />
-    <ClInclude Include="Unity\IUnityGraphics.h" />
-    <ClInclude Include="Unity\IUnityGraphicsD3D11.h" />
-    <ClInclude Include="Unity\IUnityGraphicsD3D12.h" />
-    <ClInclude Include="Unity\IUnityGraphicsMetal.h" />
-    <ClInclude Include="Unity\IUnityInterface.h" />
-    <ClInclude Include="Unity\IUnityRenderingExtensions.h" />
+    <ClInclude Include="..\Include\Common.h" />
+    <ClInclude Include="..\Include\Finder.h" />
+    <ClInclude Include="..\Include\Receiver.h" />
+    <ClInclude Include="..\Include\Sender.h" />
+    <ClInclude Include="..\Include\Unity\IUnityGraphics.h" />
+    <ClInclude Include="..\Include\Unity\IUnityGraphicsD3D11.h" />
+    <ClInclude Include="..\Include\Unity\IUnityGraphicsD3D12.h" />
+    <ClInclude Include="..\Include\Unity\IUnityGraphicsMetal.h" />
+    <ClInclude Include="..\Include\Unity\IUnityInterface.h" />
+    <ClInclude Include="..\Include\Unity\IUnityRenderingExtensions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
