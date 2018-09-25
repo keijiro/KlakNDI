@@ -20,3 +20,4 @@ Desktop.ini
 /Plugin/Windows/.vs
 /Plugin/Windows/x64
 /Plugin/Windows/Win32
+*.vcxproj.user
