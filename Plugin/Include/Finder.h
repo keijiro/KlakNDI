@@ -60,7 +60,8 @@ namespace KlakNDI
         Finder()
         {
             // Create a finder instance and let it run on an independent thread.
-            finder_ = NDIlib_find_create_v2(&NDIlib_find_create_t());
+            NDIlib_find_create_t find;
+            finder_ = NDIlib_find_create_v2(&find);
             std::thread(&Finder::FinderThread, this).detach();
         }
 

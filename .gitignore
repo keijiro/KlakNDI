@@ -21,3 +21,7 @@ Desktop.ini
 /Plugin/Windows/x64
 /Plugin/Windows/Win32
 *.vcxproj.user
+
+# Xcode
+xcuserdata
+xcshareddata

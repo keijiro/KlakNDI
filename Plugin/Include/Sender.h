@@ -9,7 +9,8 @@ namespace KlakNDI
 
         Sender(const char* name)
         {
-            instance_ = NDIlib_send_create(&NDIlib_send_create_t(name, nullptr, false));
+            NDIlib_send_create_t send(name, nullptr, false);
+            instance_ = NDIlib_send_create(&send);
         }
 
         ~Sender()
