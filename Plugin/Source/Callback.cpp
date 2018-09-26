@@ -11,10 +11,10 @@ namespace
     {
         auto event = static_cast<UnityRenderingExtEventType>(eventID);
 
-        if (event == kUnityRenderingExtEventUpdateTextureBegin)
+        if (event == kUnityRenderingExtEventUpdateTextureBeginV2)
         {
             // UpdateTextureBegin: Retrieve a received frame from the receiver.
-            auto params = reinterpret_cast<UnityRenderingExtTextureUpdateParams*>(data);
+            auto params = reinterpret_cast<UnityRenderingExtTextureUpdateParamsV2*>(data);
             auto receiver = Receiver::getInstanceFromID(params->userData);
 
             if (receiver->receiveFrame())
@@ -33,10 +33,10 @@ namespace
                     receiver->freeFrame(); // Not match: Let this frame drop.
             }
         }
-        else if (event == kUnityRenderingExtEventUpdateTextureEnd)
+        else if (event == kUnityRenderingExtEventUpdateTextureEndV2)
         {
             // UpdateTextureEnd: Free up the frame passed to Unity.
-            auto params = reinterpret_cast<UnityRenderingExtTextureUpdateParams*>(data);
+            auto params = reinterpret_cast<UnityRenderingExtTextureUpdateParamsV2*>(data);
             if (params->texData != nullptr)
                 Receiver::getInstanceFromID(params->userData)->freeFrame();
         }

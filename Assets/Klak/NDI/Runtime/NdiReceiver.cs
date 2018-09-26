@@ -150,7 +150,7 @@ namespace Klak.Ndi
                 _propertyBlock = new MaterialPropertyBlock();
 
             // Invoke the texture update callback in the plugin.
-            _commandBuffer.IssuePluginCustomTextureUpdate(
+            _commandBuffer.IssuePluginCustomTextureUpdateV2(
                 _callback, _sourceTexture, PluginEntry.NDI_GetReceiverID(_plugin)
             );
             Graphics.ExecuteCommandBuffer(_commandBuffer);
