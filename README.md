@@ -5,13 +5,13 @@ KlakNDI
 ![photo](https://i.imgur.com/HY1NMYm.jpg)
 
 **KlakNDI** is a [NewTek NDI] protocol plugin for Unity that allows
-sending/receiving video between multiple computers via a local area network.
+sending/receiving video streams between computers via a local area network.
 It provides a high quality, low latency and performant way to mix multiple
-video streams from several NDI-enabled applications and devices without the
-need of complex video capturing setups but only a wired/wireless network
-connection. The plugin is implemented to fully utilize the [asynchronous GPU
-readback] and [custom texture update] feature to achieve the optimal
-performance and the lowest latency in Unity.
+video streams from several applications and devices without the need of complex
+video capturing setups but only a wired/wireless network connection. The plugin
+is implemented to fully utilize the [asynchronous GPU readback] and [custom
+texture update] features to achieve the optimal performance and the lowest
+latency in Unity.
 
 NDI™ is a trademark of NewTek, Inc.
 
@@ -22,14 +22,20 @@ NDI™ is a trademark of NewTek, Inc.
 System requirements
 -------------------
 
-- Unity 2018.1 or later
-- Windows 64-bit, Direct3D 11
+- Unity 2018.3 or later
+- Windows: Direct3D 11 support
+- macOS: 64-bit, Metal support
+- iOS: Metal support
 
-KlakNDI is only available with D3D11 because it's the only environment that
-supports the GPU async readback functionality at the moment.
+The latest version of the plugin (v0.1.x) requires Unity 2018.3 or later for
+macOS and iOS support. Consider using v0.0.x when you have to use one of the
+previous versions of Unity.
 
-The current version of KlakNDI only included 64-bit (x64) binary DLLs. Please
-note that it doesn't work with 32-bit (x86) Unity players.
+The iOS plugin only supports the sender functionality due to a limitation of
+the NDI SDK.
+
+The plugin is presented in a self-contained form for Windows and macOS. The NDI
+SDK is only required when building to iOS.
 
 Installation
 ------------
@@ -135,6 +141,7 @@ License
 
 [MIT](LICENSE)
 
-The NDI DLL file (`Processing.NDI.Lib.x64.dll`) placed in the plugin internal
-directory is provided by NewTek, Inc under the NDI® SDK License Agreement.
-Please review the original license when distributing products with the plugin.
+The NDI dynamic library files (`Processing.NDI.Lib.*.dll`, `libndi.*.dylib`)
+contained in the plugin internal directory is provided by NewTek, Inc under the
+NDI® SDK License Agreement. Please review the original license when
+distributing products with the plugin.
