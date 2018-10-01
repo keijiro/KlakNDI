@@ -136,6 +136,27 @@ currently available in the network. To open the list view, from the
 application menu select "Window" - "Klak" - "NDI Source List". The list is
 updated even in the edit mode.
 
+Performance considerations
+--------------------------
+
+### NDI vs Spout/Syphon: Which one is better?
+
+The answer is simple: If you're going to use multiple apps on a single
+computer, and those apps support Spout/Syphon, you should use one of them. NDI
+is just overkill for such cases.
+
+Spout/Syphon are superior solutions for local interoperation. They're faster,
+low latency, more memory efficient and better quality. It's recommended using
+Spout/Syphon unless multiple computers are involved.
+
+### The plugin works slow with dedicated graphics
+
+It was observed that the plugin worked significantly slow on some MacBook
+models with dedicated graphics. It's probably improved by switching to
+integrated graphics. From Unity 2018.3, GPU in use can be implicitly selected
+in the Preferences panel. It's recommended to change it when slowdown is
+observed.
+
 License
 -------
 
