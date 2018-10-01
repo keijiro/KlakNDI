@@ -23,13 +23,13 @@ System requirements
 -------------------
 
 - Unity 2018.3 or later
-- Windows: Direct3D 11 support
-- macOS: 64-bit, Metal support
-- iOS: Metal support
+- **Windows**: Direct3D 11 support
+- **macOS**: 64-bit, Metal support
+- **iOS**: Metal support
 
 The latest version of the plugin (v0.1.x) requires Unity 2018.3 or later for
-macOS and iOS support. Consider using v0.0.x when you have to use one of the
-previous versions of Unity.
+macOS and iOS support. Please consider using v0.0.x when you have to use one
+of the previous versions of Unity and don't need macOS/iOS support.
 
 The iOS plugin only supports the sender functionality due to a limitation of
 the NDI SDK.
