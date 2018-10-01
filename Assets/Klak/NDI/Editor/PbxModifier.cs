@@ -1,6 +1,8 @@
 // KlakNDI - NDI plugin for Unity
 // https://github.com/keijiro/KlakNDI
 
+#if UNITY_IOS
+
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -35,3 +37,5 @@ namespace Klak.NdiLite
         }
     }
 }
+
+#endif
