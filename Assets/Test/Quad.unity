@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028598, g: 0.22571585, b: 0.30692336, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028583, g: 0.22571579, b: 0.3069232, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -838,7 +838,7 @@ GameObject:
   - component: {fileID: 718159824}
   - component: {fileID: 718159825}
   m_Layer: 0
-  m_Name: KlakNDI (Alpha)
+  m_Name: KlakNDI - Alpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1023,7 +1023,7 @@ GameObject:
   - component: {fileID: 837768020}
   - component: {fileID: 837768019}
   m_Layer: 0
-  m_Name: KlakNDI (Quad View)
+  m_Name: KlakNDI - Quad View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1597,7 +1597,7 @@ GameObject:
   - component: {fileID: 1172193201}
   - component: {fileID: 1172193202}
   m_Layer: 0
-  m_Name: KlakNDI (Color)
+  m_Name: KlakNDI - Color
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6912,7 +6912,7 @@ GameObject:
   - component: {fileID: 2034213887}
   - component: {fileID: 2034213888}
   m_Layer: 0
-  m_Name: KlakNDI (Shutter)
+  m_Name: KlakNDI - Shutter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
