@@ -3,6 +3,7 @@
 
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Klak.Ndi
@@ -16,7 +17,7 @@ namespace Klak.Ndi
         SerializedProperty _targetRenderer;
         SerializedProperty _targetMaterialProperty;
 
-        System.IntPtr[] _nameCache = new System.IntPtr[128];
+        List<string> _sourceNames = new List<string>();
 
         static double _prevRepaintTime;
 
@@ -45,12 +46,9 @@ namespace Klak.Ndi
         void ShowSourceNameDropdown(Rect rect)
         {
             var menu = new GenericMenu();
-            var count = PluginEntry.NDI_RetrieveSourceNames(_nameCache, _nameCache.Length);
-            for (var i = 0; i < count; i++)
-            {
-                var name = Marshal.PtrToStringAnsi(_nameCache[i]);
+            NdiManager.GetSourceNames(_sourceNames);
+            foreach (var name in _sourceNames)
                 menu.AddItem(new GUIContent(name), false, OnSelectSource, name);
-            }
             menu.DropDown(rect);
         }
 
