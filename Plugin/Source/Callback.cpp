@@ -16,8 +16,7 @@ namespace
             // UpdateTextureBegin: Retrieve a received frame from the receiver.
             auto params = reinterpret_cast<UnityRenderingExtTextureUpdateParamsV2*>(data);
             auto receiver = Receiver::getInstanceFromID(params->userData);
-
-            if (receiver->receiveFrame())
+            if (receiver != nullptr && receiver->receiveFrame())
             {
                 // Check if it's an alpha supported frame.
                 auto alpha = (receiver->getFrameFourCC() == NDIlib_FourCC_type_UYVA);
@@ -37,8 +36,8 @@ namespace
         {
             // UpdateTextureEnd: Free up the frame passed to Unity.
             auto params = reinterpret_cast<UnityRenderingExtTextureUpdateParamsV2*>(data);
-            if (params->texData != nullptr)
-                Receiver::getInstanceFromID(params->userData)->freeFrame();
+            auto receiver = Receiver::getInstanceFromID(params->userData);
+            if (receiver != nullptr && params->texData != nullptr) receiver->freeFrame();
         }
     }
 }

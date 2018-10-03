@@ -60,7 +60,9 @@ namespace KlakNDI
 
         static Receiver* getInstanceFromID(uint32_t id)
         {
-            return getInstanceMap()[id];
+            auto map = getInstanceMap();
+            auto itr = map.find(id);
+            return itr != map.end() ? itr->second : nullptr;
         }
 
     private:
