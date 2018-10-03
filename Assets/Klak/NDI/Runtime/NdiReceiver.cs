@@ -85,7 +85,7 @@ namespace Klak.Ndi
         {
             if (_plugin != System.IntPtr.Zero)
             {
-                PluginEntry.NDI_DestroyReceiver(_plugin);
+                PluginEntry.DestroyReceiver(_plugin);
                 _plugin = System.IntPtr.Zero;
             }
         }
@@ -102,13 +102,13 @@ namespace Klak.Ndi
             // Plugin lazy initialization
             if (_plugin == System.IntPtr.Zero)
             {
-                _plugin = PluginEntry.NDI_TryOpenSourceNamedLike(_sourceName);
+                _plugin = PluginEntry.TryOpenSourceNamedLike(_sourceName);
                 if (_plugin == System.IntPtr.Zero) return; // No sender matches.
             }
 
             // Texture update event invocation with lazy initialization
             if (_callback == System.IntPtr.Zero)
-                _callback = PluginEntry.NDI_GetTextureUpdateCallback();
+                _callback = PluginEntry.GetTextureUpdateCallback();
 
             if (_sourceTexture == null)
             {
@@ -117,15 +117,15 @@ namespace Klak.Ndi
             }
 
             Util.IssueTextureUpdateEvent
-                (_callback, _sourceTexture, PluginEntry.NDI_GetReceiverID(_plugin));
+                (_callback, _sourceTexture, PluginEntry.GetReceiverID(_plugin));
 
             // Texture information retrieval
-            var width = PluginEntry.NDI_GetFrameWidth(_plugin);
-            var height = PluginEntry.NDI_GetFrameHeight(_plugin);
+            var width = PluginEntry.GetFrameWidth(_plugin);
+            var height = PluginEntry.GetFrameHeight(_plugin);
             if (width == 0 || height == 0) return; // Not yet ready
 
             // Source data dimensions
-            var alpha = PluginEntry.NDI_GetFrameFourCC(_plugin) == FourCC.UYVA;
+            var alpha = PluginEntry.GetFrameFourCC(_plugin) == FourCC.UYVA;
             var sw = width / 2;
             var sh = height * (alpha ? 3 : 2) / 2;
 

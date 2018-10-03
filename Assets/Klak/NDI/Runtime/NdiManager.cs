@@ -13,7 +13,7 @@ namespace Klak.Ndi
         // allocated string array.
         public static string[] GetSourceNames()
         {
-            var count = PluginEntry.NDI_RetrieveSourceNames(_pointers, _pointers.Length);
+            var count = PluginEntry.RetrieveSourceNames(_pointers, _pointers.Length);
             var names = new string [count];
             for (var i = 0; i < count; i++)
                 names[i] = Marshal.PtrToStringAnsi(_pointers[i]);
@@ -25,7 +25,7 @@ namespace Klak.Ndi
         public static void GetSourceNames(ICollection<string> store)
         {
             store.Clear();
-            var count = PluginEntry.NDI_RetrieveSourceNames(_pointers, _pointers.Length);
+            var count = PluginEntry.RetrieveSourceNames(_pointers, _pointers.Length);
             for (var i = 0; i < count; i++)
                 store.Add(Marshal.PtrToStringAnsi(_pointers[i]));
         }

@@ -6728,7 +6728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cadade9d79e66642a6893ac902ddf32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sourceName: ZX.LOCAL (KlakNDI (Color))
+  _sourceName: 
   _targetTexture: {fileID: 8400000, guid: 3770f9d5521a2e44aa7901ab1286ee0c, type: 2}
   _targetRenderer: {fileID: 0}
   _targetMaterialProperty: _MainTex

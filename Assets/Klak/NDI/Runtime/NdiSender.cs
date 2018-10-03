@@ -117,12 +117,12 @@ namespace Klak.Ndi
                 // Okay, we're going to send this frame.
 
                 // Lazy initialization of the plugin sender instance.
-                if (_plugin == IntPtr.Zero) _plugin = PluginEntry.NDI_CreateSender(gameObject.name);
+                if (_plugin == IntPtr.Zero) _plugin = PluginEntry.CreateSender(gameObject.name);
 
                 // Feed the frame data to the sender. It encodes/sends the
                 // frame asynchronously.
                 unsafe {
-                    PluginEntry.NDI_SendFrame(
+                    PluginEntry.SendFrame(
                         _plugin, (IntPtr)frame.readback.GetData<Byte>().GetUnsafeReadOnlyPtr(),
                         frame.width, frame.height, frame.alpha ? FourCC.UYVA : FourCC.UYVY
                     );
@@ -135,7 +135,7 @@ namespace Klak.Ndi
             // Edit mode: We're not sure when the readback buffer will be
             // disposed, so let's synchronize with the sender to prevent it
             // from accessing disposed memory area.
-            if (!Application.isPlaying && _plugin != IntPtr.Zero) PluginEntry.NDI_SyncSender(_plugin);
+            if (!Application.isPlaying && _plugin != IntPtr.Zero) PluginEntry.SyncSender(_plugin);
         }
 
         #if UNITY_EDITOR
@@ -186,7 +186,7 @@ namespace Klak.Ndi
             for (var wait = new WaitForEndOfFrame();;)
             {
                 yield return wait;
-                if (enabled && _plugin != IntPtr.Zero) PluginEntry.NDI_SyncSender(_plugin);
+                if (enabled && _plugin != IntPtr.Zero) PluginEntry.SyncSender(_plugin);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Klak.Ndi
 
             if (_plugin != IntPtr.Zero)
             {
-                PluginEntry.NDI_DestroySender(_plugin);
+                PluginEntry.DestroySender(_plugin);
                 _plugin = IntPtr.Zero;
             }
 
