@@ -16,7 +16,8 @@ using UnityEditor; // Needed to use delayCall
 namespace Klak.Ndi
 {
     [ExecuteInEditMode]
-    public class NdiSender : MonoBehaviour
+    [AddComponentMenu("Klak/NDI/NDI Sender")]
+    public sealed class NdiSender : MonoBehaviour
     {
         #region Source texture
 

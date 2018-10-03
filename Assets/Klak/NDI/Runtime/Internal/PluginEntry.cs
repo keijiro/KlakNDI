@@ -1,3 +1,6 @@
+// KlakNDI - NDI plugin for Unity
+// https://github.com/keijiro/KlakNDI
+
 #if !UNITY_EDITOR && UNITY_IOS
 #define NDI_SENDER_ONLY
 #endif
@@ -33,8 +36,11 @@ namespace Klak.Ndi
 
         #else
 
-        public static IntPtr NDI_GetTextureUpdateCallback() { return IntPtr.Zero; }
-        public static int NDI_RetrieveSourceNames(IntPtr[] destination, int maxCount) { return 0; }
+        public static IntPtr NDI_GetTextureUpdateCallback()
+        { return IntPtr.Zero; }
+
+        public static int NDI_RetrieveSourceNames(IntPtr[] destination, int maxCount)
+        { return 0; }
 
         #endif
 
@@ -80,12 +86,23 @@ namespace Klak.Ndi
 
         #else
 
-        public static IntPtr NDI_TryOpenSourceNamedLike(string clause) { return IntPtr.Zero; }
-        public static void NDI_DestroyReceiver(IntPtr receiver) {}
-        public static uint NDI_GetReceiverID(IntPtr receiver) { return 0; }
-        public static int NDI_GetFrameWidth(IntPtr receiver) { return 0; }
-        public static int NDI_GetFrameHeight(IntPtr receiver) { return 0; }
-        public static FourCC NDI_GetFrameFourCC(IntPtr receiver) { return 0; }
+        public static IntPtr NDI_TryOpenSourceNamedLike(string clause)
+        { return IntPtr.Zero; }
+
+        public static void NDI_DestroyReceiver(IntPtr receiver)
+        {}
+
+        public static uint NDI_GetReceiverID(IntPtr receiver)
+        { return 0; }
+
+        public static int NDI_GetFrameWidth(IntPtr receiver)
+        { return 0; }
+
+        public static int NDI_GetFrameHeight(IntPtr receiver)
+        { return 0; }
+
+        public static FourCC NDI_GetFrameFourCC(IntPtr receiver)
+        { return 0; }
 
         #endif
 

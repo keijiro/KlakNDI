@@ -11,10 +11,10 @@ using System.IO;
 
 namespace Klak.NdiLite
 {
-    public class PbxModifier
+    sealed class PbxModifier
     {
         [PostProcessBuild]
-        public static void OnPostprocessBuild(BuildTarget buildTarget, string path)
+        static void OnPostprocessBuild(BuildTarget buildTarget, string path)
         {
             if (buildTarget == BuildTarget.iOS)
             {
