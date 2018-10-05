@@ -62,6 +62,8 @@ namespace Klak.Ndi
 
         void QueueFrame(RenderTexture source)
         {
+            if (!PluginEntry.IsAvailable) return;
+
             if (_frameQueue.Count > 3)
             {
                 Debug.LogWarning("Too many GPU readback requests.");

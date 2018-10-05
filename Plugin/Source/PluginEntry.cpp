@@ -51,10 +51,9 @@ extern "C" void UNITY_INTERFACE_EXPORT NDI_SyncSender(Sender* sender)
 
 // Receiver functions
 
-extern "C" Receiver UNITY_INTERFACE_EXPORT *NDI_TryOpenSourceNamedLike(const char* name)
+extern "C" Receiver UNITY_INTERFACE_EXPORT *NDI_CreateReceiver(const char* sourceName)
 {
-    auto source = Finder::getInstance().getSourceWithNameLike(name);
-    return source.p_ndi_name != nullptr ? new Receiver(source) : nullptr;
+    return new Receiver(NDIlib_source_t(sourceName));
 }
 
 extern "C" void UNITY_INTERFACE_EXPORT NDI_DestroyReceiver(Receiver* receiver)

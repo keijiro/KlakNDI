@@ -99,12 +99,11 @@ namespace Klak.Ndi
 
         void Update()
         {
+            if (!PluginEntry.IsAvailable) return;
+
             // Plugin lazy initialization
             if (_plugin == System.IntPtr.Zero)
-            {
-                _plugin = PluginEntry.TryOpenSourceNamedLike(_sourceName);
-                if (_plugin == System.IntPtr.Zero) return; // No sender matches.
-            }
+                _plugin = PluginEntry.CreateReceiver(_sourceName);
 
             // Texture update event invocation with lazy initialization
             if (_callback == System.IntPtr.Zero)

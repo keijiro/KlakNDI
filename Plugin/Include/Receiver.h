@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-
+#include <cassert>
 namespace KlakNDI
 {
     // NDI receiver class

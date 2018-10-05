@@ -46,9 +46,19 @@ namespace Klak.Ndi
         void ShowSourceNameDropdown(Rect rect)
         {
             var menu = new GenericMenu();
+
             NdiManager.GetSourceNames(_sourceNames);
-            foreach (var name in _sourceNames)
-                menu.AddItem(new GUIContent(name), false, OnSelectSource, name);
+
+            if (_sourceNames.Count > 0)
+            {
+                foreach (var name in _sourceNames)
+                    menu.AddItem(new GUIContent(name), false, OnSelectSource, name);
+            }
+            else
+            {
+                menu.AddItem(new GUIContent("No source available"), false, null);
+            }
+
             menu.DropDown(rect);
         }
 

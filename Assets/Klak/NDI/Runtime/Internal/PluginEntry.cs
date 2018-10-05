@@ -1,6 +1,12 @@
 // KlakNDI - NDI plugin for Unity
 // https://github.com/keijiro/KlakNDI
 
+// At the moment, the NDI plugin is only available on Windows, macOS and iOS.
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_IOS
+#define NDI_ENABLED
+#endif
+
+// iOS only supports sender functionality.
 #if !UNITY_EDITOR && UNITY_IOS
 #define NDI_SENDER_ONLY
 #endif
@@ -10,13 +16,14 @@ using System.Runtime.InteropServices;
 
 namespace Klak.Ndi
 {
-    public enum FourCC : uint
+    // FourCC code definitions used in NDI
+    enum FourCC : uint
     {
         UYVY = 0x59565955,
         UYVA = 0x41565955
     }
 
-    public static class PluginEntry
+    static class PluginEntry
     {
         #if !UNITY_EDITOR && UNITY_IOS
         const string _dllName = "__Internal";
@@ -26,20 +33,36 @@ namespace Klak.Ndi
 
         #region Common functions
 
-        #if !NDI_SENDER_ONLY
+        #if NDI_ENABLED
 
-        [DllImport(_dllName, EntryPoint = "NDI_GetTextureUpdateCallback")]
-        public static extern IntPtr GetTextureUpdateCallback();
-
-        [DllImport(_dllName, EntryPoint = "NDI_RetrieveSourceNames")]
-        public static extern int RetrieveSourceNames(IntPtr[] destination, int maxCount);
+        internal static bool IsAvailable {
+            get {
+                var gapi = UnityEngine.SystemInfo.graphicsDeviceType;
+                return gapi == UnityEngine.Rendering.GraphicsDeviceType.Direct3D11 ||
+                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Metal;
+            }
+        }
 
         #else
 
-        public static IntPtr GetTextureUpdateCallback()
+        internal static bool IsAvailable { get { return false; } }
+
+        #endif
+
+        #if NDI_ENABLED && !NDI_SENDER_ONLY
+
+        [DllImport(_dllName, EntryPoint = "NDI_GetTextureUpdateCallback")]
+        internal static extern IntPtr GetTextureUpdateCallback();
+
+        [DllImport(_dllName, EntryPoint = "NDI_RetrieveSourceNames")]
+        internal static extern int RetrieveSourceNames(IntPtr[] destination, int maxCount);
+
+        #else
+
+        internal static IntPtr GetTextureUpdateCallback()
         { return IntPtr.Zero; }
 
-        public static int RetrieveSourceNames(IntPtr[] destination, int maxCount)
+        internal static int RetrieveSourceNames(IntPtr[] destination, int maxCount)
         { return 0; }
 
         #endif
@@ -48,60 +71,78 @@ namespace Klak.Ndi
 
         #region Sender functions
 
+        #if NDI_ENABLED
+
         [DllImport(_dllName, EntryPoint = "NDI_CreateSender")]
-        public static extern IntPtr CreateSender(string name);
+        internal static extern IntPtr CreateSender(string name);
 
         [DllImport(_dllName, EntryPoint = "NDI_DestroySender")]
-        public static extern void DestroySender(IntPtr sender);
+        internal static extern void DestroySender(IntPtr sender);
 
         [DllImport(_dllName, EntryPoint = "NDI_SendFrame")]
-        public static extern void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC);
+        internal static extern void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC);
 
         [DllImport(_dllName, EntryPoint = "NDI_SyncSender")]
-        public static extern void SyncSender(IntPtr sender);
+        internal static extern void SyncSender(IntPtr sender);
+
+        #else
+
+        internal static extern IntPtr CreateSender(string name)
+        { return IntPtr.Zero; }
+
+        internal static extern void DestroySender(IntPtr sender)
+        {}
+
+        internal static extern void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC)
+        {}
+
+        internal static extern void SyncSender(IntPtr sender)
+        {}
+
+        #endif
 
         #endregion
 
         #region Receiver functions
 
-        #if !NDI_SENDER_ONLY
+        #if NDI_ENABLED && !NDI_SENDER_ONLY
 
-        [DllImport(_dllName, EntryPoint = "NDI_TryOpenSourceNamedLike")]
-        public static extern IntPtr TryOpenSourceNamedLike(string clause);
+        [DllImport(_dllName, EntryPoint = "NDI_CreateReceiver")]
+        internal static extern IntPtr CreateReceiver(string clause);
 
         [DllImport(_dllName, EntryPoint = "NDI_DestroyReceiver")]
-        public static extern void DestroyReceiver(IntPtr receiver);
+        internal static extern void DestroyReceiver(IntPtr receiver);
 
         [DllImport(_dllName, EntryPoint = "NDI_GetReceiverID")]
-        public static extern uint GetReceiverID(IntPtr receiver);
+        internal static extern uint GetReceiverID(IntPtr receiver);
 
         [DllImport(_dllName, EntryPoint = "NDI_GetFrameWidth")]
-        public static extern int GetFrameWidth(IntPtr receiver);
+        internal static extern int GetFrameWidth(IntPtr receiver);
 
         [DllImport(_dllName, EntryPoint = "NDI_GetFrameHeight")]
-        public static extern int GetFrameHeight(IntPtr receiver);
+        internal static extern int GetFrameHeight(IntPtr receiver);
 
         [DllImport(_dllName, EntryPoint = "NDI_GetFrameFourCC")]
-        public static extern FourCC GetFrameFourCC(IntPtr receiver);
+        internal static extern FourCC GetFrameFourCC(IntPtr receiver);
 
         #else
 
-        public static IntPtr TryOpenSourceNamedLike(string clause)
+        internal static IntPtr CreateReceiver(string clause)
         { return IntPtr.Zero; }
 
-        public static void DestroyReceiver(IntPtr receiver)
+        internal static void DestroyReceiver(IntPtr receiver)
         {}
 
-        public static uint GetReceiverID(IntPtr receiver)
+        internal static uint GetReceiverID(IntPtr receiver)
         { return 0; }
 
-        public static int GetFrameWidth(IntPtr receiver)
+        internal static int GetFrameWidth(IntPtr receiver)
         { return 0; }
 
-        public static int GetFrameHeight(IntPtr receiver)
+        internal static int GetFrameHeight(IntPtr receiver)
         { return 0; }
 
-        public static FourCC GetFrameFourCC(IntPtr receiver)
+        internal static FourCC GetFrameFourCC(IntPtr receiver)
         { return 0; }
 
         #endif
