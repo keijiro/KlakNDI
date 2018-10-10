@@ -103,7 +103,10 @@ namespace Klak.Ndi
 
             // Plugin lazy initialization
             if (_plugin == System.IntPtr.Zero)
+            {
                 _plugin = PluginEntry.CreateReceiver(_sourceName);
+                if (_plugin == System.IntPtr.Zero) return; // No receiver support
+            }
 
             // Texture update event invocation with lazy initialization
             if (_callback == System.IntPtr.Zero)
