@@ -41,9 +41,8 @@ namespace Klak.Ndi
 
         #endregion
 
-        #region Conversion shader
+        #region Private members
 
-        [SerializeField, HideInInspector] Shader _shader;
         Material _material;
         RenderTexture _converted;
 
@@ -82,7 +81,7 @@ namespace Klak.Ndi
             // Lazy initialization of the conversion shader.
             if (_material == null)
             {
-                _material = new Material(_shader);
+                _material = new Material(Shader.Find("Hidden/KlakNDI/Sender"));
                 _material.hideFlags = HideFlags.DontSave;
             }
 

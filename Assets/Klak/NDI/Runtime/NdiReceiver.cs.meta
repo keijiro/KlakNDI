@@ -5,7 +5,6 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _targetRenderer: {instanceID: 0}
-  - _shader: {fileID: 4800000, guid: 2d980f78a56b4f54dafd1700a91ad497, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
