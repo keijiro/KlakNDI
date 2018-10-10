@@ -45,6 +45,7 @@ namespace Klak.Ndi
 
         Material _material;
         RenderTexture _converted;
+        int _lastFrameCount = -1;
 
         #endregion
 
@@ -68,6 +69,12 @@ namespace Klak.Ndi
                 Debug.LogWarning("Too many GPU readback requests.");
                 return;
             }
+
+            // On Editor, this may be called multiple times in a single frame.
+            // To avoid wasting memory (actually this can cause an out-of-memory
+            // exception), check the frame count and reject duplicated requests.
+            if (_lastFrameCount == Time.frameCount) return;
+            _lastFrameCount = Time.frameCount;
 
             // Return the old render texture to the pool.
             if (_converted != null) RenderTexture.ReleaseTemporary(_converted);
