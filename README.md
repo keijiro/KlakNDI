@@ -4,20 +4,17 @@ KlakNDI
 ![gif](https://i.imgur.com/k3Bwcoq.gif)
 ![photo](https://i.imgur.com/HY1NMYm.jpg)
 
-**KlakNDI** is a [NewTek NDI] protocol plugin for Unity that allows
-sending/receiving video streams between computers via a local area network.
-It provides a high quality, low latency and performant way to mix multiple
-video streams from several applications and devices without the need of complex
-video capturing setups but only a wired/wireless network connection. The plugin
-is implemented to fully utilize the [asynchronous GPU readback] and [custom
-texture update] features to achieve the optimal performance and the lowest
-latency in Unity.
+**KlakNDI** is a Unity plugin that allows sharing video frames between
+computers using NDI.
 
-NDI™ is a trademark of NewTek, Inc.
+[NDI] (Network Device Interface) is a standard developed by [NewTek] that
+enables applications to deliver video streams via a local area network. It
+provides a high quality, low latency and performant way to mix multiple video
+streams sent from several applications/devices without the need of a complex
+video capturing setup but only a wired/wireless network connection.
 
-[NewTek NDI]: http://NDI.NewTek.com/
-[asynchronous GPU readback]: https://github.com/keijiro/AsyncCaptureTest
-[custom texture update]: https://github.com/keijiro/TextureUpdateExample
+[NDI]: http://ndi.newtek.com/
+[NewTek]: http://www.newtek.com/
 
 System requirements
 -------------------
@@ -27,28 +24,26 @@ System requirements
 - **macOS**: 64-bit, Metal support
 - **iOS**: Metal support
 
-The latest version of the plugin (v0.1.x) requires Unity 2018.3 or later for
-macOS and iOS support. Please consider using v0.0.x when you have to use one
-of the previous versions of Unity and don't need macOS/iOS support.
-
 The iOS plugin only supports the sender functionality due to a limitation of
 the NDI SDK.
 
-The plugin is presented in a self-contained form for Windows and macOS. The NDI
-SDK is only required when building to iOS.
+The plugin is presented in a self-contained form on Windows and macOS. The
+[NDI SDK] is required when building to iOS.
+
+[NDI SDK]: https://www.newtek.com/ndi/sdk/
 
 Installation
 ------------
 
-Download and import one of the .unitypackage files from [Releases] page.
+Download and import one of the `.unitypackage` files from [Releases] page.
 
 [Releases]: https://github.com/keijiro/KlakNDI/releases
 
 NDI Sender component
 --------------------
 
-The **NDI Sender component** (`NdiSender`) is used to send rendered frames to
-other NDI supported software/hardware via a network.
+The **NDI Sender component** (`NdiSender`) is used to send frames to
+NDI-enabled systems.
 
 There are two modes in NDI Sender:
 
@@ -58,11 +53,11 @@ There are two modes in NDI Sender:
 
 The NDI Sender component runs in the **camera capture mode** when attached to a
 camera object. It automatically captures frames rendered by the camera and
-publish them to the network. The dimensions of the frames are dependent on the
+publish them to a network. The dimensions of the frames are dependent on the
 screen/game view size.
 
 Note that the camera capture mode is not compatible with [scriptable render
-pipelines].
+pipelines]; The render texture mode should be applied in case of using SRP.
 
 [scriptable render pipelines]: https://docs.unity3d.com/Manual/ScriptableRenderPipeline.html
 
@@ -71,70 +66,57 @@ pipelines].
 ![inspector](https://i.imgur.com/BN5RsXl.png)
 
 The NDI Sender component runs in the **render texture mode** when it's
-independent from any camera. To publish frames in this mode, a [render texture]
-should be specified via the **Source Texture** property. The NDI Sender
-component publishes the contents of the render texture every frame.
+independent from any camera. In this mode, the sender publishes content of a
+render texture specified in the **Source Texture** property. This render
+texture should be updated in some way -- by attaching to a camera as a target
+texture, by [custom render texture], etc.
 
 [render texture]: https://docs.unity3d.com/Manual/class-RenderTexture.html
+[custom render texture]: https://docs.unity3d.com/Manual/CustomRenderTextures.html
 
 ### Alpha channel support
 
-The NDI Sender component uses the UYVY format (4:2:2 subsampled color) by
-default, which is the most optimal setting to feed a video stream to the NDI
-library. By enabling the **Alpha Support** property, it can be switched to the
-UYVA format (4:2:2 color + alpha) that supports alpha channel. It requires an
-extra bandwidth and processing resources, so that it's recommended disabling
-when alpha channel is not actually needed.
+The **Alpha Support** property controls if the sender includes alpha channel to
+published frames. In most use-cases of Unity, alpha channel in rendered frames
+is not in use; it only contains garbage data. It's generally recommended to
+turn off Alpha Support to prevent causing wrong effects on a receiver side.
 
 NDI Receiver component
 ----------------------
 
-![inspector](https://i.imgur.com/hdxALxS.png)
+![inspector](https://i.imgur.com/pKn7mTn.png)
 
-The NDI Receiver component (`NdiReceiver`) is used to receive frames published
-by other NDI supported software/hardware via a network.
+The NDI Receiver component (`NdiReceiver`) is used to receive frames sent from
+a NDI-enabled system.
 
-### Name Filter property
+### Source Name property
 
-In case that multiple NDI sources (senders) exist in a network, the **Name
-Filter** property is used to determine which source should be connected. The NDI
-Receiver tries to connect to the first source whom name contains the string
-specified in the property. Note that this string matching is case-sensitive.
-
-When nothing is specified in the Name Filter property, the NDI Receiver tries
-connecting to the first found source without string matching.
+The NDI Receiver tries to connect to a sender that has a name specified in the
+**Source Name** property. It can be manually edited with the text field or
+selected from the drop-down list, which shows currently available NDI senders.
 
 ### Target Texture property
 
 The NDI Receiver updates a render texture specified in the **Target Texture**
-property every frame. Note that the NDI Receiver doesn't care about aspect
-ratio; The dimensions of the render texture should be manually adjusted to
+property every frame. Note that the receiver doesn't take the aspect ratio into
+account. The dimensions of the render texture should be manually adjusted to
 avoid stretching.
 
 ### Target Renderer property
 
-When a renderer component (in most cases it may be a mesh renderer) is
-specified in the **Target Renderer** property, the NDI Receiver sets the
-received frames to one of the texture properties of the material used in the
-renderer. This is a convenient way to display received frames when they're only
+When a renderer component is specified in the **Target Renderer** property, the
+receiver overrides one of texture properties in the renderer using a [material
+property block]. This is a handy way to display received frames when it's only
 used in a single instance of renderer.
+
+[material property block]: https://docs.unity3d.com/ScriptReference/MaterialPropertyBlock.html
 
 ### Script interface
 
-The received frames are also accessible via the `receivedTexture` property of
-the `NdiReceiver` class. Note that the `receivedTexture` object is
-destroyed/recreated when the settings (e.g. screen size) are changed. It's
-recommended updating the reference every frame.
-
-NDI source list view
---------------------
-
-![window](https://i.imgur.com/gdfF7tO.png)
-
-The NDI source list view is a handy way to check what NDI sources are
-currently available in the network. To open the list view, from the
-application menu select "Window" - "Klak" - "NDI Source List". The list is
-updated even in the edit mode.
+Received frames are also accessible via the `receivedTexture` property of the
+`NdiReceiver` class. Note that the `receivedTexture` object is
+destroyed/recreated when frame settings (e.g. screen dimensions) are modified.
+It's recommended updating the texture reference every frame.
 
 Performance considerations
 --------------------------
@@ -149,12 +131,12 @@ Spout/Syphon are superior solutions for local interoperation. They're faster,
 low latency, more memory efficient and better quality. It's recommended using
 Spout/Syphon unless multiple computers are involved.
 
-### The plugin works slow with dedicated graphics
+### The plugin works slow on MacBook
 
 It was observed that the plugin worked significantly slow on some MacBook
-models with dedicated graphics. It's probably improved by switching to
+devices with dedicated graphics. It's probably improved by switching to
 integrated graphics. From Unity 2018.3, GPU in use can be implicitly selected
-in the Preferences panel. It's recommended to change it when slowdown is
+in the Preferences panel. Please try changing it when significant slowdown is
 observed.
 
 License
