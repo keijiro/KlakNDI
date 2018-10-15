@@ -8,7 +8,7 @@ using Klak.Ndi;
 
 public class SourceSelector : MonoBehaviour
 {
-    [SerializeField] Dropdown _dropdown;
+    [SerializeField] Dropdown _dropdown = null;
 
     NdiReceiver _receiver;
 

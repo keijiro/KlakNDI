@@ -35,7 +35,7 @@ namespace TestCards
 
         #region Private members
 
-        [SerializeField, HideInInspector] Shader _shader;
+        [SerializeField, HideInInspector] Shader _shader = null;
         Material _material;
 
         #endregion

@@ -40,7 +40,7 @@ namespace Klak.Ndi
             set { _targetRenderer = value; }
         }
 
-        [SerializeField] string _targetMaterialProperty;
+        [SerializeField] string _targetMaterialProperty = null;
 
         public string targetMaterialProperty {
             get { return _targetMaterialProperty; }
