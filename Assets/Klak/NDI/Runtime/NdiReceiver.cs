@@ -44,7 +44,7 @@ namespace Klak.Ndi
 
         public string targetMaterialProperty {
             get { return _targetMaterialProperty; }
-            set { targetMaterialProperty = value; }
+            set { _targetMaterialProperty = value; }
         }
 
         #endregion
