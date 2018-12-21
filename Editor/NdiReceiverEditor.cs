@@ -3,121 +3,108 @@
 
 using UnityEngine;
 using UnityEditor;
-using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Klak.Ndi
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(NdiReceiver))]
-    public class NdiReceiverEditor : Editor
+    public sealed class NdiReceiverEditor : Editor
     {
-        SerializedProperty _nameFilter;
+        SerializedProperty _sourceName;
         SerializedProperty _targetTexture;
         SerializedProperty _targetRenderer;
         SerializedProperty _targetMaterialProperty;
 
-        static GUIContent _labelProperty = new GUIContent("Property");
+        List<string> _sourceNames = new List<string>();
 
-        string[] _propertyList; // Cached property list
-        Shader _cachedShader;   // Shader stored in the cache
+        static double _prevRepaintTime;
 
-        // Retrieve the shader from the target renderer.
-        Shader RetrieveTargetShader(UnityEngine.Object target)
+        static class Labels
         {
-            var renderer = target as Renderer;
-            if (renderer == null) return null;
-
-            var material = renderer.sharedMaterial;
-            if (material == null) return null;
-
-            return material.shader;
+            public static readonly GUIContent Property = new GUIContent("Property");
+            public static readonly GUIContent Select = new GUIContent("Select");
         }
 
-        // Cache the properties of the given shader .
-        void CachePropertyList(Shader shader)
+        // Request receiver reconnection.
+        void RequestReconnect()
         {
-            // Do nothing if the shader is same to the cached one.
-            if (_cachedShader == shader) return;
-
-            var temp = new List<string>();
-
-            var count = ShaderUtil.GetPropertyCount(shader);
-            for (var i = 0; i < count; i++)
-            {
-                var propType = ShaderUtil.GetPropertyType(shader, i);
-                if (propType == ShaderUtil.ShaderPropertyType.TexEnv)
-                    temp.Add(ShaderUtil.GetPropertyName(shader, i));
-            }
-
-            _propertyList = temp.ToArray();
-            _cachedShader = shader;
+            foreach (NdiReceiver receiver in targets) receiver.RequestReconnect();
         }
 
-        // Material property drop-down list
-        void ShowMaterialPropertyDropDown()
+        // Check and request repaint with 0.1s interval.
+        void CheckRepaint()
         {
-            // Try retrieving the target shader.
-            var shader = RetrieveTargetShader(_targetRenderer.objectReferenceValue);
+            var time = EditorApplication.timeSinceStartup;
+            if (time - _prevRepaintTime < 0.1) return;
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+            _prevRepaintTime = time;
+        }
 
-            if (shader == null)
+        // Create and show the source name dropdown.
+        void ShowSourceNameDropdown(Rect rect)
+        {
+            var menu = new GenericMenu();
+
+            NdiManager.GetSourceNames(_sourceNames);
+
+            if (_sourceNames.Count > 0)
             {
-                _targetMaterialProperty.stringValue = ""; // reset on failure
-                return;
+                foreach (var name in _sourceNames)
+                    menu.AddItem(new GUIContent(name), false, OnSelectSource, name);
+            }
+            else
+            {
+                menu.AddItem(new GUIContent("No source available"), false, null);
             }
 
-            // Cache the properties of the target shader.
-            CachePropertyList(shader);
+            menu.DropDown(rect);
+        }
 
-            // Check if there is suitable candidate.
-            if (_propertyList.Length == 0)
-            {
-                _targetMaterialProperty.stringValue = ""; // reset on failure
-                return;
-            }
-
-            // Show the drop-down list.
-            var index = Array.IndexOf(_propertyList, _targetMaterialProperty.stringValue);
-            var newIndex = EditorGUILayout.Popup("Property", index, _propertyList);
-
-            // Update the property if the selection was changed.
-            if (index != newIndex)
-                _targetMaterialProperty.stringValue = _propertyList[newIndex];
+        // Source name selection callback
+        void OnSelectSource(object name)
+        {
+            serializedObject.Update();
+            _sourceName.stringValue = (string)name;
+            serializedObject.ApplyModifiedProperties();
+            RequestReconnect();
         }
 
         void OnEnable()
         {
-            _nameFilter = serializedObject.FindProperty("_nameFilter");
+            _sourceName = serializedObject.FindProperty("_sourceName");
             _targetTexture = serializedObject.FindProperty("_targetTexture");
             _targetRenderer = serializedObject.FindProperty("_targetRenderer");
             _targetMaterialProperty = serializedObject.FindProperty("_targetMaterialProperty");
+
+            EditorApplication.update += CheckRepaint;
         }
 
         void OnDisable()
         {
-            _propertyList = null;
-            _cachedShader = null;
-        }
-
-        public override bool RequiresConstantRepaint()
-        {
-            return true;
+            EditorApplication.update -= CheckRepaint;
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.DelayedTextField(_nameFilter);
-            if (EditorGUI.EndChangeCheck())
-            {
-                // Flip-flipping the target to reset the connection.
-                // It's needed to apply the new name filter value.
-                var recv = (NdiReceiver)target;
-                recv.enabled = false;
-                recv.enabled = true;
-            }
+            EditorGUILayout.BeginHorizontal();
 
+            // Source name text field
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.DelayedTextField(_sourceName);
+            if (EditorGUI.EndChangeCheck()) RequestReconnect();
+
+            // Source name dropdown
+            var rect = EditorGUILayout.GetControlRect(false, GUILayout.Width(60));
+            if (EditorGUI.DropdownButton(rect, Labels.Select, FocusType.Keyboard))
+                ShowSourceNameDropdown(rect);
+
+            EditorGUILayout.EndHorizontal();
+
+            // Target texture/renderer
             EditorGUILayout.PropertyField(_targetTexture);
             EditorGUILayout.PropertyField(_targetRenderer);
 
@@ -125,13 +112,13 @@ namespace Klak.Ndi
 
             if (_targetRenderer.hasMultipleDifferentValues)
             {
-                // Show a simple text field if there are multiple values.
-                EditorGUILayout.PropertyField(_targetMaterialProperty, _labelProperty);
+                // Multiple renderers selected: Show a simple text field.
+                EditorGUILayout.PropertyField(_targetMaterialProperty, Labels.Property);
             }
             else if (_targetRenderer.objectReferenceValue != null)
             {
-                // Show the material property drop-down list.
-                ShowMaterialPropertyDropDown();
+                // Single renderer: Show the material property selection dropdown.
+                MaterialPropertySelector.DropdownList(_targetRenderer, _targetMaterialProperty);
             }
 
             EditorGUI.indentLevel--;

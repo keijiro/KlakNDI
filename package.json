@@ -1,8 +1,9 @@
 {
     "name": "jp.keijiro.klak.ndi",
     "displayName": "KlakNDI",
-    "version": "0.0.4",
-    "unity": "2018.1",
+    "version": "0.2.1",
+    "unity": "2018.3",
+    "author": "Keijiro Takahashi",
     "description": "NewTek NDI™ plugin for Unity",
     "dependencies": { }
 }

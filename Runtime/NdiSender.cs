@@ -16,7 +16,8 @@ using UnityEditor; // Needed to use delayCall
 namespace Klak.Ndi
 {
     [ExecuteInEditMode]
-    public class NdiSender : MonoBehaviour
+    [AddComponentMenu("Klak/NDI/NDI Sender")]
+    public sealed class NdiSender : MonoBehaviour
     {
         #region Source texture
 
@@ -40,11 +41,11 @@ namespace Klak.Ndi
 
         #endregion
 
-        #region Conversion shader
+        #region Private members
 
-        [SerializeField, HideInInspector] Shader _shader;
         Material _material;
         RenderTexture _converted;
+        int _lastFrameCount = -1;
 
         #endregion
 
@@ -61,11 +62,19 @@ namespace Klak.Ndi
 
         void QueueFrame(RenderTexture source)
         {
+            if (!PluginEntry.IsAvailable) return;
+
             if (_frameQueue.Count > 3)
             {
                 Debug.LogWarning("Too many GPU readback requests.");
                 return;
             }
+
+            // On Editor, this may be called multiple times in a single frame.
+            // To avoid wasting memory (actually this can cause an out-of-memory
+            // exception), check the frame count and reject duplicated requests.
+            if (_lastFrameCount == Time.frameCount) return;
+            _lastFrameCount = Time.frameCount;
 
             // Return the old render texture to the pool.
             if (_converted != null) RenderTexture.ReleaseTemporary(_converted);
@@ -79,7 +88,7 @@ namespace Klak.Ndi
             // Lazy initialization of the conversion shader.
             if (_material == null)
             {
-                _material = new Material(_shader);
+                _material = new Material(Shader.Find("Hidden/KlakNDI/Sender"));
                 _material.hideFlags = HideFlags.DontSave;
             }
 
@@ -116,12 +125,12 @@ namespace Klak.Ndi
                 // Okay, we're going to send this frame.
 
                 // Lazy initialization of the plugin sender instance.
-                if (_plugin == IntPtr.Zero) _plugin = PluginEntry.NDI_CreateSender(gameObject.name);
+                if (_plugin == IntPtr.Zero) _plugin = PluginEntry.CreateSender(gameObject.name);
 
                 // Feed the frame data to the sender. It encodes/sends the
                 // frame asynchronously.
                 unsafe {
-                    PluginEntry.NDI_SendFrame(
+                    PluginEntry.SendFrame(
                         _plugin, (IntPtr)frame.readback.GetData<Byte>().GetUnsafeReadOnlyPtr(),
                         frame.width, frame.height, frame.alpha ? FourCC.UYVA : FourCC.UYVY
                     );
@@ -134,7 +143,7 @@ namespace Klak.Ndi
             // Edit mode: We're not sure when the readback buffer will be
             // disposed, so let's synchronize with the sender to prevent it
             // from accessing disposed memory area.
-            if (!Application.isPlaying && _plugin != IntPtr.Zero) PluginEntry.NDI_SyncSender(_plugin);
+            if (!Application.isPlaying && _plugin != IntPtr.Zero) PluginEntry.SyncSender(_plugin);
         }
 
         #if UNITY_EDITOR
@@ -185,7 +194,7 @@ namespace Klak.Ndi
             for (var wait = new WaitForEndOfFrame();;)
             {
                 yield return wait;
-                if (enabled && _plugin != IntPtr.Zero) PluginEntry.NDI_SyncSender(_plugin);
+                if (enabled && _plugin != IntPtr.Zero) PluginEntry.SyncSender(_plugin);
             }
         }
 
@@ -211,7 +220,7 @@ namespace Klak.Ndi
 
             if (_plugin != IntPtr.Zero)
             {
-                PluginEntry.NDI_DestroySender(_plugin);
+                PluginEntry.DestroySender(_plugin);
                 _plugin = IntPtr.Zero;
             }
 

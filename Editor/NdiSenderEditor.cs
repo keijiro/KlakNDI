@@ -6,8 +6,9 @@ using UnityEditor;
 
 namespace Klak.Ndi
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(NdiSender))]
-    public class NdiSenderEditor : Editor
+    public sealed class NdiSenderEditor : Editor
     {
         SerializedProperty _sourceTexture;
         SerializedProperty _alphaSupport;
@@ -22,25 +23,32 @@ namespace Klak.Ndi
         {
             serializedObject.Update();
 
-            var sender = (NdiSender)target;
-            var camera = sender.GetComponent<Camera>();
-
-            if (camera != null)
+            if (targets.Length == 1)
             {
-                EditorGUILayout.HelpBox(
-                    "NDI Sender is running in camera capture mode.",
-                    MessageType.None
-                );
+                var sender = (NdiSender)target;
+                var camera = sender.GetComponent<Camera>();
+
+                if (camera != null)
+                {
+                    EditorGUILayout.HelpBox(
+                        "NDI Sender is running in camera capture mode.",
+                        MessageType.None
+                    );
+
+                    // Hide the source texture property.
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox(
+                        "NDI Sender is running in render texture mode.",
+                        MessageType.None
+                    );
+
+                    EditorGUILayout.PropertyField(_sourceTexture);
+                }
             }
             else
-            {
-                EditorGUILayout.HelpBox(
-                    "NDI Sender is running in render texture mode.",
-                    MessageType.None
-                );
-
                 EditorGUILayout.PropertyField(_sourceTexture);
-            }
 
             EditorGUILayout.PropertyField(_alphaSupport);
 

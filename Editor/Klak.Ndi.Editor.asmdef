@@ -1,0 +1,12 @@
+{
+    "name": "Klak.Ndi.Editor",
+    "references": [
+        "Klak.Ndi"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

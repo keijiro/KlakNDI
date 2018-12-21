@@ -11,12 +11,3 @@ Desktop.ini
 /*.csproj
 /*.sln
 *.swp
-
-# Unity
-/Library
-/Temp
-
-# Visual Studio
-/Plugin/Windows/.vs
-/Plugin/Windows/Debug
-/Plugin/Windows/x64

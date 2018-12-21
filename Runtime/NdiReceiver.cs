@@ -2,21 +2,24 @@
 // https://github.com/keijiro/KlakNDI
 
 using UnityEngine;
-using UnityEngine.Rendering;
-using System;
 
 namespace Klak.Ndi
 {
     [ExecuteInEditMode]
-    public class NdiReceiver : MonoBehaviour
+    [AddComponentMenu("Klak/NDI/NDI Receiver")]
+    public sealed class NdiReceiver : MonoBehaviour
     {
         #region Source settings
 
-        [SerializeField] string _nameFilter;
+        [SerializeField] string _sourceName;
 
-        public string nameFilter {
-            get { return _nameFilter; }
-            set { _nameFilter = value; }
+        public string sourceName {
+            get { return _sourceName; }
+            set {
+                if (_sourceName == value) return;
+                _sourceName = value;
+                RequestReconnect();
+            }
         }
 
         #endregion
@@ -37,46 +40,41 @@ namespace Klak.Ndi
             set { _targetRenderer = value; }
         }
 
-        [SerializeField] string _targetMaterialProperty;
+        [SerializeField] string _targetMaterialProperty = null;
 
         public string targetMaterialProperty {
             get { return _targetMaterialProperty; }
-            set { targetMaterialProperty = value; }
+            set { _targetMaterialProperty = value; }
         }
 
         #endregion
 
-        #region Public properties
+        #region Runtime properties
+
+        RenderTexture _receivedTexture;
 
         public Texture receivedTexture {
-            get { return _converted != null ? _converted : _targetTexture; }
+            get { return _targetTexture != null ? _targetTexture : _receivedTexture; }
         }
-
-        #endregion
-
-        #region Conversion shader
-
-        [SerializeField, HideInInspector] Shader _shader;
-        Material _material;
-        RenderTexture _converted;
 
         #endregion
 
         #region Private members
 
-        static IntPtr _callback;
-        IntPtr _plugin;
+        static System.IntPtr _callback;
 
-        CommandBuffer _commandBuffer;
+        System.IntPtr _plugin;
         Texture2D _sourceTexture;
+        Material _blitMaterial;
         MaterialPropertyBlock _propertyBlock;
 
-        void DestroyAsset(UnityEngine.Object o)
+        #endregion
+
+        #region Internal members
+
+        internal void RequestReconnect()
         {
-            if (Application.isPlaying)
-                Destroy(o);
-            else
-                DestroyImmediate(o);
+            OnDisable();
         }
 
         #endregion
@@ -85,118 +83,114 @@ namespace Klak.Ndi
 
         void OnDisable()
         {
-            if (_commandBuffer != null)
+            if (_plugin != System.IntPtr.Zero)
             {
-                _commandBuffer.Dispose();
-                _commandBuffer = null;
-            }
-
-            if (_plugin != IntPtr.Zero)
-            {
-                PluginEntry.NDI_DestroyReceiver(_plugin);
-                _plugin = IntPtr.Zero;
+                PluginEntry.DestroyReceiver(_plugin);
+                _plugin = System.IntPtr.Zero;
             }
         }
 
         void OnDestroy()
         {
-            if (_material != null)
-            {
-                DestroyAsset(_material);
-                _material = null;
-            }
-
-            if (_converted != null)
-            {
-                RenderTexture.ReleaseTemporary(_converted);
-                _converted = null;
-            }
-
-            if (_sourceTexture != null)
-            {
-                DestroyAsset(_sourceTexture);
-                _sourceTexture = null;
-            }
+            Util.Destroy(_blitMaterial);
+            Util.Destroy(_sourceTexture);
+            Util.Destroy(_receivedTexture);
         }
 
         void Update()
         {
-            // Lazy initialization
-            if (_material == null)
+            if (!PluginEntry.IsAvailable) return;
+
+            // Plugin lazy initialization
+            if (_plugin == System.IntPtr.Zero)
             {
-                _material = new Material(_shader);
-                _material.hideFlags = HideFlags.DontSave;
+                _plugin = PluginEntry.CreateReceiver(_sourceName);
+                if (_plugin == System.IntPtr.Zero) return; // No receiver support
             }
 
-            if (_callback == IntPtr.Zero)
-                _callback = PluginEntry.NDI_GetTextureUpdateCallback();
-
-            if (_plugin == IntPtr.Zero)
-            {
-                _plugin = PluginEntry.NDI_TryOpenSourceNamedLike(_nameFilter);
-                if (_plugin == IntPtr.Zero) return;
-            }
-
-            if (_commandBuffer == null)
-                _commandBuffer = new CommandBuffer();
+            // Texture update event invocation with lazy initialization
+            if (_callback == System.IntPtr.Zero)
+                _callback = PluginEntry.GetTextureUpdateCallback();
 
             if (_sourceTexture == null)
             {
-                _sourceTexture = new Texture2D(8, 8); // placeholder
+                _sourceTexture = new Texture2D(8, 8); // Placeholder
                 _sourceTexture.hideFlags = HideFlags.DontSave;
             }
 
-            if (_propertyBlock == null)
-                _propertyBlock = new MaterialPropertyBlock();
+            Util.IssueTextureUpdateEvent
+                (_callback, _sourceTexture, PluginEntry.GetReceiverID(_plugin));
 
-            // Invoke the texture update callback in the plugin.
-            _commandBuffer.IssuePluginCustomTextureUpdate(
-                _callback, _sourceTexture, PluginEntry.NDI_GetReceiverID(_plugin)
-            );
-            Graphics.ExecuteCommandBuffer(_commandBuffer);
-            _sourceTexture.IncrementUpdateCount();
-            _commandBuffer.Clear();
+            // Texture information retrieval
+            var width = PluginEntry.GetFrameWidth(_plugin);
+            var height = PluginEntry.GetFrameHeight(_plugin);
+            if (width == 0 || height == 0) return; // Not yet ready
 
-            // Check the frame dimensions.
-            var width = PluginEntry.NDI_GetFrameWidth(_plugin);
-            var height = PluginEntry.NDI_GetFrameHeight(_plugin);
-            if (width == 0 || height == 0) return; // not yet ready
-
-            // Calculate the source data dimensions.
-            var alpha = PluginEntry.NDI_GetFrameFourCC(_plugin) == FourCC.UYVA;
+            // Source data dimensions
+            var alpha = PluginEntry.GetFrameFourCC(_plugin) == FourCC.UYVA;
             var sw = width / 2;
             var sh = height * (alpha ? 3 : 2) / 2;
 
-            // Renew the texture when the dimensions are changed.
+            // Renew the textures when the dimensions are changed.
             if (_sourceTexture.width != sw || _sourceTexture.height != sh)
             {
-                DestroyAsset(_sourceTexture);
+                Util.Destroy(_sourceTexture);
+                Util.Destroy(_receivedTexture);
                 _sourceTexture = new Texture2D(sw, sh, TextureFormat.RGBA32, false, true);
                 _sourceTexture.hideFlags = HideFlags.DontSave;
                 _sourceTexture.filterMode = FilterMode.Point;
             }
 
-            // Update external objects.
-            if (_converted != null) RenderTexture.ReleaseTemporary(_converted);
-
-            if (_targetTexture != null)
+            // Blit shader lazy initialization
+            if (_blitMaterial == null)
             {
-                Graphics.Blit(_sourceTexture, _targetTexture, _material, alpha ? 1 : 0);
-                _targetTexture.IncrementUpdateCount();
-            }
-            else
-            {
-                _converted = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
-                Graphics.Blit(_sourceTexture, _converted, _material, alpha ? 1 : 0);
+                _blitMaterial = new Material(Shader.Find("Hidden/KlakNDI/Receiver"));
+                _blitMaterial.hideFlags = HideFlags.DontSave;
             }
 
+            // Receiver texture lazy initialization
+            if (_targetTexture == null && _receivedTexture == null)
+            {
+                _receivedTexture = new RenderTexture(width, height, 0);
+                _receivedTexture.hideFlags = HideFlags.DontSave;
+            }
+
+            // Texture format conversion using the blit shader
+            var receiver = _targetTexture != null ? _targetTexture : _receivedTexture;
+            Graphics.Blit(_sourceTexture, receiver, _blitMaterial, alpha ? 1 : 0);
+            receiver.IncrementUpdateCount();
+
+            // Renderer override
             if (_targetRenderer != null)
             {
+                // Material property block lazy initialization
+                if (_propertyBlock == null)
+                    _propertyBlock = new MaterialPropertyBlock();
+
+                // Read-modify-write
                 _targetRenderer.GetPropertyBlock(_propertyBlock);
-                _propertyBlock.SetTexture(_targetMaterialProperty, receivedTexture);
+                _propertyBlock.SetTexture(_targetMaterialProperty, receiver);
                 _targetRenderer.SetPropertyBlock(_propertyBlock);
             }
         }
+
+        #if UNITY_EDITOR
+
+        // Invoke update on repaint in edit mode. This is needed to update the
+        // shared texture without getting the object marked dirty.
+
+        void OnRenderObject()
+        {
+            if (Application.isPlaying) return;
+
+            // Graphic.Blit used in Update will change the current active RT,
+            // so let us back it up and restore after Update.
+            var activeRT = RenderTexture.active;
+            Update();
+            RenderTexture.active = activeRT;
+        }
+
+        #endif
 
         #endregion
     }
