@@ -10,4 +10,5 @@
 
 #endif
 
+#include <cstdlib>
 #include <Processing.NDI.Lib.h>

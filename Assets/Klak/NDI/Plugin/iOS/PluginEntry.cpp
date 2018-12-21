@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <Processing.NDI.Lib.h>
 #include "Sender.h"
 
