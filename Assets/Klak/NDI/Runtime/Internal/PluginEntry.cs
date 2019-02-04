@@ -2,7 +2,7 @@
 // https://github.com/keijiro/KlakNDI
 
 // At the moment, the NDI plugin is only available on Windows, macOS and iOS.
-#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_IOS
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX || UNITY_IOS
 #define NDI_ENABLED
 #endif
 
@@ -39,7 +39,8 @@ namespace Klak.Ndi
             get {
                 var gapi = UnityEngine.SystemInfo.graphicsDeviceType;
                 return gapi == UnityEngine.Rendering.GraphicsDeviceType.Direct3D11 ||
-                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Metal;
+                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Metal ||
+                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Vulkan;
             }
         }
 
