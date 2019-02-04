@@ -87,16 +87,16 @@ namespace Klak.Ndi
 
         #else
 
-        internal static extern IntPtr CreateSender(string name)
+        internal static IntPtr CreateSender(string name)
         { return IntPtr.Zero; }
 
-        internal static extern void DestroySender(IntPtr sender)
+        internal static void DestroySender(IntPtr sender)
         {}
 
-        internal static extern void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC)
+        internal static void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC)
         {}
 
-        internal static extern void SyncSender(IntPtr sender)
+        internal static void SyncSender(IntPtr sender)
         {}
 
         #endif
