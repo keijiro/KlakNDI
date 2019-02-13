@@ -6,4 +6,4 @@ gcc -Wall -Wno-unknown-pragmas \
     ../Source/PluginEntry.cpp \
     -lstdc++ \
     -lndi \
-    -shared -o libKlakNdi.so
+    -shared -o libKlakNDI.so
