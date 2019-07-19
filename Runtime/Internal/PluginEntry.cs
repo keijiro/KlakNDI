@@ -2,7 +2,7 @@
 // https://github.com/keijiro/KlakNDI
 
 // At the moment, the NDI plugin is only available on Windows, macOS and iOS.
-#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_IOS
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX || UNITY_IOS
 #define NDI_ENABLED
 #endif
 
@@ -39,7 +39,8 @@ namespace Klak.Ndi
             get {
                 var gapi = UnityEngine.SystemInfo.graphicsDeviceType;
                 return gapi == UnityEngine.Rendering.GraphicsDeviceType.Direct3D11 ||
-                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Metal;
+                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Metal ||
+                       gapi == UnityEngine.Rendering.GraphicsDeviceType.Vulkan;
             }
         }
 
@@ -87,16 +88,16 @@ namespace Klak.Ndi
 
         #else
 
-        internal static extern IntPtr CreateSender(string name)
+        internal static IntPtr CreateSender(string name)
         { return IntPtr.Zero; }
 
-        internal static extern void DestroySender(IntPtr sender)
+        internal static void DestroySender(IntPtr sender)
         {}
 
-        internal static extern void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC)
+        internal static void SendFrame(IntPtr sender, IntPtr data, int width, int height, FourCC fourCC)
         {}
 
-        internal static extern void SyncSender(IntPtr sender)
+        internal static void SyncSender(IntPtr sender)
         {}
 
         #endif
