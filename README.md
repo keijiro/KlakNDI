@@ -22,6 +22,7 @@ System requirements
 - Unity 2018.3 or later
 - **Windows**: Direct3D 11 support
 - **macOS**: 64-bit, Metal support
+- **Linux**: 64-bit, Vulkan support
 - **iOS**: Metal support
 
 The iOS plugin only supports the sender functionality due to a limitation of
@@ -30,7 +31,12 @@ the NDI SDK.
 The plugin is presented in a self-contained form on Windows and macOS. The
 [NDI SDK] is required when building to iOS.
 
+For using the plugin on a Linux system, the NDI shared library files must be
+installed on the system. To install them, download the [NDI SDK] and run
+[this script][install-ndi.sh] as root in the extracted SDK directory.
+
 [NDI SDK]: https://www.newtek.com/ndi/sdk/
+[install-ndi.sh]: https://gist.github.com/keijiro/0cd095b54e5c2846fb683ad48e8292d2
 
 Installation
 ------------
