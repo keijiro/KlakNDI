@@ -89,7 +89,7 @@ After changes, the manifest file should look like below:
     }
   ],
   "dependencies": {
-    "jp.keijiro.klak.ndi": "0.2.3"
+    "jp.keijiro.klak.ndi": "0.2.3",
     ...
 ```
 
