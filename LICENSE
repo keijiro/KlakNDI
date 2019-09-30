@@ -1,6 +1,20 @@
-MIT License
+This package contains the following two modules:
 
-Copyright (c) 2018 Keijiro Takahashi
+- The NDI® dynamic library files
+- KlakNDI Unity plugin
+
+The NDI® dynamic library files (`Processing.NDI.Lib.*.dll`, `libndi.*.dylib`)
+are provided under NewTek's NDI® Software Development Kit License Agreement.
+Please review the license terms contained in the SDK when using the package in
+your project. The SDK is available from https://ndi.tv/sdk/
+
+The KlakNDI Unity plugin is released under the following MIT-style license.
+
+----
+
+KlakNDI - https://github.com/keijiro/KlakNDI
+
+Copyright (c) 2018, 2019 Keijiro Takahashi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

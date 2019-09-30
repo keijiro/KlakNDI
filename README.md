@@ -13,49 +13,88 @@ provides a high quality, low latency and performant way to mix multiple video
 streams sent from several applications/devices without the need of a complex
 video capturing setup but only a wired/wireless network connection.
 
-[NDI]: http://ndi.newtek.com/
-[NewTek]: http://www.newtek.com/
+NDI® is a registered trademark of NewTek, Inc. Please refer to [ndi.tv][NDI]
+for further information about the technology.
+
+[NDI]: https://www.ndi.tv/
+[NewTek]: https://www.newtek.com/
 
 System requirements
 -------------------
 
 - Unity 2018.3 or later
-- **Windows**: Direct3D 11 support
-- **macOS**: 64-bit, Metal support
-- **Linux**: 64-bit, Vulkan support
-- **iOS**: Metal support
+- Windows, macOS and Linux (full feature support)
+- iOS (limited feature support)
 
-The iOS plugin only supports the sender functionality due to a limitation of
-the NDI SDK.
+### Windows
 
-The plugin is presented in a self-contained form on Windows and macOS. The
-[NDI SDK] is required when building to iOS.
+The plugin only supports Direct3D 11.
 
-For using the plugin on a Linux system, the NDI shared library files must be
-installed on the system. To install them, download the [NDI SDK] and run
+### macOS
+
+The plugin only supports Metal.
+
+### Linux
+
+The plugin only supports Vulkan.
+
+The NDI 4.0.1 shared library files must be installed on the system to use the
+plugin. To install them, download the [NDI SDK] and run
 [this script][install-ndi.sh] as root in the extracted SDK directory.
 
-[NDI SDK]: https://www.newtek.com/ndi/sdk/
+[NDI SDK]: https://www.ndi.tv/sdk/
 [install-ndi.sh]: https://gist.github.com/keijiro/0cd095b54e5c2846fb683ad48e8292d2
+
+### iOS
+
+The iOS plugin only supports the sender functionality due to a limitation of
+the standard NDI SDK.
+
+The [NDI SDK] 4.0 is required when building a project on Xcode.
 
 Installation
 ------------
 
 Download and import one of the `.unitypackage` files from [Releases] page.
 
-You can also use [Git support on Package Manager] to import the package. Add
-the following line to the `dependencies` section in the package manifest file
-(`Packages/manifest.json`). Note that this feature is only available from
-Unity 2018.3. See [the forum thread][Git support on Package Manager] for
-futher details.
+You can also install the package using the Package Manager with the [scoped
+registry] feature. Please add the following sections to the package manifest
+file (`Packages/manifest.json`).
+
+To the `scopedRegistries` section:
 
 ```
-"jp.keijiro.klak.ndi": "https://github.com/keijiro/KlakNDI.git#upm"
+{
+  "name": "Keijiro",
+  "url": "https://registry.npmjs.com",
+  "scopes": [ "jp.keijiro" ]
+}
+```
+
+To the `dependencies` section:
+
+```
+"jp.keijiro.klak.ndi": "0.2.3"
+```
+
+After changes, the manifest file should look like below:
+
+```
+{
+  "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [ "jp.keijiro" ]
+    }
+  ],
+  "dependencies": {
+    "jp.keijiro.klak.ndi": "0.2.3"
+    ...
 ```
 
 [Releases]: https://github.com/keijiro/KlakNDI/releases
-[Git support on Package Manager]:
-    https://forum.unity.com/threads/git-support-on-package-manager.573673/
+[scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
 
 NDI Sender component
 --------------------
@@ -156,13 +195,3 @@ devices with dedicated graphics. It's probably improved by switching to
 integrated graphics. From Unity 2018.3, GPU in use can be implicitly selected
 in the Preferences panel. Please try changing it when significant slowdown is
 observed.
-
-License
--------
-
-[MIT](LICENSE)
-
-The NDI dynamic library files (`Processing.NDI.Lib.*.dll`, `libndi.*.dylib`)
-contained in the plugin internal directory is provided by NewTek, Inc under the
-NDI® SDK License Agreement. Please review the original license when
-distributing products with the plugin.
