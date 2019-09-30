@@ -24,9 +24,9 @@ namespace KlakNDI
 
             frame.xres = width;
             frame.yres = height;
-            frame.FourCC = static_cast<NDIlib_FourCC_type_e>(fourCC);
-			frame.frame_rate_N = 60;
-			frame.frame_rate_D = 1;
+            frame.FourCC = static_cast<NDIlib_FourCC_video_type_e>(fourCC);
+            frame.frame_rate_N = 60;
+            frame.frame_rate_D = 1;
             frame.frame_format_type = NDIlib_frame_format_type_progressive;
             frame.p_data = static_cast<uint8_t*>(data);
             frame.line_stride_in_bytes = width * 2;
