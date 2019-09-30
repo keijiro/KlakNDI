@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0F70090E215B360A00D51C64 /* libndi.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0FFCC8B3215B3469006C4E41 /* libndi.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		0F52EB532341DAA800E6013B /* libndi.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F52EB522341DAA800E6013B /* libndi.4.dylib */; };
+		0F52EB542341DAD500E6013B /* libndi.4.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0F52EB522341DAA800E6013B /* libndi.4.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		0FFCC8B0215B2E55006C4E41 /* Callback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCC8AE215B2E55006C4E41 /* Callback.cpp */; };
 		0FFCC8B1215B2E55006C4E41 /* PluginEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FFCC8AF215B2E55006C4E41 /* PluginEntry.cpp */; };
-		0FFCC8B4215B3469006C4E41 /* libndi.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FFCC8B3215B3469006C4E41 /* libndi.3.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -20,13 +20,14 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				0F70090E215B360A00D51C64 /* libndi.3.dylib in CopyFiles */,
+				0F52EB542341DAD500E6013B /* libndi.4.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F52EB522341DAA800E6013B /* libndi.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libndi.4.dylib; path = "../../../../../../NewTek NDI SDK/lib/x64/libndi.4.dylib"; sourceTree = "<group>"; };
 		0F903024215B2BDB00EB0E6C /* KlakNDI.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KlakNDI.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FFCC897215B2D16006C4E41 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0FFCC8A2215B2E55006C4E41 /* Finder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Finder.h; sourceTree = "<group>"; };
@@ -39,7 +40,6 @@
 		0FFCC8AC215B2E55006C4E41 /* Receiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Receiver.h; sourceTree = "<group>"; };
 		0FFCC8AE215B2E55006C4E41 /* Callback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Callback.cpp; sourceTree = "<group>"; };
 		0FFCC8AF215B2E55006C4E41 /* PluginEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginEntry.cpp; sourceTree = "<group>"; };
-		0FFCC8B3215B3469006C4E41 /* libndi.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libndi.3.dylib; path = "/NewTek NDI SDK/lib/x64/libndi.3.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0FFCC8B4215B3469006C4E41 /* libndi.3.dylib in Frameworks */,
+				0F52EB532341DAA800E6013B /* libndi.4.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,7 +110,7 @@
 		0FFCC8B2215B3469006C4E41 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0FFCC8B3215B3469006C4E41 /* libndi.3.dylib */,
+				0F52EB522341DAA800E6013B /* libndi.4.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
