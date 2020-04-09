@@ -23,8 +23,11 @@ namespace Klak.NdiLite
                 PBXProject proj = new PBXProject();
                 proj.ReadFromString(File.ReadAllText(projPath));
 
+#if UNITY_2019_3_OR_NEWER
+                string target = proj.GetUnityFrameworkTargetGuid();
+#else
                 string target = proj.TargetGuidByName("Unity-iPhone");
-
+#endif
                 // Add the header/library search path.
                 proj.AddBuildProperty(target, "HEADER_SEARCH_PATHS", "/NewTek\\ NDI\\ SDK/include");
                 proj.AddBuildProperty(target, "LIBRARY_SEARCH_PATHS", "/NewTek\\ NDI\\ SDK/lib/iOS");
