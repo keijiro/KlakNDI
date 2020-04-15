@@ -22,6 +22,20 @@ namespace Klak.NdiLite
 
                 PBXProject proj = new PBXProject();
                 proj.ReadFromString(File.ReadAllText(projPath));
+                
+#if UNITY_2019_3_OR_NEWER
+
+                string target = proj.ProjectGuid();
+
+                // Add the header/library search path.
+                proj.AddBuildProperty(target, "HEADER_SEARCH_PATHS", "/Library/NDI\\ SDK\\ for\\ Apple/include");
+                proj.AddBuildProperty(target, "LIBRARY_SEARCH_PATHS", "/Library/NDI\\ SDK\\ for\\ Apple/lib/iOS");
+                
+                // Add the NDI library to the build phase.
+                target = proj.GetUnityFrameworkTargetGuid();
+                proj.AddFrameworkToProject(target, "libndi_ios.a", false);
+
+#else
 
                 string target = proj.TargetGuidByName("Unity-iPhone");
 
@@ -34,8 +48,11 @@ namespace Klak.NdiLite
 
                 // Add the NDI library to the build phase.
                 proj.AddFrameworkToProject(target, "libndi_ios.a", false);
+                
+#endif
+                
+                File.WriteAllText(projPath, proj.WriteToString());            
 
-                File.WriteAllText(projPath, proj.WriteToString());
             }
         }
     }
