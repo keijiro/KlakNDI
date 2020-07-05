@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Test/Quad.unity
-    guid: 479c5ac45d5277948add99c93c452675
+    path: Assets/TestCards.unity
+    guid: 27d3268614c016fdaba463f0215fd59d
   m_configObjects: {}

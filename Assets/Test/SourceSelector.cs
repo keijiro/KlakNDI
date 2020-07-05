@@ -1,59 +1,57 @@
-// KlakNDI - NDI plugin for Unity
-// https://github.com/keijiro/KlakNDI
-
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using Klak.Ndi;
+using System.Linq;
+using Klak.NDI;
 
 public class SourceSelector : MonoBehaviour
 {
     [SerializeField] Dropdown _dropdown = null;
 
     NdiReceiver _receiver;
-
-    List<string> _sourceNames = new List<string>();
+    List<string> _sourceNames;
     bool _disableCallback;
 
-    void Start()
-    {
-        _receiver = GetComponent<NdiReceiver>();
-    }
+    // HACK: Assuming that the dropdown has more than
+    // three child objects only while it's opened.
+    bool IsOpened => _dropdown.transform.childCount > 3;
+
+    void Start() => _receiver = GetComponent<NdiReceiver>();
 
     void Update()
     {
-        // HACK: Assuming that the dropdown would have more than three child
-        // objects while the menu is opened. Stop updating it while visible.
-        if (_dropdown.transform.childCount > 3) return;
+        // Do nothing if the menu is opened.
+        if (IsOpened) return;
 
-        // Retrieve the NDI source names.
-        NdiManager.GetSourceNames(_sourceNames);
+        // NDI source name retrieval
+        _sourceNames = NdiFinder.sourceNames.ToList();
 
-        // Update the current selection.
-        var index = _sourceNames.IndexOf(_receiver.sourceName);
+        // Currect selection
+        var index = _sourceNames.IndexOf(_receiver.ndiName);
+
+        // Append the current name to the list if it's not found.
         if (index < 0)
         {
-            // Append the current name to the list when it's not found.
             index = _sourceNames.Count;
-            _sourceNames.Add(_receiver.sourceName);
+            _sourceNames.Add(_receiver.ndiName);
         }
 
-        // We don't like to receive callback while editing options.
+        // Disable the callback while updating the menu options.
         _disableCallback = true;
 
-        // Update the menu options.
+        // Menu option update
         _dropdown.ClearOptions();
         _dropdown.AddOptions(_sourceNames);
         _dropdown.value = index;
         _dropdown.RefreshShownValue();
 
-        // Resume receiving callback.
+        // Resume the callback.
         _disableCallback = false;
     }
 
     public void OnChangeValue(int value)
     {
         if (_disableCallback) return;
-        _receiver.sourceName = _sourceNames[value];
+        _receiver.ndiName = _sourceNames[value];
     }
 }

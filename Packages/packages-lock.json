@@ -1,0 +1,86 @@
+{
+  "dependencies": {
+    "com.unity.render-pipelines.core": {
+      "version": "7.4.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.render-pipelines.universal": {
+      "version": "7.4.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "7.4.1",
+        "com.unity.shadergraph": "7.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.shadergraph": {
+      "version": "7.4.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "7.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.ugui": {
+      "version": "1.0.0",
+      "depth": 2,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0"
+      }
+    },
+    "jp.keijiro.klak.ndi": {
+      "version": "file:jp.keijiro.klak.ndi",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "org.nuget.system.memory": "4.5.4"
+      }
+    },
+    "org.nuget.system.buffers": {
+      "version": "4.5.1",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "org.nuget.system.memory": {
+      "version": "4.5.4",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "org.nuget.system.buffers": "4.5.1",
+        "org.nuget.system.numerics.vectors": "4.4.0",
+        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.3"
+      },
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "org.nuget.system.numerics.vectors": {
+      "version": "4.4.0",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "org.nuget.system.runtime.compilerservices.unsafe": {
+      "version": "4.5.3",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "com.unity.modules.ui": {
+      "version": "1.0.0",
+      "depth": 3,
+      "source": "builtin",
+      "dependencies": {}
+    }
+  }
+}

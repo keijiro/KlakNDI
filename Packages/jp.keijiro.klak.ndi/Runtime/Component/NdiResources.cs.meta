@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2f467649524ddd6789308542d9acc5cc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - encoderCompute: {fileID: 7200000, guid: f6b8573dcf6ea3a4fa44225fc68728c3, type: 3}
+  - decoderCompute: {fileID: 7200000, guid: fbb9f9dd93e2dca48a0993ee1e64a413, type: 3}
+  - blitShader: {fileID: 4800000, guid: 4c425f54b8576fc42956d9055b23bfb2, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
