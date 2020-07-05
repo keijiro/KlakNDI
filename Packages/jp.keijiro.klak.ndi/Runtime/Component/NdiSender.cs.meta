@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d2d98e5bfcdff4847ad69efa861a8e7f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _sourceCamera: {instanceID: 0}
+  - _sourceTexture: {instanceID: 0}
+  - _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

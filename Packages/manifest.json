@@ -1,7 +1,21 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Unity NuGet",
+      "url": "https://unitynuget-registry.azurewebsites.net",
+      "scopes": [
+        "org.nuget"
+      ]
+    },
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "jp.keijiro"
+      ]
+    }
+  ],
   "dependencies": {
-    "com.unity.package-manager-ui": "2.1.2",
-    "com.unity.modules.particlesystem": "1.0.0",
-    "com.unity.modules.ui": "1.0.0"
+    "com.unity.render-pipelines.universal": "7.4.1"
   }
 }
