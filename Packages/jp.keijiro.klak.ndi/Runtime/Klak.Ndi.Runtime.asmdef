@@ -1,5 +1,5 @@
 {
-    "name": "NDI.Runtime",
+    "name": "Klak.Ndi.Runtime",
     "references": [
         "GUID:df380645f10b7bc4b97d4f5eb6303d95"
     ],
@@ -14,7 +14,7 @@
         {
             "name": "com.unity.render-pipelines.core",
             "expression": "0.0.0",
-            "define": "NDI_HAS_SRP"
+            "define": "KLAK_NDI_HAS_SRP"
         }
     ],
     "noEngineReferences": false

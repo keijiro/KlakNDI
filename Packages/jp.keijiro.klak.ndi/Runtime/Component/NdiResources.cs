@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Klak.NDI
+namespace Klak.Ndi
 {
     public sealed class NdiResources : ScriptableObject
     {

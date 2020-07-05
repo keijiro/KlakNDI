@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 
-namespace Klak.NDI.Editor
+namespace Klak.Ndi.Editor
 {
     #if DONT_COMPILE_THIS
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Klak.NDI.Editor {
+namespace Klak.Ndi.Editor {
 
 // Simple string label with GUIContent
 struct Label

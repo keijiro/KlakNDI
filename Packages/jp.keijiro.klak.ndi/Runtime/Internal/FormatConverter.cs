@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using IntPtr = System.IntPtr;
 
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 sealed class FormatConverter : System.IDisposable
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Klak.NDI.Interop {
+namespace Klak.Ndi.Interop {
 
 public enum FrameType
 {

@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace Klak.NDI.Interop {
+namespace Klak.Ndi.Interop {
 
 public class Find : SafeHandleZeroOrMinusOneIsInvalid
 {

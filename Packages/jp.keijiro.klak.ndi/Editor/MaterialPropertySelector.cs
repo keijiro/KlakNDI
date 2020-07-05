@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
-namespace Klak.NDI.Editor {
+namespace Klak.Ndi.Editor {
 
 static class MaterialPropertySelector
 {

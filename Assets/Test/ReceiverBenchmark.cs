@@ -1,5 +1,5 @@
 using UnityEngine;
-using Klak.NDI;
+using Klak.Ndi;
 
 class ReceiverBenchmark : MonoBehaviour
 {

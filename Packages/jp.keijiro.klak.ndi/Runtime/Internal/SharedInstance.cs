@@ -1,4 +1,4 @@
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 static class SharedInstance
 {

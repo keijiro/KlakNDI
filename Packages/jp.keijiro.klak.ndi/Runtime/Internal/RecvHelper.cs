@@ -1,6 +1,6 @@
 using IntPtr = System.IntPtr;
 
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 static class RecvHelper
 {

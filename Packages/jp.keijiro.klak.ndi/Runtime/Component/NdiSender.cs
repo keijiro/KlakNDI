@@ -2,7 +2,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 [ExecuteInEditMode]
 public sealed partial class NdiSender : MonoBehaviour
@@ -174,7 +174,7 @@ public sealed partial class NdiSender : MonoBehaviour
         //
         if (_attachedCamera != null)
         {
-        #if NDI_HAS_SRP
+        #if KLAK_NDI_HAS_SRP
             CameraCaptureBridge.RemoveCaptureAction
               (_attachedCamera, OnCameraCapture);
         #endif
@@ -192,7 +192,7 @@ public sealed partial class NdiSender : MonoBehaviour
             if (_sourceCamera != null)
             {
                 _attachedCamera = _sourceCamera;
-            #if NDI_HAS_SRP
+            #if KLAK_NDI_HAS_SRP
                 CameraCaptureBridge.AddCaptureAction
                   (_attachedCamera, OnCameraCapture);
             #endif

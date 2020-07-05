@@ -1,7 +1,7 @@
 ﻿using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 [ExecuteInEditMode]
 public sealed partial class NdiReceiver : MonoBehaviour

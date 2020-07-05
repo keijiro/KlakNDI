@@ -1,1 +1,1 @@
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("NDI.Editor")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Klak.Ndi.Editor")]

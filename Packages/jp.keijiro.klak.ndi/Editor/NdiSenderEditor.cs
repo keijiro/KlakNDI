@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Klak.NDI.Editor {
+namespace Klak.Ndi.Editor {
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(NdiSender))]

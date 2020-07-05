@@ -1,4 +1,4 @@
-namespace Klak.NDI.Interop
+namespace Klak.Ndi.Interop
 {
     static class Config
     {

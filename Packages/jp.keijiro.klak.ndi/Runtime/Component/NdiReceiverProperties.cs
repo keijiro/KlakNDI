@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 public sealed partial class NdiReceiver : MonoBehaviour
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Klak.NDI {
+namespace Klak.Ndi {
 
 public static class NdiFinder
 {

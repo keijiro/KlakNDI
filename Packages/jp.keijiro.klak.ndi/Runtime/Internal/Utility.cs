@@ -3,7 +3,7 @@ using BindingFlags = System.Reflection.BindingFlags;
 using Delegate = System.Delegate;
 using IntPtr = System.IntPtr;
 
-namespace Klak.NDI
+namespace Klak.Ndi
 {
     static class Util
     {
