@@ -32,6 +32,9 @@ public class Send : SafeHandleZeroOrMinusOneIsInvalid
     public void SendVideoAsync(in VideoFrame data)
       => _SendVideoAsync(this, data);
 
+    public bool SetTally(out Tally tally, uint timeout)
+      => _SetTally(this, out tally, timeout);
+
     #endregion
 
     #region Unmanaged interface
@@ -53,6 +56,10 @@ public class Send : SafeHandleZeroOrMinusOneIsInvalid
 
     [DllImport(Config.DllName, EntryPoint = "NDIlib_send_send_video_async_v2")]
     static extern void _SendVideoAsync(Send send, in VideoFrame data);
+
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_send_get_tally")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _SetTally(Send send, out Tally tally, uint timeout);
 
     #endregion
 }

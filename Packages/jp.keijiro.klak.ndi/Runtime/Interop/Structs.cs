@@ -59,4 +59,13 @@ public struct VideoFrame
     public long Timestamp;
 }
 
+[StructLayoutAttribute(LayoutKind.Sequential)]
+public struct Tally
+{
+    [MarshalAsAttribute(UnmanagedType.U1)]
+    public bool OnProgram;
+    [MarshalAsAttribute(UnmanagedType.U1)]
+    public bool OnPreview;
+}
+
 }

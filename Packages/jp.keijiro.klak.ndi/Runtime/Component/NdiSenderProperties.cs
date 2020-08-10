@@ -44,6 +44,12 @@ public sealed partial class NdiSender : MonoBehaviour
 
     #endregion
 
+    #region Runtime property
+
+    public Interop.Send internalSendObject => _send;
+
+    #endregion
+
     #region Resources asset reference
 
     [SerializeField, HideInInspector] NdiResources _resources = null;

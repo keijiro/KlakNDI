@@ -59,6 +59,9 @@ public class Recv : SafeHandleZeroOrMinusOneIsInvalid
     public void FreeVideoFrame(in VideoFrame frame)
       => _FreeVideo(this, frame);
 
+    public bool SetTally(in Tally tally)
+      => _SetTally(this, tally);
+
     #endregion
 
     #region Unmanaged interface
@@ -75,6 +78,10 @@ public class Recv : SafeHandleZeroOrMinusOneIsInvalid
 
     [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_free_video_v2")]
     static extern void _FreeVideo(Recv recv, in VideoFrame data);
+
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_set_tally")]
+    [return: MarshalAs(UnmanagedType.U1)]
+    static extern bool _SetTally(Recv recv, in Tally tally);
 
     #endregion
 }
