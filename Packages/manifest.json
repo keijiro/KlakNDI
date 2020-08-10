@@ -16,6 +16,10 @@
     }
   ],
   "dependencies": {
-    "com.unity.render-pipelines.universal": "7.4.1"
+    "com.unity.render-pipelines.universal": "7.4.1",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.physics2d": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0"
   }
 }

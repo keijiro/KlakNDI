@@ -1,6 +1,9 @@
 {
     "author": "Keijiro Takahashi",
-    "dependencies": { "org.nuget.system.memory": "4.5.4" },
+    "dependencies": {
+      "com.unity.modules.screencapture": "1.0.0",
+      "org.nuget.system.memory": "4.5.4"
+    },
     "description": "NewTek NDI® plugin for Unity",
     "displayName": "KlakNDI",
     "keywords": [ "unity" ],
