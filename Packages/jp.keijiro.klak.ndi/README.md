@@ -48,7 +48,7 @@ To the `scopedRegistries` section:
 To the `dependencies` section:
 
 ```
-"jp.keijiro.klak.ndi": "1.0.3"
+"jp.keijiro.klak.ndi": "1.0.4"
 ```
 
 After changes, the manifest file should look like below:
@@ -68,7 +68,7 @@ After changes, the manifest file should look like below:
     }
   ],
   "dependencies": {
-    "jp.keijiro.klak.ndi": "1.0.3",
+    "jp.keijiro.klak.ndi": "1.0.4",
 ...
 ```
 
