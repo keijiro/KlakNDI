@@ -124,5 +124,7 @@ to specify an NDI Resources asset (`NdiResources.asset`) right after the
 instantiation. See the [Sender Benchmark]/[Receiver Benchmark] examples for
 details.
 
-[Sender Benchmark]: Assets/Test/SenderBenchmark.cs
-[Receiver Benchmark]: Assets/Test/ReceiverBenchmark.cs
+[Sender Benchmark]:
+https://github.com/keijiro/KlakNDI/blob/master/Assets/Test/SenderBenchmark.cs
+[Receiver Benchmark]:
+https://github.com/keijiro/KlakNDI/blob/master/Assets/Test/ReceiverBenchmark.cs
