@@ -16,14 +16,16 @@ public sealed partial class NdiSender : MonoBehaviour
 
     void PrepareInternalObjects()
     {
-        if (_send == null) _send = Interop.Send.Create(_ndiName);
+        if (_send == null)
+            _send = _captureMethod == CaptureMethod.GameView ?
+              SharedInstance.GameViewSend : Interop.Send.Create(_ndiName);
         if (_converter == null) _converter = new FormatConverter(_resources);
         if (_onReadback == null) _onReadback = OnReadback;
     }
 
     void ReleaseInternalObjects()
     {
-        _send?.Dispose();
+        if (_send != SharedInstance.GameViewSend) _send?.Dispose();
         _send = null;
 
         _converter?.Dispose();

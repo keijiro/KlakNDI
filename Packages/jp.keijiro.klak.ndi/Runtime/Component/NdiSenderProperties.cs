@@ -28,7 +28,7 @@ public sealed partial class NdiSender : MonoBehaviour
 
     public CaptureMethod captureMethod
       { get => _captureMethod;
-        set { _captureMethod = value; ResetState(); } }
+        set { _captureMethod = value; Restart(); } }
 
     [SerializeField] Camera _sourceCamera = null;
 

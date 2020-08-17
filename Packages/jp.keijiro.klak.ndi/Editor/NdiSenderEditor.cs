@@ -32,9 +32,15 @@ sealed class NdiSenderEditor : UnityEditor.Editor
     {
         serializedObject.Update();
 
-        EditorGUI.BeginChangeCheck();
-        EditorGUILayout.DelayedTextField(_ndiName, Styles.NdiName);
-        var restart = EditorGUI.EndChangeCheck();
+        var restart = false;
+
+        if (_captureMethod.hasMultipleDifferentValues ||
+            _captureMethod.enumValueIndex != (int)CaptureMethod.GameView)
+        {
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.DelayedTextField(_ndiName, Styles.NdiName);
+            restart |= EditorGUI.EndChangeCheck();
+        }
 
         EditorGUILayout.PropertyField(_enableAlpha);
 
