@@ -2,7 +2,7 @@
     "author": "Keijiro Takahashi",
     "dependencies": {
       "com.unity.modules.screencapture": "1.0.0",
-      "org.nuget.system.memory": "4.5.4"
+      "org.nuget.system.memory": "4.5.3"
     },
     "description": "NewTek NDI® plugin for Unity",
     "displayName": "KlakNDI",
@@ -11,5 +11,5 @@
     "name": "jp.keijiro.klak.ndi",
     "unity": "2019.4",
     "unityRelease": "0f1",
-    "version": "1.0.2"
+    "version": "1.0.3"
 }
