@@ -39,7 +39,7 @@ sealed class FormatConverter : System.IDisposable
     ComputeBuffer _encoderOutput;
 
     // Immediate mode version
-    public ComputeBuffer Encode(Texture source, bool enableAlpha)
+    public ComputeBuffer Encode(Texture source, bool enableAlpha, bool vflip)
     {
         var width = source.width;
         var height = source.height;
@@ -56,6 +56,7 @@ sealed class FormatConverter : System.IDisposable
         // Compute thread dispatching
         var compute = _resources.encoderCompute;
         var pass = enableAlpha ? 1 : 0;
+        compute.SetInt("VFlip", vflip ? -1 : 1);
         compute.SetTexture(pass, "Source", source);
         compute.SetBuffer(pass, "Destination", _encoderOutput);
         compute.Dispatch(pass, width / 16, height / 8, 1);
@@ -66,7 +67,7 @@ sealed class FormatConverter : System.IDisposable
     // Command buffer version
     public ComputeBuffer Encode
       (CommandBuffer cb, RenderTargetIdentifier source,
-       int width, int height, bool enableAlpha)
+       int width, int height, bool enableAlpha, bool vflip)
     {
         var dataCount = Util.FrameDataCount(width, height, enableAlpha);
 
@@ -81,6 +82,7 @@ sealed class FormatConverter : System.IDisposable
         // Compute thread dispatching
         var compute = _resources.encoderCompute;
         var pass = enableAlpha ? 1 : 0;
+        cb.SetComputeIntParam(compute, "VFlip", vflip ? -1 : 1);
         cb.SetComputeTextureParam(compute, pass, "Source", source);
         cb.SetComputeBufferParam(compute, pass, "Destination", _encoderOutput);
         cb.DispatchCompute(compute, pass, width / 16, height / 8, 1);

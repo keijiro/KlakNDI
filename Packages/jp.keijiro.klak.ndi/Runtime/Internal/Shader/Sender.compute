@@ -3,6 +3,7 @@
 
 Texture2D<float4> Source;
 RWStructuredBuffer<uint> Destination;
+int VFlip;
 
 // Linear to sRGB conversion
 float3 LinearToSRGB(float3 c)
@@ -62,7 +63,8 @@ void EncodeUYVY(uint2 id : SV_DispatchThreadID)
     uint w, h;
     Source.GetDimensions(w, h);
 
-    Destination[id.y * w / 2 + id.x] = PackUYVY(uyvy);
+    uint sy = VFlip < 0 ? h - 1 - id.y : id.y;
+    Destination[sy * w / 2 + id.x] = PackUYVY(uyvy);
 }
 
 [numthreads(4, 8, 1)]
@@ -92,8 +94,9 @@ void EncodeUYVA(uint2 id : SV_DispatchThreadID)
     uint w, h;
     Source.GetDimensions(w, h);
 
-    uint dp1 = id.y * w / 2 + id.x * 2;
-    uint dp2 = id.y * w / 4 + id.x + w * h / 2;
+    uint sy = VFlip < 0 ? h - 1 - id.y : id.y;
+    uint dp1 = sy * w / 2 + id.x * 2;
+    uint dp2 = sy * w / 4 + id.x + w * h / 2;
 
     Destination[dp1 + 0] = PackUYVY(uyvy01);
     Destination[dp1 + 1] = PackUYVY(uyvy23);

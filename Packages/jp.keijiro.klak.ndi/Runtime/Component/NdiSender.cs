@@ -49,7 +49,7 @@ public sealed partial class NdiSender : MonoBehaviour
             _width = _sourceTexture.width;
             _height = _sourceTexture.height;
 
-            return _converter.Encode(_sourceTexture, _enableAlpha);
+            return _converter.Encode(_sourceTexture, _enableAlpha, true);
         }
 
         // Game View capture method
@@ -62,7 +62,7 @@ public sealed partial class NdiSender : MonoBehaviour
             var tempRT = RenderTexture.GetTemporary(_width, _height, 0);
 
             ScreenCapture.CaptureScreenshotIntoRenderTexture(tempRT);
-            var converted = _converter.Encode(tempRT, _enableAlpha);
+            var converted = _converter.Encode(tempRT, _enableAlpha, false);
 
             RenderTexture.ReleaseTemporary(tempRT);
             return converted;
@@ -103,18 +103,9 @@ public sealed partial class NdiSender : MonoBehaviour
         _width = _sourceCamera.pixelWidth;
         _height = _sourceCamera.pixelHeight;
 
-        // Temporary RT allocation
-        var tempRT = Shader.PropertyToID("_TemporaryRT");
-        cb.GetTemporaryRT(tempRT, _width, _height, 0);
-
-        // Blit to the temporary RT
-        cb.Blit(source, tempRT, new Vector2(1, -1), new Vector2(0, 1));
-
         // Pixel format conversion
         var converted = _converter.Encode
-          (cb, tempRT, _width, _height, _enableAlpha);
-
-        cb.ReleaseTemporaryRT(tempRT);
+          (cb, source, _width, _height, _enableAlpha, true);
 
         // GPU readback request
         cb.RequestAsyncReadback(converted, _onReadback);
