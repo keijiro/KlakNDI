@@ -20,8 +20,21 @@ System Requirements
 - Windows: D3D11 and D3D12 are supported
 - macOS: Metal required
 - Linux: Vulkan required
+- iOS: Metal required
 
 KlakNDI supports all the standard render pipelines (built-in, URP, and HDRP).
+
+Limitations On Mobile Platforms
+-------------------------------
+
+At the moment, **KlakNDI only supports the sender functionality on iOS**. This
+limitation came from the NDI SDK, so it's not possible to add receiver
+functionality support.
+
+KlakNDI requires the NDI SDK v4.5 to build to iOS. Please download and install
+the SDK before compilation.
+
+At the moment, **KlakNDI doesn't support Android**.
 
 How To Install
 --------------
@@ -48,7 +61,7 @@ To the `scopedRegistries` section:
 To the `dependencies` section:
 
 ```
-"jp.keijiro.klak.ndi": "1.0.4"
+"jp.keijiro.klak.ndi": "1.0.5"
 ```
 
 After changes, the manifest file should look like below:
@@ -68,7 +81,7 @@ After changes, the manifest file should look like below:
     }
   ],
   "dependencies": {
-    "jp.keijiro.klak.ndi": "1.0.4",
+    "jp.keijiro.klak.ndi": "1.0.5",
 ...
 ```
 
