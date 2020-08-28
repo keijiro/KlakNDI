@@ -33,7 +33,8 @@
       "depth": 2,
       "source": "builtin",
       "dependencies": {
-        "com.unity.modules.ui": "1.0.0"
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0"
       }
     },
     "jp.keijiro.klak.ndi": {
@@ -42,24 +43,24 @@
       "source": "embedded",
       "dependencies": {
         "com.unity.modules.screencapture": "1.0.0",
-        "org.nuget.system.memory": "4.5.4"
+        "org.nuget.system.memory": "4.5.3"
       }
     },
     "org.nuget.system.buffers": {
-      "version": "4.5.1",
+      "version": "4.4.0",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.system.memory": {
-      "version": "4.5.4",
+      "version": "4.5.3",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "org.nuget.system.buffers": "4.5.1",
+        "org.nuget.system.buffers": "4.4.0",
         "org.nuget.system.numerics.vectors": "4.4.0",
-        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.3"
+        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.2"
       },
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
@@ -71,7 +72,7 @@
       "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "org.nuget.system.runtime.compilerservices.unsafe": {
-      "version": "4.5.3",
+      "version": "4.5.2",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
