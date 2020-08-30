@@ -61,7 +61,7 @@ To the `scopedRegistries` section:
 To the `dependencies` section:
 
 ```
-"jp.keijiro.klak.ndi": "1.0.6"
+"jp.keijiro.klak.ndi": "1.0.7"
 ```
 
 After changes, the manifest file should look like below:
@@ -81,7 +81,7 @@ After changes, the manifest file should look like below:
     }
   ],
   "dependencies": {
-    "jp.keijiro.klak.ndi": "1.0.6",
+    "jp.keijiro.klak.ndi": "1.0.7",
 ...
 ```
 
@@ -104,8 +104,12 @@ channel. You can disable it to reduce the bandwidth.
 options.
 
   - Game View - The sender captures frames from the Game View.
-  - Camera - The sender captures frames from a given camera. Note: This option only supports URP and HDRP.
-  - Texture - The sender captures frames from a texture asset. You can also use a render texture with this option.
+  - Camera - The sender captures frames from a given camera. Note: This option
+    only supports URP and HDRP.
+  - Texture - The sender captures frames from a texture asset. You can also use
+    a render texture with this option.
+
+You can attach metadata using `.metadata` property.
 
 NDI Receiver Component
 ----------------------
@@ -123,6 +127,8 @@ texture asset.
 
 **Target Renderer** - The receiver overrides a texture property of the given
 renderer.
+
+You can extract metadata using `.metadata` property.
 
 Tips for Scripting
 ------------------
