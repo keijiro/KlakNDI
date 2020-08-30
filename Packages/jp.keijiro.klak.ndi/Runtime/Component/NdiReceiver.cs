@@ -1,5 +1,6 @@
 ﻿using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using Marshal = System.Runtime.InteropServices.Marshal;
 
 namespace Klak.Ndi {
 
@@ -48,6 +49,12 @@ public sealed partial class NdiReceiver : MonoBehaviour
         var rt = _converter.Decode
           (frame.Width, frame.Height,
            Util.CheckAlpha(frame.FourCC), frame.Data);
+
+        // Copy the metadata if any.
+        if (frame.Metadata != System.IntPtr.Zero)
+            metadata = Marshal.PtrToStringAnsi(frame.Metadata);
+        else
+            metadata = null;
 
         // Free the frame up.
         _recv.FreeVideoFrame(frame);

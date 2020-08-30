@@ -40,6 +40,8 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     public RenderTexture texture => _converter.LastDecoderOutput;
 
+    public string metadata { get; set; }
+
     public Interop.Recv internalRecvObject => _recv;
 
     #endregion

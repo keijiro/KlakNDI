@@ -12,6 +12,7 @@ public sealed partial class NdiSender : MonoBehaviour
     int _width, _height;
     Interop.Send _send;
     FormatConverter _converter;
+    MetadataQueue _metadataQueue = new MetadataQueue();
     System.Action<AsyncGPUReadbackRequest> _onReadback;
 
     void PrepareInternalObjects()
@@ -84,6 +85,7 @@ public sealed partial class NdiSender : MonoBehaviour
             if (converted == null) continue;
 
             AsyncGPUReadback.Request(converted, _onReadback);
+            _metadataQueue.Enqueue(metadata);
         }
     }
 
@@ -109,6 +111,7 @@ public sealed partial class NdiSender : MonoBehaviour
 
         // GPU readback request
         cb.RequestAsyncReadback(converted, _onReadback);
+        _metadataQueue.Enqueue(metadata);
     }
 
     #endregion
@@ -117,32 +120,38 @@ public sealed partial class NdiSender : MonoBehaviour
 
     unsafe void OnReadback(AsyncGPUReadbackRequest request)
     {
-        // Ignore errors.
-        if (request.hasError) return;
+        // Metadata retrieval
+        using (var metadata = _metadataQueue.Dequeue())
+        {
+            // Ignore errors.
+            if (request.hasError) return;
 
-        // Ignore it if the NDI object has been already disposed.
-        if (_send == null || _send.IsInvalid || _send.IsClosed) return;
+            // Ignore it if the NDI object has been already disposed.
+            if (_send == null || _send.IsInvalid || _send.IsClosed) return;
 
-        // Readback data retrieval
-        var data = request.GetData<byte>();
-        var pdata = NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(data);
+            // Pixel format (depending on alpha mode)
+            var fourcc = _enableAlpha ?
+              Interop.FourCC.UYVA : Interop.FourCC.UYVY;
 
-        // Data size verification
-        if (data.Length / sizeof(uint) !=
-            Util.FrameDataCount(_width, _height, _enableAlpha))
-            return;
+            // Readback data retrieval
+            var data = request.GetData<byte>();
+            var pdata = NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(data);
 
-        // Frame data setup
-        var frame = new Interop.VideoFrame
-          { Width = _width,
-            Height = _height,
-            LineStride = _width * 2,
-            FourCC = _enableAlpha ? Interop.FourCC.UYVA : Interop.FourCC.UYVY,
-            FrameFormat = Interop.FrameFormat.Progressive,
-            Data = (System.IntPtr)pdata };
+            // Data size verification
+            if (data.Length / sizeof(uint) !=
+                Util.FrameDataCount(_width, _height, _enableAlpha)) return;
 
-        // Send via NDI
-        _send.SendVideoAsync(frame);
+            // Frame data setup
+            var frame = new Interop.VideoFrame
+              { Width = _width, Height = _height, LineStride = _width * 2,
+                FourCC = _enableAlpha ?
+                  Interop.FourCC.UYVA : Interop.FourCC.UYVY,
+                FrameFormat = Interop.FrameFormat.Progressive,
+                Data = (System.IntPtr)pdata, Metadata = metadata };
+
+            // Send via NDI
+            _send.SendVideoAsync(frame);
+        }
     }
 
     #endregion

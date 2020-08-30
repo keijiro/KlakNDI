@@ -46,6 +46,8 @@ public sealed partial class NdiSender : MonoBehaviour
 
     #region Runtime property
 
+    public string metadata { get; set; }
+
     public Interop.Send internalSendObject => _send;
 
     #endregion
