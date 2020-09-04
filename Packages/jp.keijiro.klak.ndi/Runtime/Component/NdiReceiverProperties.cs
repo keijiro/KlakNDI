@@ -38,7 +38,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     #region Runtime property
 
-    public RenderTexture texture => _converter.LastDecoderOutput;
+    public RenderTexture texture => _converter?.LastDecoderOutput;
 
     public string metadata { get; set; }
 
