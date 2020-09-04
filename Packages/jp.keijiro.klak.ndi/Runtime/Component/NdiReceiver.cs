@@ -74,7 +74,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     void OnDisable() => ReleaseInternalObjects();
 
-    void LateUpdate()
+    void Update()
     {
         var rt = TryReceiveFrame();
         if (rt == null) return;
