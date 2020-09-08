@@ -8,8 +8,10 @@ namespace Klak.Ndi.Interop
         public const string DllName = "libndi.4";
     #elif UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
         public const string DllName = "ndi";
+    #elif UNITY_ANDROID
+        public const string DllName = "ndiandroid";
     #else
         public const string DllName = "__Internal";
-    #endif
+	#endif
     }
 }

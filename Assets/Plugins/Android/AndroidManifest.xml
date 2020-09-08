@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.DefaultCompany.player" xmlns:tools="http://schemas.android.com/tools">
+  <application>
+    <activity android:name="com.DefaultCompany.KlaKNDI.UnityPlayerNDIActivity" android:theme="@style/UnityThemeSelector">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+    </activity>
+    <meta-data android:name="nreal_sdk" android:value="true" />
+  </application>
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+</manifest>
