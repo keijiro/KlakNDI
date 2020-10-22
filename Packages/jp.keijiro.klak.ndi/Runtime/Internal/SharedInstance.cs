@@ -4,8 +4,14 @@ static class SharedInstance
 {
     #region Public properties
 
-    static public Interop.Find Find => GetFind();
-    static public Interop.Send GameViewSend => GetGameViewSend();
+    static public Interop.Find Find
+      => _find ?? InitializeFind();
+
+    static public Interop.Send GameViewSend
+      => _gameViewSend ?? InitializeGameViewSend();
+
+    static public bool IsGameViewSend(Interop.Send send)
+      => send == _gameViewSend;
 
     #endregion
 
@@ -13,25 +19,19 @@ static class SharedInstance
 
     static Interop.Find _find;
 
-    static Interop.Find GetFind()
+    static Interop.Find InitializeFind()
     {
-        if (_find == null)
-        {
-            _find = Interop.Find.Create();
-            SetFinalizer();
-        }
+        _find = Interop.Find.Create();
+        SetFinalizer();
         return _find;
     }
 
     static Interop.Send _gameViewSend;
 
-    static Interop.Send GetGameViewSend()
+    static Interop.Send InitializeGameViewSend()
     {
-        if (_gameViewSend == null)
-        {
-            _gameViewSend = Interop.Send.Create("Game View");
-            SetFinalizer();
-        }
+        _gameViewSend = Interop.Send.Create("Game View");
+        SetFinalizer();
         return _gameViewSend;
     }
 
