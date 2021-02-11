@@ -55,7 +55,7 @@ static class SharedInstance
         _finalizerReady = true;
     }
 
-    static void OnDomainReload()
+  public  static void OnDomainReload()
     {
         _find?.Dispose();
         _find = null;
