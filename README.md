@@ -95,7 +95,8 @@ NDI Sender Component
 The **NDI Sender** component (`NdiSender`) sends a video stream from a given
 video source.
 
-**NDI Name** - Specify the name of the NDI endpoint.
+**NDI Name** - Specify the name of the NDI endpoint (only available in the
+Camera/Texture capture method).
 
 **Enable Alpha** - Enable this checkbox to make the stream contain the alpha
 channel. You can disable it to reduce the bandwidth.
