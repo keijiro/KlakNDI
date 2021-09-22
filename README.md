@@ -146,7 +146,7 @@ After the changes, the manifest file should look like:
 NDI Sender Component
 --------------------
 
-![screenshot](https://i.imgur.com/kUnWqeZ.png)
+![send](https://user-images.githubusercontent.com/343936/134309035-aa5be91f-098b-4352-a49f-0c2d4f49f5b0.png)
 
 The **NDI Sender** component (`NdiSender`) sends a video stream from a given
 video source.
@@ -171,7 +171,7 @@ You can attach metadata using the C# `.metadata` property.
 NDI Receiver Component
 ----------------------
 
-![screenshot](https://i.imgur.com/UmCvOK6.png)
+![recv](https://user-images.githubusercontent.com/343936/134309054-8c25ed46-263c-4041-b331-aefc3e0e6107.png)
 
 The **NDI Receiver** component (`NdiReceiver`) receives a video stream and
 feeds it to a renderer object or a render texture asset.
