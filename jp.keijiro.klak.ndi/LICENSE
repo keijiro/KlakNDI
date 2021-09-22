@@ -1,0 +1,11 @@
+This package contains the following two components:
+
+- The NDI® dynamic library
+- The KlakNDI Unity plugin code
+
+The NDI® dynamic library (files contained in the `Plugin` directory) are
+provided under NewTek's NDI® SDK license. Please review `libndi_licenses.txt`
+before using them in your project.
+
+The KlakNDI Unity plugin code (files contained in the `Editor` and `Runtime`
+directory) was put into the public domain.

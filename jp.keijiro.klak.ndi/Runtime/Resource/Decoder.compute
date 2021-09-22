@@ -1,0 +1,130 @@
+//
+// Color format converter (UYVY/UYVA -> sRGB/Linear RGBA)
+//
+
+#pragma kernel DecodeUYVY_sRGB
+#pragma kernel DecodeUYVY_Linear
+#pragma kernel DecodeUYVA_sRGB
+#pragma kernel DecodeUYVA_Linear
+
+StructuredBuffer<uint> Source;
+RWTexture2D<float4> Destination;
+
+// sRGB to linear conversion
+float4 sRGB_to_Linear(float4 c)
+{
+    float3 lo = c.rgb / 12.92;
+    float3 hi = pow((abs(c.rgb) + 0.055) / 1.055, 2.4);
+    return float4(c.rgb <= 0.04045 ? lo : hi, c.a);
+}
+
+// YUV to RGB conversion (based on Rec.709 constants)
+float3 YUV2RGB(float3 yuv)
+{
+    const float K_B = 0.0722;
+    const float K_R = 0.2126;
+    const float K_G = 1 - K_B - K_R;
+
+    float y = yuv.x;
+    float u = yuv.y;
+    float v = yuv.z;
+
+    float r = y + v * (1 - K_R);
+    float b = y + u * (1 - K_B);
+    float g = (y - K_R * r - K_B * b) / K_G;
+
+    return float3(r, g, b);
+}
+
+// Packed UYVY conversion
+float4 UnpackUYVY(uint v)
+{
+    float4 f = uint4(v, v >> 8, v >> 16, v >> 24) & 0xff;
+    f.yw = (f.yw -  16) / 219; //  Y components (limited range)
+    f.xz = (f.xz - 128) / 112; // UV components (limited range)
+    return f;
+}
+
+// Packed alpha conversion
+float4 UnpackAAAA(uint v)
+{
+    return (uint4(v, v >> 8, v >> 16, v >> 24) & 0xff) / 255.0;
+}
+
+// UYVY decoder function
+float2x4 DecodeUYVY(uint2 id)
+{
+    uint w, h;
+    Destination.GetDimensions(w, h);
+
+    uint id_y = h - 1 - id.y;
+
+    uint sp = id_y * w / 2 + id.x;
+    float4 uyvy = UnpackUYVY(Source[sp]);
+
+    return float2x4(float4(YUV2RGB(uyvy.yxz), 1),
+                    float4(YUV2RGB(uyvy.wxz), 1));
+}
+
+// UYVA decoder function
+float4x4 DecodeUYVA(uint2 id)
+{
+    uint w, h;
+    Destination.GetDimensions(w, h);
+
+    uint id_y = h - 1 - id.y;
+
+    uint sp1 = id_y * w / 2 + id.x * 2;
+    float4 uyvy01 = UnpackUYVY(Source[sp1 + 0]);
+    float4 uyvy23 = UnpackUYVY(Source[sp1 + 1]);
+
+    uint sp2 = id_y * w / 4 + id.x + w * h / 2;
+    float4 a0123 = UnpackAAAA(Source[sp2]);
+
+    return float4x4(float4(YUV2RGB(uyvy01.yxz), a0123.x),
+                    float4(YUV2RGB(uyvy01.wxz), a0123.y),
+                    float4(YUV2RGB(uyvy23.yxz), a0123.z),
+                    float4(YUV2RGB(uyvy23.wxz), a0123.w));
+}
+
+// Decoder kernel entry points
+
+[numthreads(8, 8, 1)]
+void DecodeUYVY_sRGB(uint2 id : SV_DispatchThreadID)
+{
+    float2x4 d = DecodeUYVY(id);
+    uint2 dp = id * uint2(2, 1);
+    Destination[dp + uint2(0, 0)] = d[0];
+    Destination[dp + uint2(1, 0)] = d[1];
+}
+
+[numthreads(8, 8, 1)]
+void DecodeUYVY_Linear(uint2 id : SV_DispatchThreadID)
+{
+    float2x4 d = DecodeUYVY(id);
+    uint2 dp = id * uint2(2, 1);
+    Destination[dp + uint2(0, 0)] = sRGB_to_Linear(d[0]);
+    Destination[dp + uint2(1, 0)] = sRGB_to_Linear(d[1]);
+}
+
+[numthreads(4, 8, 1)]
+void DecodeUYVA_sRGB(uint2 id : SV_DispatchThreadID)
+{
+    float4x4 d = DecodeUYVA(id);
+    uint2 dp = id * uint2(4, 1);
+    Destination[dp + uint2(0, 0)] = d[0];
+    Destination[dp + uint2(1, 0)] = d[1];
+    Destination[dp + uint2(2, 0)] = d[2];
+    Destination[dp + uint2(3, 0)] = d[3];
+}
+
+[numthreads(4, 8, 1)]
+void DecodeUYVA_Linear(uint2 id : SV_DispatchThreadID)
+{
+    float4x4 d = DecodeUYVA(id);
+    uint2 dp = id * uint2(4, 1);
+    Destination[dp + uint2(0, 0)] = sRGB_to_Linear(d[0]);
+    Destination[dp + uint2(1, 0)] = sRGB_to_Linear(d[1]);
+    Destination[dp + uint2(2, 0)] = sRGB_to_Linear(d[2]);
+    Destination[dp + uint2(3, 0)] = sRGB_to_Linear(d[3]);
+}

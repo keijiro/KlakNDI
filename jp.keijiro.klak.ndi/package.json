@@ -1,0 +1,12 @@
+{
+    "author": "Keijiro Takahashi",
+    "dependencies": { "com.unity.modules.screencapture": "1.0.0" },
+    "description": "NewTek NDI® plugin for Unity",
+    "displayName": "KlakNDI",
+    "keywords": [ "unity" ],
+    "license": "SEE LICENSE IN LICENSE",
+    "name": "jp.keijiro.klak.ndi",
+    "unity": "2019.4",
+    "unityRelease": "0f1",
+    "version": "2.0.0"
+}

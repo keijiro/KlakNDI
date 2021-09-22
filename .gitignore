@@ -13,16 +13,9 @@ Desktop.ini
 *.swp
 
 # Unity
-/Library
-/Logs
-/Temp
-
-# Visual Studio
-/Plugin/Windows/.vs
-/Plugin/Windows/x64
-/Plugin/Windows/Win32
-*.vcxproj.user
-
-# Xcode
-xcuserdata
-xcshareddata
+/*/Library
+/*/Logs
+/*/Recordings
+/*/UserSettings
+/*/Temp
+/*/*.blob

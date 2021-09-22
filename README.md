@@ -3,8 +3,8 @@ KlakNDI
 
 ![gif](https://i.imgur.com/I1ZMSY8.gif)
 
-**KlakNDI** is a Unity plugin that allows sending/receiving video frames
-between computers using [NDI].
+**KlakNDI** is a Unity plugin that allows sending/receiving video streams
+between several devices using [NDI]®.
 
 [NDI]® (Network Device Interface) is a standard developed by [NewTek], Inc that
 enables applications to deliver video streams via a local area network. Please
@@ -17,31 +17,50 @@ System Requirements
 -------------------
 
 - Unity 2019.4
-- Windows: D3D11 and D3D12 are supported
-- macOS: Metal required
-- Linux: Vulkan required
-- iOS: Metal required
+- .NET Standard 2.0 or 2.1
 
-KlakNDI supports all the standard render pipelines (built-in, URP, and HDRP).
+Desktop platforms:
 
-Limitations On Mobile Platforms
--------------------------------
+- Windows: x64, D3D11/D3D12
+- macOS: x64 or arm64 (M1), Metal
+- Linux: x64, Vulkan
 
-At the moment, **KlakNDI only supports the sender functionality on iOS**. This
-limitation came from the NDI SDK, so it's not possible to add receiver
-functionality support.
+Mobile platforms:
 
-KlakNDI requires the NDI SDK v4.5 to build to iOS. Please download and install
-the SDK before compilation.
+- iOS: arm64, Metal
+- Android: arm64, Vulkan
 
-At the moment, **KlakNDI doesn't support Android**.
+KlakNDI runs without the NDI SDK on most supported platforms, but only the iOS
+platform requires the SDK to build on Xcode. Please download and install the NDI
+Advanced SDK for iOS in advance of building.
+
+Known Issues and Limitations
+----------------------------
+
+- At the moment, KlakNDI doesn't run on Unity 2021.2/2022.1 with HDRP due to the
+  [Searcher package issue]. Wait for the fix to the Searcher package.
+
+[Searcher package issue]:
+  https://forum.unity.com/threads/2021-2-0b6-and-system-memory-readonlyspan-under-net-4-8.1152104/
+
+- Dimensions of frame images should be multiples of 16x8. This limitation causes
+  glitches on several mobile devices when using the Game View capture method.
+
+- KlakNDI doesn't support audio streaming. There are several technical
+  difficulties to implement without perceptible noise or delay, so there is no
+  plan to implement it.
 
 How To Install
 --------------
 
-The KlakNDI package uses the [scoped registry] feature to import dependent
-packages. Please add the following sections to the package manifest file
+This package uses the [scoped registry] feature to resolve package
+dependencies. Add the following lines to the manifest file
 (`Packages/manifest.json`).
+
+[scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
+
+<details>
+<summary>.NET Standard 2.0 (Unity 2021.1 or earlier)</summary>
 
 To the `scopedRegistries` section:
 
@@ -61,10 +80,11 @@ To the `scopedRegistries` section:
 To the `dependencies` section:
 
 ```
-"jp.keijiro.klak.ndi": "1.0.12"
+"org.nuget.system.memory": "4.5.3",
+"jp.keijiro.klak.ndi": "2.0.0"
 ```
 
-After changes, the manifest file should look like below:
+After the changes, the manifest file should look like:
 
 ```
 {
@@ -81,11 +101,47 @@ After changes, the manifest file should look like below:
     }
   ],
   "dependencies": {
-    "jp.keijiro.klak.ndi": "1.0.12",
-...
+    "org.nuget.system.memory": "4.5.3",
+    "jp.keijiro.klak.ndi": "2.0.0",
+    ...
+```
+</details>
+
+<details>
+<summary>.NET Standard 2.1 (Unity 2021.2 or later)</summary>
+
+To the `scopedRegistries` section:
+
+```
+{
+  "name": "Keijiro",
+  "url": "https://registry.npmjs.com",
+  "scopes": [ "jp.keijiro" ]
+}
 ```
 
-[scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
+To the `dependencies` section:
+
+```
+"jp.keijiro.klak.ndi": "2.0.0"
+```
+
+After the changes, the manifest file should look like:
+
+```
+{
+  "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [ "jp.keijiro" ]
+    }
+  ],
+  "dependencies": {
+    "jp.keijiro.klak.ndi": "2.0.0",
+    ...
+```
+</details>
 
 NDI Sender Component
 --------------------
@@ -98,19 +154,19 @@ video source.
 **NDI Name** - Specify the name of the NDI endpoint (only available in the
 Camera/Texture capture method).
 
-**Enable Alpha** - Enable this checkbox to make the stream contain the alpha
+**Keep Alpha** - Enable this checkbox to make the stream contain the alpha
 channel. You can disable it to reduce the bandwidth.
 
 **Capture Method** - Specify how to capture the video source from the following
-options.
+options:
 
   - Game View - The sender captures frames from the Game View.
-  - Camera - The sender captures frames from a given camera. Note: This option
-    only supports URP and HDRP.
+  - Camera - The sender captures frames from a given camera. This method only
+    supports URP and HDRP.
   - Texture - The sender captures frames from a texture asset. You can also use
     a render texture with this option.
 
-You can attach metadata using `.metadata` property.
+You can attach metadata using the C# `.metadata` property.
 
 NDI Receiver Component
 ----------------------
@@ -129,7 +185,7 @@ texture asset.
 **Target Renderer** - The receiver overrides a texture property of the given
 renderer.
 
-You can extract metadata using `.metadata` property.
+You can extract metadata using the C# `.metadata` property.
 
 Tips for Scripting
 ------------------
@@ -137,14 +193,11 @@ Tips for Scripting
 You can enumerate currently available NDI sources using the NDI Finder class
 (`NdiFinder`). See the [Source Selector] example for usage.
 
-[Source Selector]: Assets/Test/SourceSelector.cs
+[Source Selector]: URP/Assets/Script/SourceSelector.cs
 
-You can instantiate the NDI Sender/Receiver component from a script but have
-to specify an NDI Resources asset (`NdiResources.asset`) right after the
-instantiation. See the [Sender Benchmark]/[Receiver Benchmark] examples for
-details.
+You can instantiate the NDI Sender/Receiver component from a script but at
+the same time, you have to set an NDI Resources asset (`NdiResources.asset`).
+See the [Sender Benchmark]/[Receiver Benchmark] examples for details.
 
-[Sender Benchmark]:
-https://github.com/keijiro/KlakNDI/blob/master/Assets/Test/SenderBenchmark.cs
-[Receiver Benchmark]:
-https://github.com/keijiro/KlakNDI/blob/master/Assets/Test/ReceiverBenchmark.cs
+[Sender Benchmark]: URP/Assets/Script/SenderBenchmark.cs
+[Receiver Benchmark]: URP/Assets/Script/ReceiverBenchmark.cs
