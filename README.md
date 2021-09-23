@@ -46,6 +46,9 @@ Known Issues and Limitations
 - Dimensions of frame images should be multiples of 16x8. This limitation causes
   glitches on several mobile devices when using the Game View capture method.
 
+- The camera capture method with HDRP doesn't work on release builds. This is
+  a known issue with HDRP at the moment.
+
 - KlakNDI doesn't support audio streaming. There are several technical
   difficulties to implement without perceptible noise or delay, so there is no
   plan to implement it.
