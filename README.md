@@ -17,7 +17,15 @@ System Requirements
 -------------------
 
 - Unity 2019.4
-- .NET Standard 2.0 or 2.1
+
+On Unity 2021.1 or earlier versions, KlakNDI requires the [.NET Standard 2.0]
+profile -- You can't compile the package with the .NET 4.x profile.
+
+[.NET Standard 2.0]:
+  https://docs.unity3d.com/2020.1/Documentation/Manual/dotnetProfileSupport.html
+
+From Unity 2021.2, KlakNDI is compatible with both the .NET Standard and .NET
+Framework profiles.
 
 Desktop platforms:
 
@@ -63,7 +71,7 @@ dependencies. Add the following lines to the manifest file
 [scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
 
 <details>
-<summary>.NET Standard 2.0 (Unity 2021.1 or earlier)</summary>
+<summary>Unity 2021.1 or earlier</summary>
 
 To the `scopedRegistries` section:
 
@@ -111,7 +119,7 @@ After the changes, the manifest file should look like:
 </details>
 
 <details>
-<summary>.NET Standard 2.1 (Unity 2021.2 or later)</summary>
+<summary>Unity 2021.2 or later</summary>
 
 To the `scopedRegistries` section:
 
