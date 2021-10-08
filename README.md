@@ -45,17 +45,14 @@ Advanced SDK for iOS in advance of building.
 Known Issues and Limitations
 ----------------------------
 
-- At the moment, KlakNDI doesn't run on Unity 2021.2/2022.1 with HDRP due to the
-  [Searcher package issue]. Wait for the fix to the Searcher package.
-
-[Searcher package issue]:
-  https://forum.unity.com/threads/2021-2-0b6-and-system-memory-readonlyspan-under-net-4-8.1152104/
-
 - Dimensions of frame images should be multiples of 16x8. This limitation causes
   glitches on several mobile devices when using the Game View capture method.
 
 - The camera capture method with HDRP doesn't work on release builds. This is
-  a known issue with HDRP at the moment.
+  [a known issue with HDRP] at the moment.
+
+[a known issue with HDRP]:
+  https://issuetracker.unity3d.com/issues/hdrp-cameracapturebridge-is-not-invoked-on-release-player
 
 - KlakNDI doesn't support audio streaming. There are several technical
   difficulties to implement without perceptible noise or delay, so there is no

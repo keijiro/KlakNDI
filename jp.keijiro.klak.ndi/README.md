@@ -17,7 +17,15 @@ System Requirements
 -------------------
 
 - Unity 2019.4
-- .NET Standard 2.0 or 2.1
+
+On Unity 2021.1 or earlier versions, KlakNDI requires the [.NET Standard 2.0]
+profile -- You can't compile the package with the .NET 4.x profile.
+
+[.NET Standard 2.0]:
+  https://docs.unity3d.com/2020.1/Documentation/Manual/dotnetProfileSupport.html
+
+From Unity 2021.2, KlakNDI is compatible with both the .NET Standard and .NET
+Framework profiles.
 
 Desktop platforms:
 
@@ -37,14 +45,14 @@ Advanced SDK for iOS in advance of building.
 Known Issues and Limitations
 ----------------------------
 
-- At the moment, KlakNDI doesn't run on Unity 2021.2/2022.1 with HDRP due to the
-  [Searcher package issue]. Wait for the fix to the Searcher package.
-
-[Searcher package issue]:
-  https://forum.unity.com/threads/2021-2-0b6-and-system-memory-readonlyspan-under-net-4-8.1152104/
-
 - Dimensions of frame images should be multiples of 16x8. This limitation causes
   glitches on several mobile devices when using the Game View capture method.
+
+- The camera capture method with HDRP doesn't work on release builds. This is
+  [a known issue with HDRP] at the moment.
+
+[a known issue with HDRP]:
+  https://issuetracker.unity3d.com/issues/hdrp-cameracapturebridge-is-not-invoked-on-release-player
 
 - KlakNDI doesn't support audio streaming. There are several technical
   difficulties to implement without perceptible noise or delay, so there is no
@@ -60,7 +68,7 @@ dependencies. Add the following lines to the manifest file
 [scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
 
 <details>
-<summary>.NET Standard 2.0 (Unity 2021.1 or earlier)</summary>
+<summary>Unity 2021.1 or earlier</summary>
 
 To the `scopedRegistries` section:
 
@@ -108,7 +116,7 @@ After the changes, the manifest file should look like:
 </details>
 
 <details>
-<summary>.NET Standard 2.1 (Unity 2021.2 or later)</summary>
+<summary>Unity 2021.2 or later</summary>
 
 To the `scopedRegistries` section:
 
@@ -146,7 +154,7 @@ After the changes, the manifest file should look like:
 NDI Sender Component
 --------------------
 
-![screenshot](https://i.imgur.com/kUnWqeZ.png)
+![send](https://user-images.githubusercontent.com/343936/134309035-aa5be91f-098b-4352-a49f-0c2d4f49f5b0.png)
 
 The **NDI Sender** component (`NdiSender`) sends a video stream from a given
 video source.
@@ -171,7 +179,7 @@ You can attach metadata using the C# `.metadata` property.
 NDI Receiver Component
 ----------------------
 
-![screenshot](https://i.imgur.com/UmCvOK6.png)
+![recv](https://user-images.githubusercontent.com/343936/134309054-8c25ed46-263c-4041-b331-aefc3e0e6107.png)
 
 The **NDI Receiver** component (`NdiReceiver`) receives a video stream and
 feeds it to a renderer object or a render texture asset.
