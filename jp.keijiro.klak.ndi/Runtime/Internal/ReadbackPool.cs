@@ -45,7 +45,10 @@ sealed class ReadbackEntry
 
     public IntPtr MetadataPointer => _metadata;
     public unsafe IntPtr ImagePointer
-      => (IntPtr)NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(_image);
+      => (IntPtr)NativeArrayUnsafeUtility
+           .GetUnsafeBufferPointerWithoutChecks(_image);
+    // Note: We should get the pointer without checks because we use it as an
+    // identifier -- We don't care whether the content is ready or not.
 
     public Interop.FourCC FourCC
       => _alpha ? Interop.FourCC.UYVA : Interop.FourCC.UYVY;
