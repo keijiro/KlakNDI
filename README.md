@@ -89,7 +89,7 @@ To the `dependencies` section:
 
 ```
 "org.nuget.system.memory": "4.5.3",
-"jp.keijiro.klak.ndi": "2.0.1"
+"jp.keijiro.klak.ndi": "2.0.2"
 ```
 
 After the changes, the manifest file should look like:
@@ -110,7 +110,7 @@ After the changes, the manifest file should look like:
   ],
   "dependencies": {
     "org.nuget.system.memory": "4.5.3",
-    "jp.keijiro.klak.ndi": "2.0.1",
+    "jp.keijiro.klak.ndi": "2.0.2",
     ...
 ```
 </details>
@@ -131,7 +131,7 @@ To the `scopedRegistries` section:
 To the `dependencies` section:
 
 ```
-"jp.keijiro.klak.ndi": "2.0.1"
+"jp.keijiro.klak.ndi": "2.0.2"
 ```
 
 After the changes, the manifest file should look like:
@@ -146,7 +146,7 @@ After the changes, the manifest file should look like:
     }
   ],
   "dependencies": {
-    "jp.keijiro.klak.ndi": "2.0.1",
+    "jp.keijiro.klak.ndi": "2.0.2",
     ...
 ```
 </details>
