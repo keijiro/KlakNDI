@@ -28,11 +28,11 @@ public class PbxModifier
         proj.ReadFromFile(path);
 
         var target = proj.GetUnityFrameworkTargetGuid();
-        var libPath = "/Library/NDI\\ Advanced\\ SDK\\ for\\ Apple/lib/iOS";
+        var libPath = "/Library/NDI\\ SDK\\ for\\ Apple/lib/iOS";
         proj.AddBuildProperty(target, "LIBRARY_SEARCH_PATHS", libPath);
         proj.AddFrameworkToProject(target, "Accelerate.framework", false);
         proj.AddFrameworkToProject(target, "VideoToolbox.framework", false);
-        proj.AddFrameworkToProject(target, "libndi_advanced_ios.a", false);
+        proj.AddFrameworkToProject(target, "libndi_ios.a", false);
 
         proj.WriteToFile(path);
     }

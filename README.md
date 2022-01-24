@@ -40,7 +40,7 @@ Mobile platforms:
 
 KlakNDI runs without the NDI SDK on most supported platforms, but only the iOS
 platform requires the SDK to build on Xcode. Please download and install the NDI
-Advanced SDK for iOS in advance of building.
+SDK for iOS in advance of building.
 
 Known Issues and Limitations
 ----------------------------
