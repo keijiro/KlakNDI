@@ -16,16 +16,7 @@ refer to [ndi.tv][NDI] for further information about the technology.
 System Requirements
 -------------------
 
-- Unity 2019.4
-
-On Unity 2021.1 or earlier versions, KlakNDI requires the [.NET Standard 2.0]
-profile -- You can't compile the package with the .NET 4.x profile.
-
-[.NET Standard 2.0]:
-  https://docs.unity3d.com/2020.1/Documentation/Manual/dotnetProfileSupport.html
-
-From Unity 2021.2, KlakNDI is compatible with both the .NET Standard and .NET
-Framework profiles.
+- Unity 2021.3 or later
 
 Desktop platforms:
 
@@ -56,94 +47,21 @@ How To Install
 --------------
 
 This package uses the [scoped registry] feature to resolve package
-dependencies. Add the following lines to the manifest file
-(`Packages/manifest.json`).
+dependencies. Open the Package Manager page in the Project Settings window and
+add the following entry to the Scoped Registries list:
+
+- Name: `Keijiro`
+- URL: `https://registry.npmjs.com`
+- Scope: `jp.keijiro`
+
+![Scoped Registry](https://user-images.githubusercontent.com/343936/162576797-ae39ee00-cb40-4312-aacd-3247077e7fa1.png)
+
+Now you can install the package from My Registries page in the Package Manager
+window.
+
+![My Registries](https://user-images.githubusercontent.com/343936/162576825-4a9a443d-62f9-48d3-8a82-a3e80b486f04.png)
 
 [scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
-
-<details>
-<summary>Unity 2021.1 or earlier</summary>
-
-To the `scopedRegistries` section:
-
-```
-{
-  "name": "Unity NuGet",
-  "url": "https://unitynuget-registry.azurewebsites.net",
-  "scopes": [ "org.nuget" ]
-},
-{
-  "name": "Keijiro",
-  "url": "https://registry.npmjs.com",
-  "scopes": [ "jp.keijiro" ]
-}
-```
-
-To the `dependencies` section:
-
-```
-"org.nuget.system.memory": "4.5.3",
-"jp.keijiro.klak.ndi": "2.0.3"
-```
-
-After the changes, the manifest file should look like:
-
-```
-{
-  "scopedRegistries": [
-    {
-      "name": "Unity NuGet",
-      "url": "https://unitynuget-registry.azurewebsites.net",
-      "scopes": [ "org.nuget" ]
-    },
-    {
-      "name": "Keijiro",
-      "url": "https://registry.npmjs.com",
-      "scopes": [ "jp.keijiro" ]
-    }
-  ],
-  "dependencies": {
-    "org.nuget.system.memory": "4.5.3",
-    "jp.keijiro.klak.ndi": "2.0.3",
-    ...
-```
-</details>
-
-<details>
-<summary>Unity 2021.2 or later</summary>
-
-To the `scopedRegistries` section:
-
-```
-{
-  "name": "Keijiro",
-  "url": "https://registry.npmjs.com",
-  "scopes": [ "jp.keijiro" ]
-}
-```
-
-To the `dependencies` section:
-
-```
-"jp.keijiro.klak.ndi": "2.0.3"
-```
-
-After the changes, the manifest file should look like:
-
-```
-{
-  "scopedRegistries": [
-    {
-      "name": "Keijiro",
-      "url": "https://registry.npmjs.com",
-      "scopes": [ "jp.keijiro" ]
-    }
-  ],
-  "dependencies": {
-    "jp.keijiro.klak.ndi": "2.0.3",
-    ...
-```
-</details>
 
 NDI Sender Component
 --------------------
