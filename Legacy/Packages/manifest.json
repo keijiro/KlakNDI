@@ -1,21 +1,17 @@
 {
   "scopedRegistries": [
     {
-      "name": "Unity NuGet",
-      "url": "https://unitynuget-registry.azurewebsites.net",
-      "scopes": [ "org.nuget" ]
-    },
-    {
       "name": "Keijiro",
       "url": "https://registry.npmjs.com",
-      "scopes": [ "jp.keijiro" ]
+      "scopes": [
+        "jp.keijiro"
+      ]
     }
   ],
   "dependencies": {
-    "com.unity.modules.androidjni": "1.0.0",
     "com.unity.ugui": "1.0.0",
-    "org.nuget.system.memory": "4.5.3",
+    "jp.keijiro.klak.ndi": "file:../../jp.keijiro.klak.ndi",
     "jp.keijiro.testcards": "1.0.0",
-    "jp.keijiro.klak.ndi": "file:../../jp.keijiro.klak.ndi"
+    "com.unity.modules.androidjni": "1.0.0"
   }
 }

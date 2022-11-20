@@ -49,6 +49,7 @@ QualitySettings:
     PS4: 0
     PSM: 0
     PSP2: 0
+    Server: 0
     Stadia: 0
     Standalone: 0
     Tizen: 0

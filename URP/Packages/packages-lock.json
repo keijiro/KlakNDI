@@ -1,48 +1,57 @@
 {
   "dependencies": {
+    "com.unity.burst": {
+      "version": "1.7.3",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.mathematics": {
-      "version": "1.1.0",
+      "version": "1.2.6",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
-      "version": "10.6.0",
+      "version": "12.1.8",
       "depth": 1,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
-        "com.unity.ugui": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
+        "com.unity.ugui": "1.0.0",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
     },
     "com.unity.render-pipelines.universal": {
-      "version": "10.6.0",
+      "version": "12.1.8",
       "depth": 0,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
-        "com.unity.mathematics": "1.1.0",
-        "com.unity.render-pipelines.core": "10.6.0",
-        "com.unity.shadergraph": "10.6.0"
-      },
-      "url": "https://packages.unity.com"
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.burst": "1.7.3",
+        "com.unity.render-pipelines.core": "12.1.8",
+        "com.unity.shadergraph": "12.1.8"
+      }
     },
     "com.unity.searcher": {
-      "version": "4.3.2",
+      "version": "4.9.1",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {
-      "version": "10.6.0",
+      "version": "12.1.8",
       "depth": 1,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "10.6.0",
-        "com.unity.searcher": "4.3.2"
-      },
-      "url": "https://packages.unity.com"
+        "com.unity.render-pipelines.core": "12.1.8",
+        "com.unity.searcher": "4.9.1"
+      }
     },
     "com.unity.ugui": {
       "version": "1.0.0",
@@ -60,38 +69,6 @@
       "dependencies": {
         "com.unity.modules.screencapture": "1.0.0"
       }
-    },
-    "org.nuget.system.buffers": {
-      "version": "4.4.0",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://unitynuget-registry.azurewebsites.net"
-    },
-    "org.nuget.system.memory": {
-      "version": "4.5.3",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.system.buffers": "4.4.0",
-        "org.nuget.system.numerics.vectors": "4.4.0",
-        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.2"
-      },
-      "url": "https://unitynuget-registry.azurewebsites.net"
-    },
-    "org.nuget.system.numerics.vectors": {
-      "version": "4.4.0",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://unitynuget-registry.azurewebsites.net"
-    },
-    "org.nuget.system.runtime.compilerservices.unsafe": {
-      "version": "4.5.2",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "com.unity.modules.androidjni": {
       "version": "1.0.0",
@@ -111,9 +88,15 @@
       "source": "builtin",
       "dependencies": {}
     },
+    "com.unity.modules.jsonserialize": {
+      "version": "1.0.0",
+      "depth": 2,
+      "source": "builtin",
+      "dependencies": {}
+    },
     "com.unity.modules.physics": {
       "version": "1.0.0",
-      "depth": 0,
+      "depth": 2,
       "source": "builtin",
       "dependencies": {}
     },
