@@ -33,6 +33,14 @@ KlakNDI runs without the NDI SDK on most supported platforms, but only the iOS
 platform requires the SDK to build on Xcode. Please download and install the NDI
 SDK for iOS in advance of building.
 
+License
+-------
+
+The NDI library files are provided under the terms of the [NDI SDK license].
+Please review it before using the package in your project.
+
+[NDI SDK license]: http://new.tk/ndisdk_license/
+
 Known Issues and Limitations
 ----------------------------
 
