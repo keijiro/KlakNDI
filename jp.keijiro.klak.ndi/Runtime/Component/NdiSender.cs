@@ -89,7 +89,15 @@ public sealed partial class NdiSender : MonoBehaviour
                 ScreenCapture.CaptureScreenshotIntoRenderTexture(tempRT);
 
                 // Pixel format conversion
-                var buffer = _converter.Encode(tempRT, keepAlpha, false);
+                bool vflip = false;
+                if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLCore ||
+                    SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES2 ||
+                    SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3)
+                {
+                    vflip = true;
+                }
+                
+                var buffer = _converter.Encode(tempRT, keepAlpha, vflip);
                 RenderTexture.ReleaseTemporary(tempRT);
 
                 // Readback entry allocation and request
