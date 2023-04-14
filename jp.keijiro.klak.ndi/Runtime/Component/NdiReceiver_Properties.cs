@@ -9,7 +9,7 @@ namespace Klak.Ndi
 
         [SerializeField] string _ndiName = null;
         string _ndiNameRuntime;
-            public event Action OnSourceChanged;
+        public event Action OnSourceChanged;
 
         public string NdiName
           { get => _ndiNameRuntime;

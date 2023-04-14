@@ -30,6 +30,7 @@ namespace Klak.Ndi {
         public static Interop.VideoFrame? TryCaptureVideoFrame(Interop.Recv recv)
         {
             Interop.VideoFrame video;
+            if (recv == null) return null;
             var type = recv.CaptureVideo(out video, IntPtr.Zero, IntPtr.Zero, 0);
             if (type != Interop.FrameType.Video) return null;
             return (Interop.VideoFrame?)video;
@@ -38,6 +39,7 @@ namespace Klak.Ndi {
         public static Interop.AudioFrame? TryCaptureAudioFrame(Interop.Recv recv)
         {
             Interop.AudioFrame audio;
+            if (recv == null) return null;
             var type = recv.CaptureAudio(out audio, IntPtr.Zero, IntPtr.Zero, 0);
             if (type != Interop.FrameType.Audio) return null;
             return (Interop.AudioFrame?)audio;
