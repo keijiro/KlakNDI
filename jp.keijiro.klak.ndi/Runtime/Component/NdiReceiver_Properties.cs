@@ -19,6 +19,7 @@ namespace Klak.Ndi
         {
             if (_ndiNameRuntime == name) return;
             _ndiName = _ndiNameRuntime = name;
+            OnSourceChanged?.Invoke();
             Restart();
         }
 
@@ -44,6 +45,7 @@ namespace Klak.Ndi
           { get => _targetMaterialProperty;
             set => _targetMaterialProperty = value; }
 
+        public AudioSource _audioSource;
         #endregion
 
         #region Runtime property

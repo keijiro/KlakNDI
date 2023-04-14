@@ -42,7 +42,7 @@ namespace Klak.Ndi.Interop
         #region Public methods
 
         public static Recv Create(in Settings settings)
-          => _Create(settings);
+            => _Create(settings);
 
         public FrameType CaptureVideo (out VideoFrame video, IntPtr audio, IntPtr metadata, uint timeout)
             => _CaptureVideo(this, out video, audio, metadata, timeout);
@@ -54,10 +54,13 @@ namespace Klak.Ndi.Interop
             => _CaptureAll(this, out video, out audio, metadata, timeout);
 
         public void FreeVideoFrame(in VideoFrame frame)
-          => _FreeVideo(this, frame);
+            => _FreeVideo(this, frame);
 
         public bool SetTally(in Tally tally)
-          => _SetTally(this, tally);
+            => _SetTally(this, tally);
+
+        public void AudioFrameToInterleaved(ref AudioFrame source, ref AudioFrameInterleaved dest)
+            => _AudioFrameToInterleaved(ref source, ref dest);
 
         #endregion
 
@@ -80,7 +83,6 @@ namespace Klak.Ndi.Interop
         [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_destroy")]
         static extern void _Destroy(IntPtr recv);
 
-
         [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_capture_v2")]
         static extern FrameType _CaptureVideo (Recv recv, out VideoFrame video, IntPtr audio, IntPtr metadata, uint timeout);
 
@@ -100,7 +102,6 @@ namespace Klak.Ndi.Interop
         [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_set_tally")]
         [return: MarshalAs(UnmanagedType.U1)]
         static extern bool _SetTally(Recv recv, in Tally tally);
-
 
         [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_capture_v2")]
         static extern FrameType _CaptureAll(Recv recv, out VideoFrame video, out AudioFrame audio, IntPtr metadata, uint timeout);

@@ -36,15 +36,16 @@ sealed class FormatConverter : IDisposable
 
     void CheckDimensions(int width, int height)
     {
+            /*
         if ((width & 0xf) != 0)
             WarnWrongSize($"Width ({width}) must be a multiple of 16.");
 
         if ((height & 0x7) != 0)
             WarnWrongSize($"Height ({height}) must be a multiple of 8.");
+            */
     }
 
-    void WarnWrongSize(string text)
-      => Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+    void WarnWrongSize(string text) => Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
 
     #endregion
 

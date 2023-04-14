@@ -4,6 +4,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using IntPtr = System.IntPtr;
 using Marshal = System.Runtime.InteropServices.Marshal;
+using CircularBuffer;
 
 namespace Klak.Ndi {
 
@@ -84,7 +85,7 @@ namespace Klak.Ndi {
 
             // if the audio format changed, we need to create a new audio clip. 
             if (audioClip == null || audioClip.channels != audioFrame.NoChannels || audioClip.frequency != audioFrame.SampleRate)
-                audioClip = AudioClip.Create("NdiReceiver Audio", audioFrame.SampleRate, audioFrame.NoChannels, audioFrame.SampleRate, true); //Create a AudioClip that matches the incomming frame
+                audioClip = AudioClip.Create("NdiReceiver Audio " + gameObject.name, audioFrame.SampleRate, audioFrame.NoChannels, audioFrame.SampleRate, true); //Create a AudioClip that matches the incomming frame
 
             _audioSource.loop = true;
             _audioSource.clip = audioClip;
@@ -97,6 +98,7 @@ namespace Klak.Ndi {
             if (audioFrame == null) return;
             AudioFrame frame = (AudioFrame)audioFrame;
 
+            FillAudioBuffer(frame);
             PrepareAudioSource(frame);
         }
 
@@ -113,6 +115,7 @@ namespace Klak.Ndi {
         private AudioFrameInterleaved interleavedAudio = new();
         private float[] m_aTempSamplesArray = new float[1024 * 32];
 
+        
         void OnAudioFilterRead(float[] data, int channels)
         {
             int length = data.Length;
