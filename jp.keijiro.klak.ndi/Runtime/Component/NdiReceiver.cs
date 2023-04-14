@@ -220,10 +220,7 @@ namespace Klak.Ndi
         {
             ReleaseReceiverObjects();
             if(m_aTempAudioPullBuffer.IsCreated)
-            {
                 m_aTempAudioPullBuffer.Dispose();
-            }
-                
         }
 
         void FixedUpdate()
@@ -232,11 +229,16 @@ namespace Klak.Ndi
             if (_recv == null) return;
 
             ReceiveVideoTask();
-            if (!Application.isPlaying) return;
 
+            // Don't play audio in Editor mode.
+            if (!Application.isPlaying) return;
             ReceiveAudioTask();
-            StartCoroutine(GetSound());
-            IEnumerator GetSound()
+
+            // In a built project, the audio stutters. In Editor play testing, the audio works fine without this.
+            // Not sure if Update is fast enough when built, but grabbing the audio a second time in FixedUpdate seems to fix the issue regardless.
+            // I hope there's a slightly better way to do this, but this works for now.
+            StartCoroutine(GetSoundAgain());
+            IEnumerator GetSoundAgain()
             {
                 yield return null;
                 ReceiveAudioTask();
