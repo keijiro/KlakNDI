@@ -16,7 +16,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     void PrepareReceiverObjects()
     {
-        if (_recv == null) _recv = RecvHelper.TryCreateRecv(ndiName);
+        if (_recv == null) _recv = RecvHelper.TryCreateRecv(NdiName);
         if (_converter == null) _converter = new FormatConverter(_resources);
         if (_override == null) _override = new MaterialPropertyBlock();
     }
