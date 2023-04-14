@@ -5,6 +5,8 @@ using UnityEngine;
 using IntPtr = System.IntPtr;
 using Marshal = System.Runtime.InteropServices.Marshal;
 using CircularBuffer;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Klak.Ndi {
 
@@ -78,19 +80,18 @@ namespace Klak.Ndi {
 
         void PrepareAudioSource(AudioFrame audioFrame)
         {
-            if (_audioSource.isPlaying)
-            {
-                return;
-            }
+            if (_audioSource.isPlaying) return;
 
             // if the audio format changed, we need to create a new audio clip. 
             if (audioClip == null || audioClip.channels != audioFrame.NoChannels || audioClip.frequency != audioFrame.SampleRate)
-                audioClip = AudioClip.Create("NdiReceiver Audio " + gameObject.name, audioFrame.SampleRate, audioFrame.NoChannels, audioFrame.SampleRate, true); //Create a AudioClip that matches the incomming frame
+                audioClip = AudioClip.Create("NdiReceiver_Audio", audioFrame.SampleRate, audioFrame.NoChannels, audioFrame.SampleRate, true); //Create a AudioClip that matches the incomming frame
 
             _audioSource.loop = true;
             _audioSource.clip = audioClip;
             _audioSource.Play();
         }
+
+        private static SynchronizationContext mainThreadContext = SynchronizationContext.Current;
 
         void ReceiveAudioTask()
         {
@@ -99,23 +100,26 @@ namespace Klak.Ndi {
             AudioFrame frame = (AudioFrame)audioFrame;
 
             FillAudioBuffer(frame);
+            _recv.FreeAudioFrame(frame);
+
+            if (_audioSource == null || !_audioSource.enabled || !frame.HasData) return;
             PrepareAudioSource(frame);
         }
 
         #endregion
 
-        #region Audio helper
+        #region Audio inplementation
+
         private AudioClip audioClip;
         private readonly object audioBufferLock = new();
         private const int BUFFER_SIZE = 1024 * 32;
-        private CircularBuffer<float> audioBuffer = new(BUFFER_SIZE);
+        private readonly CircularBuffer<float> audioBuffer = new(BUFFER_SIZE);
         private bool m_bWaitForBufferFill = true;
         private const int m_iMinBufferAheadFrames = 4;
         private NativeArray<byte> m_aTempAudioPullBuffer;
         private AudioFrameInterleaved interleavedAudio = new();
         private float[] m_aTempSamplesArray = new float[1024 * 32];
 
-        
         void OnAudioFilterRead(float[] data, int channels)
         {
             int length = data.Length;
@@ -134,13 +138,10 @@ namespace Klak.Ndi {
                 }
             }
 
-            bool bPreviousWaitForBufferFill = m_bWaitForBufferFill;
-            int iAudioBufferSize = 0;
-
             // STE: Lock buffer for the smallest amount of time
             lock (audioBufferLock)
             {
-                iAudioBufferSize = audioBuffer.Size;
+                int iAudioBufferSize = audioBuffer.Size;
 
                 // If we do not have enough data for a single frame then we will want to buffer up some read-ahead audio data. This will cause a longer gap in the audio playback, but this is better than more intermittent glitches I think
                 m_bWaitForBufferFill = (iAudioBufferSize < length);
@@ -170,9 +171,7 @@ namespace Klak.Ndi {
             unsafe
             {
                 if (m_aTempAudioPullBuffer == null || m_aTempAudioPullBuffer.Length < sizeInBytes)
-                {
                     m_aTempAudioPullBuffer = new NativeArray<byte>(sizeInBytes, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-                }
 
                 interleavedAudio.Data = (IntPtr)m_aTempAudioPullBuffer.GetUnsafePtr();
                 if (interleavedAudio.Data != null)
@@ -204,10 +203,6 @@ namespace Klak.Ndi {
                             audioBuffer.PushBack(m_aTempSamplesArray, totalSamples);
                         }
                     }
-
-                    // Clean up pointers
-
-
                 }
             }
 

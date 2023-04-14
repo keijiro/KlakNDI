@@ -56,6 +56,9 @@ namespace Klak.Ndi.Interop
         public void FreeVideoFrame(in VideoFrame frame)
             => _FreeVideo(this, frame);
 
+        public void FreeAudioFrame(in AudioFrame frame)
+            => _FreeAudio(this, frame);
+
         public bool SetTally(in Tally tally)
             => _SetTally(this, tally);
 
