@@ -7,10 +7,10 @@ using Marshal = System.Runtime.InteropServices.Marshal;
 using CircularBuffer;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections;
 
-namespace Klak.Ndi {
-
-    [ExecuteInEditMode]
+namespace Klak.Ndi 
+{
     public sealed partial class NdiReceiver : MonoBehaviour
     {
         #region Receiver objects
@@ -91,8 +91,6 @@ namespace Klak.Ndi {
             _audioSource.Play();
         }
 
-        private static SynchronizationContext mainThreadContext = SynchronizationContext.Current;
-
         void ReceiveAudioTask()
         {
             AudioFrame? audioFrame = RecvHelper.TryCaptureAudioFrame(_recv);
@@ -100,6 +98,7 @@ namespace Klak.Ndi {
             AudioFrame frame = (AudioFrame)audioFrame;
 
             FillAudioBuffer(frame);
+
             _recv.FreeAudioFrame(frame);
 
             if (_audioSource == null || !_audioSource.enabled || !frame.HasData) return;
@@ -115,7 +114,7 @@ namespace Klak.Ndi {
         private const int BUFFER_SIZE = 1024 * 32;
         private readonly CircularBuffer<float> audioBuffer = new(BUFFER_SIZE);
         private bool m_bWaitForBufferFill = true;
-        private const int m_iMinBufferAheadFrames = 4;
+        private const int m_iMinBufferAheadFrames = 8;
         private NativeArray<byte> m_aTempAudioPullBuffer;
         private AudioFrameInterleaved interleavedAudio = new();
         private float[] m_aTempSamplesArray = new float[1024 * 32];
@@ -217,16 +216,31 @@ namespace Klak.Ndi {
 
         #region MonoBehaviour implementation
 
-        void OnDisable() => ReleaseReceiverObjects();
+        void OnDisable()
+        {
+            ReleaseReceiverObjects();
+            if(m_aTempAudioPullBuffer.IsCreated)
+            {
+                m_aTempAudioPullBuffer.Dispose();
+            }
+                
+        }
 
-        void Update()
+        void FixedUpdate()
         {
             PrepareReceiverObjects();
             if (_recv == null) return;
 
             ReceiveVideoTask();
-            ReceiveAudioTask();
+            if (!Application.isPlaying) return;
 
+            ReceiveAudioTask();
+            StartCoroutine(GetSound());
+            IEnumerator GetSound()
+            {
+                yield return null;
+                ReceiveAudioTask();
+            }
         }
 
         #endregion
