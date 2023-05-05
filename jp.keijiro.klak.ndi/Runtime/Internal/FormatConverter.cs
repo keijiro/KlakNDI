@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using IDisposable = System.IDisposable;
@@ -12,7 +13,7 @@ namespace Klak.Ndi {
 // formats and the NDI-friendly (chroma-subsampled) formats. This class wraps
 // the cumbersome things and provides a simple API.
 //
-sealed class FormatConverter : IDisposable
+public sealed class FormatConverter : IDisposable
 {
     #region Common members
 
@@ -33,18 +34,28 @@ sealed class FormatConverter : IDisposable
         Util.Destroy(_decoderOutput);
         _decoderOutput = null;
     }
-
+    
+    public static event Action<bool> OnCheckDimensions;
+    
     void CheckDimensions(int width, int height)
     {
+        OnCheckDimensions?.Invoke(false);
         if ((width & 0xf) != 0)
+        {
             WarnWrongSize($"Width ({width}) must be a multiple of 16.");
+        }
 
         if ((height & 0x7) != 0)
+        {
             WarnWrongSize($"Height ({height}) must be a multiple of 8.");
+        }
     }
 
     void WarnWrongSize(string text)
-      => Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+    {
+        Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+        OnCheckDimensions?.Invoke(true);
+    }
 
     #endregion
 
