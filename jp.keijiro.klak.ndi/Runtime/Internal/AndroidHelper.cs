@@ -22,6 +22,12 @@ static class AndroidHelper
         var activity = player.GetStatic<AndroidJavaObject>("currentActivity");
         _nsdManager = activity.Call<AndroidJavaObject>
           ("getSystemService", "servicediscovery");
+          
+        // Start service discovery for NDI TCP and UDP services. Android API Level 31+ doesn't do that automatically anymore when calling `getSystemService`.
+        var tcpListener = new AndroidJavaObject("jp.keijiro.klak.ndi.DiscoveryListener");
+        var udpListener = new AndroidJavaObject("jp.keijiro.klak.ndi.DiscoveryListener");
+        _nsdManager.Call("discoverServices", "_ndi._tcp", 1, tcpListener);
+        _nsdManager.Call("discoverServices", "_ndi._udp", 1, udpListener);
     }
 
     #else
