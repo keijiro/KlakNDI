@@ -1,3 +1,10 @@
+Fork Info
+-------------------
+This fork is a mashup of the audio implementation by krisrok (https://github.com/krisrok/KlakNDI/tree/audio-receiver-improvements), the latest KlakNDI changes (as of writing), and my own changes to fix a few things I found along the way.
+
+Note: Audio is only currently working for NDI Receiver.
+
+
 KlakNDI
 =======
 
@@ -8,9 +15,9 @@ between several devices using [NDI]®.
 
 [NDI]® (Network Device Interface) is a standard developed by [NewTek], Inc that
 enables applications to deliver video streams via a local area network. Please
-refer to [ndi.tv][NDI] for further information about the technology.
+refer to [ndi.video][NDI] for further information about the technology.
 
-[NDI]: https://www.ndi.tv/
+[NDI]: https://ndi.video/
 [NewTek]: https://www.newtek.com/
 
 System Requirements
@@ -47,9 +54,6 @@ Known Issues and Limitations
 - Dimensions of frame images should be multiples of 16x8. This limitation causes
   glitches on several mobile devices when using the Game View capture method.
 
-- KlakNDI doesn't support audio streaming. There are several technical
-  difficulties to implement without perceptible noise or delay, so there is no
-  plan to implement it.
 
 How To Install
 --------------
