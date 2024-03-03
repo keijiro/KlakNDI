@@ -28,6 +28,15 @@ public sealed partial class NdiSender : MonoBehaviour
       { get => _keepAlpha;
         set => _keepAlpha = value; }
 
+    [SerializeField, Tooltip("Control sending rate, 0 means no limit")]
+    int _ndiFPS = 30;
+
+    public int ndiFPS
+    {
+      get => _ndiFPS;
+      set => _ndiFPS = value;
+    }
+
     #endregion
 
     #region Capture target settings

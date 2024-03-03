@@ -16,6 +16,7 @@ sealed class NdiSenderEditor : UnityEditor.Editor
 
     AutoProperty _ndiName;
     AutoProperty _keepAlpha;
+    AutoProperty _ndiFPS;
     AutoProperty _captureMethod;
     AutoProperty _sourceCamera;
     AutoProperty _sourceTexture;
@@ -35,6 +36,9 @@ sealed class NdiSenderEditor : UnityEditor.Editor
 
         // Keep Alpha
         EditorGUILayout.PropertyField(_keepAlpha);
+
+        // FPS
+        EditorGUILayout.PropertyField(_ndiFPS);
 
         // Capture Method
         EditorGUILayout.PropertyField(_captureMethod);
