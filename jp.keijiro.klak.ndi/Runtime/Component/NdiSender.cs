@@ -12,6 +12,8 @@ public sealed partial class NdiSender : MonoBehaviour
     ReadbackPool _pool;
     FormatConverter _converter;
     System.Action<AsyncGPUReadbackRequest> _onReadback;
+    private float _lastSentTime;
+
 
     void PrepareSenderObjects()
     {
@@ -65,6 +67,16 @@ public sealed partial class NdiSender : MonoBehaviour
             // Wait for the end of the frame.
             yield return eof;
 
+            if (ndiFPS > 0)
+            {
+                float interval = 1 / ndiFPS;
+                if (Time.unscaledTime - _lastSentTime < interval)
+                {
+                    continue;
+                }
+                _lastSentTime = Time.unscaledTime;
+            }
+
             PrepareSenderObjects();
 
             // Texture capture method
@@ -109,6 +121,16 @@ public sealed partial class NdiSender : MonoBehaviour
         // exclude those cases by null-checking _attachedCamera.
         if (_attachedCamera == null) return;
 
+        if (ndiFPS > 0)
+        {
+            float interval = 1 / ndiFPS;
+            if (Time.unscaledTime - _lastSentTime < interval)
+            {
+                return;
+            }
+            _lastSentTime = Time.unscaledTime;
+        }
+
         PrepareSenderObjects();
 
         // Pixel format conversion
@@ -140,13 +162,17 @@ public sealed partial class NdiSender : MonoBehaviour
 
         // Frame data
         var frame = new Interop.VideoFrame
-          { Width       = entry.Width,
-            Height      = entry.Height,
-            LineStride  = entry.Stride,
-            FourCC      = entry.FourCC,
+        {
+            Width = entry.Width,
+            Height = entry.Height,
+            LineStride = entry.Stride,
+            FourCC = entry.FourCC,
             FrameFormat = Interop.FrameFormat.Progressive,
-            Data        = entry.ImagePointer,
-            Metadata    = entry.MetadataPointer };
+            Data = entry.ImagePointer,
+            Metadata = entry.MetadataPointer,
+            FrameRateN = ndiFPS,   // Only accepts int, unfortunately.
+            FrameRateD = 1
+        };
 
         // Async-send initiation
         // This causes a synchronization for the last frame -- i.e., It locks
@@ -169,6 +195,8 @@ public sealed partial class NdiSender : MonoBehaviour
     // Component state reset without NDI object disposal
     internal void ResetState(bool willBeActive)
     {
+        _lastSentTime = 0f;
+
         // Camera capture coroutine termination
         // We use this to kill only a single coroutine. It may sound like
         // overkill, but I think there is no side effect in doing so.
