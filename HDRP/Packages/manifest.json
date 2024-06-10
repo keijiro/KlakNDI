@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.unity.render-pipelines.high-definition": "12.1.8",
+    "com.unity.render-pipelines.high-definition": "14.0.11",
     "com.unity.ugui": "1.0.0",
     "jp.keijiro.klak.ndi": "file:../../jp.keijiro.klak.ndi"
   }
