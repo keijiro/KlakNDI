@@ -3,20 +3,20 @@ KlakNDI
 
 ![gif](https://i.imgur.com/I1ZMSY8.gif)
 
-**KlakNDI** is a Unity plugin that allows sending/receiving video streams
-between several devices using [NDI]®.
+**KlakNDI** is a Unity plugin that allows for sending and receiving video
+streams between multiple devices using [NDI]®.
 
-[NDI]® (Network Device Interface) is a standard developed by [NewTek], Inc that
-enables applications to deliver video streams via a local area network. Please
-refer to [ndi.tv][NDI] for further information about the technology.
+[NDI]® (Network Device Interface) is a standard developed by [Vizrt] that
+enables applications to deliver video streams over a local area network. Please
+refer to [ndi.video][NDI] for more information about the technology.
 
-[NDI]: https://www.ndi.tv/
-[NewTek]: https://www.newtek.com/
+[NDI]: https://ndi.video/
+[Vizrt]: https://www.vizrt.com
 
 System Requirements
 -------------------
 
-- Unity 2021.3 or later
+- Unity 2022.3 or later
 
 Desktop platforms:
 
@@ -27,11 +27,16 @@ Desktop platforms:
 Mobile platforms:
 
 - iOS: arm64, Metal
-- Android: arm64, Vulkan
+- Android: arm64, Vulkan/OpenGL ES 3.x
 
-KlakNDI runs without the NDI SDK on most supported platforms, but only the iOS
-platform requires the SDK to build on Xcode. Please download and install the NDI
-SDK for iOS in advance of building.
+KlakNDI runs without the NDI SDK on most supported platforms, but the iOS
+platform requires the SDK for building with Xcode. Please download and install
+the NDI SDK for iOS in advance of building.
+
+KlakNDI requires network permissions on Android. Please follow the instruction
+in [Android Support section].
+
+[Android Support section]: README.md#android-support
 
 License
 -------
@@ -39,7 +44,7 @@ License
 The NDI library files are provided under the terms of the [NDI SDK license].
 Please review it before using the package in your project.
 
-[NDI SDK license]: http://new.tk/ndisdk_license/
+[NDI SDK license]: http://ndi.link/ndisdk_license
 
 Known Issues and Limitations
 ----------------------------
@@ -48,8 +53,8 @@ Known Issues and Limitations
   glitches on several mobile devices when using the Game View capture method.
 
 - KlakNDI doesn't support audio streaming. There are several technical
-  difficulties to implement without perceptible noise or delay, so there is no
-  plan to implement it.
+  difficulties to implement without perceptible noise or delay, so there are no
+  plans to implement it.
 
 How To Install
 --------------
@@ -129,3 +134,19 @@ See the [Sender Benchmark]/[Receiver Benchmark] examples for details.
 
 [Sender Benchmark]: URP/Assets/Script/SenderBenchmark.cs
 [Receiver Benchmark]: URP/Assets/Script/ReceiverBenchmark.cs
+
+Android Support
+---------------
+
+KlakNDI requires the following permissions when running on Android:
+
+- `android.permission.INTERNET`
+- `android.permission.ACCESS_NETWORK_STATE`
+- `android.permission.CHANGE_WIFI_MULTICAST_STATE`
+
+You can add them by [overriding the App Manifest]. Please refer to the
+[AndroidManifest file] contained in the URP sample.
+
+[overriding the App Manifest]:
+  https://docs.unity3d.com/Manual/overriding-android-manifest.html
+[AndroidManifest file]: URP/Assets/Plugins/Android/AndroidManifest.xml
