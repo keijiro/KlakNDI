@@ -62,8 +62,16 @@ public sealed partial class NdiSender : MonoBehaviour
     {
         for (var eof = new WaitForEndOfFrame(); true;)
         {
+        #if !UNITY_ANDROID || UNITY_EDITOR
             // Wait for the end of the frame.
             yield return eof;
+        #else
+            // Temporary workaround for glitches on Android:
+            // Process the input at the beginning of the frame instead of EoF.
+            // I don't know why these glitches occur, but this change solves
+            // them anyway. I should investigate them further if they reappear.
+            yield return null;
+        #endif
 
             PrepareSenderObjects();
 
