@@ -33,6 +33,11 @@ KlakNDI runs without the NDI SDK on most supported platforms, but the iOS
 platform requires the SDK for building with Xcode. Please download and install
 the NDI SDK for iOS in advance of building.
 
+KlakNDI requires network permissions on Android. Please follow the instruction
+in [Android Support section].
+
+[Android Support section]: README.md#android-support
+
 License
 -------
 
@@ -129,3 +134,19 @@ See the [Sender Benchmark]/[Receiver Benchmark] examples for details.
 
 [Sender Benchmark]: URP/Assets/Script/SenderBenchmark.cs
 [Receiver Benchmark]: URP/Assets/Script/ReceiverBenchmark.cs
+
+Android Support
+---------------
+
+KlakNDI requires the following permissions when running on Android:
+
+- `android.permission.INTERNET`
+- `android.permission.ACCESS_NETWORK_STATE`
+- `android.permission.CHANGE_WIFI_MULTICAST_STATE`
+
+You can add them by [overriding the App Manifest]. Please refer to the
+[AndroidManifest file] contained in the URP sample.
+
+[overriding the App Manifest]:
+  https://docs.unity3d.com/Manual/overriding-android-manifest.html
+[AndroidManifest file]: URP/Assets/Plugins/Android/AndroidManifest.xml
