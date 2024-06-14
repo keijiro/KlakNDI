@@ -146,7 +146,11 @@ sealed class FormatConverter : IDisposable
         if (_decoderOutput == null)
         {
             CheckDimensions(width, height);
+        #if KLAK_NDI_ISSUE200_WORKAROUND
+            _decoderOutput = new RenderTexture(width, height, 0, RenderTextureFormat.ARGBHalf);
+        #else
             _decoderOutput = new RenderTexture(width, height, 0);
+        #endif
             _decoderOutput.enableRandomWrite = true;
             _decoderOutput.Create();
         }
