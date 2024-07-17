@@ -19,6 +19,8 @@ sealed class NdiSenderEditor : UnityEditor.Editor
     AutoProperty _captureMethod;
     AutoProperty _sourceCamera;
     AutoProperty _sourceTexture;
+    private AutoProperty setRenderTargetFrameRate;
+    private AutoProperty frameRate;
 
     #pragma warning restore
 
@@ -51,6 +53,9 @@ sealed class NdiSenderEditor : UnityEditor.Editor
             _captureMethod.Target.enumValueIndex == (int)CaptureMethod.Texture)
             EditorGUILayout.PropertyField(_sourceTexture);
 
+        EditorGUILayout.PropertyField(frameRate);
+        EditorGUILayout.PropertyField(setRenderTargetFrameRate);
+        
         EditorGUI.indentLevel--;
 
         serializedObject.ApplyModifiedProperties();

@@ -55,6 +55,13 @@ public sealed partial class NdiSender : MonoBehaviour
     }
 
     #endregion
+    
+    private void Update()
+    {
+        int targetFrameRate = setRenderTargetFrameRate ? frameRate.GetUnityFrameTarget() : -1;
+        if (Application.targetFrameRate != targetFrameRate)
+            Application.targetFrameRate = targetFrameRate;
+    }
 
     #region Capture coroutine for the Texture/GameView capture methods
 
@@ -146,6 +153,8 @@ public sealed partial class NdiSender : MonoBehaviour
             return;
         }
 
+        frameRate.GetND(out var frameRateN, out var frameRateD);
+        
         // Frame data
         var frame = new Interop.VideoFrame
           { Width       = entry.Width,
@@ -153,8 +162,11 @@ public sealed partial class NdiSender : MonoBehaviour
             LineStride  = entry.Stride,
             FourCC      = entry.FourCC,
             FrameFormat = Interop.FrameFormat.Progressive,
-            Data        = entry.ImagePointer,
-            Metadata    = entry.MetadataPointer };
+            Data = entry.ImagePointer,
+            Metadata = entry.MetadataPointer,
+            FrameRateD = frameRateD,
+            FrameRateN = frameRateN
+        };
 
         // Async-send initiation
         // This causes a synchronization for the last frame -- i.e., It locks

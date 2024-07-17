@@ -66,6 +66,9 @@ public sealed partial class NdiSender : MonoBehaviour
       { get => _sourceTexture;
         set => _sourceTexture = value; }
 
+    public FrameRateOptions frameRate = FrameRateOptions.Common_60;
+    public bool setRenderTargetFrameRate = false;
+
     #endregion
 
     #region Runtime property
