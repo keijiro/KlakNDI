@@ -28,6 +28,7 @@ sealed class ReadbackEntry
     IntPtr _metadata;
     int _width, _height;
     bool _alpha;
+    private DateTime _lastUsedTime;
 
     ~ReadbackEntry()
     {
@@ -39,6 +40,8 @@ sealed class ReadbackEntry
 
     #region Public accessors
 
+    public DateTime LastUsedTime => _lastUsedTime;
+    
     public int Width => _width;
     public int Stride => _width * 2;
     public int Height => _height;
@@ -59,11 +62,21 @@ sealed class ReadbackEntry
 
     public void Allocate(int width, int height, bool alpha, string metadata)
     {
+        _lastUsedTime = DateTime.Now;
+        var frameDateSize = Util.FrameDataSize(width, height, alpha);
         // Image buffer
-        _image = new NativeArray<byte>
-          (Util.FrameDataSize(width, height, alpha),
-           Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-
+        if (!_image.IsCreated || _image.Length != frameDateSize)
+        {
+            _image.Dispose();
+            _image = new NativeArray<byte>(frameDateSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+        }
+        
+        if (_metadata != IntPtr.Zero)
+        {
+            Marshal.FreeHGlobal(_metadata);
+            _metadata = IntPtr.Zero;
+        }
+        
         // Metadata string on heap
         if (string.IsNullOrEmpty(metadata))
             _metadata = IntPtr.Zero;
@@ -139,20 +152,32 @@ sealed class ReadbackPool : IDisposable
 
     #region Pool operations
 
-    public ReadbackEntry
-      NewEntry(int width, int height, bool alpha, string metadata)
+    public ReadbackEntry NewEntry(int width, int height, bool alpha, string metadata)
     {
         var entry = _cold.Count > 0 ? _cold.Pop() : new ReadbackEntry();
         entry.Allocate(width, height, alpha, metadata);
         _hot.Add(entry);
         return entry;
     }
+    
+    // Check for stale entries and deallocate them for better memory management
+    private void CheckForStaleEntries()
+    {
+        var now = DateTime.Now;
+        foreach (var entry in _cold)
+        {
+            if ((now - entry.LastUsedTime).TotalSeconds > 3)
+            {
+                entry.Deallocate();
+            }
+        }
+    }
 
     public void Free(ReadbackEntry entry)
     {
-        entry.Deallocate();
         _hot.Remove(entry);
         _cold.Push(entry);
+        CheckForStaleEntries();
     }
 
     public unsafe ReadbackEntry FindEntry(in NativeArray<byte> buffer)
