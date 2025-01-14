@@ -28,7 +28,7 @@ sealed class ReadbackEntry
     IntPtr _metadata;
     int _width, _height;
     bool _alpha;
-    private DateTime _lastUsedTime;
+    private float _lastUsedTime;
 
     ~ReadbackEntry()
     {
@@ -40,7 +40,7 @@ sealed class ReadbackEntry
 
     #region Public accessors
 
-    public DateTime LastUsedTime => _lastUsedTime;
+    public float LastUsedTime => _lastUsedTime;
     
     public int Width => _width;
     public int Stride => _width * 2;
@@ -62,7 +62,7 @@ sealed class ReadbackEntry
 
     public void Allocate(int width, int height, bool alpha, string metadata)
     {
-        _lastUsedTime = DateTime.Now;
+        _lastUsedTime = Time.realtimeSinceStartup;
         var frameDateSize = Util.FrameDataSize(width, height, alpha);
         // Image buffer
         if (!_image.IsCreated || _image.Length != frameDateSize)
@@ -163,10 +163,10 @@ sealed class ReadbackPool : IDisposable
     // Check for stale entries and deallocate them for better memory management
     private void CheckForStaleEntries()
     {
-        var now = DateTime.Now;
+        var now = Time.realtimeSinceStartup;
         foreach (var entry in _cold)
         {
-            if ((now - entry.LastUsedTime).TotalSeconds > 3)
+            if ((now - entry.LastUsedTime) > 3)
             {
                 entry.Deallocate();
             }
