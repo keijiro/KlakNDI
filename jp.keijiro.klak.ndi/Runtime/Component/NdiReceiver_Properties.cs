@@ -50,6 +50,33 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     public string metadata { get; set; }
 
+    private Vector2Int _resolution = new Vector2Int();
+    private float _aspectRatio = 0;
+    private int _frameRateD = 0;
+    private int _frameRateN = 0;
+    private long _timecode = 0;
+    private long _timestamp = 0;
+
+    // Pixel resolution
+    public Vector2Int resolution { get => _resolution; }
+
+    // picture aspect ratio (width/height)
+    // This may be different to resolution.x / resolution.y if the pixels are not square
+    public float aspectRatio { get => _aspectRatio; }
+
+    public float frameRate
+      { get
+        {
+          if (_frameRateD == 0) return 0;
+          return _frameRateN / _frameRateD;
+        }
+      }
+
+    // Frame Timecode in 100ns (trivially convertible to DateTime)
+    public long timecode { get => _timecode; }
+    // Timestamp when frame was submitted by the sender (100ns)
+    public long timestamp { get => _timestamp; }
+
     public Interop.Recv internalRecvObject => _recv;
 
     #endregion
