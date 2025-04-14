@@ -46,6 +46,14 @@ public sealed partial class NdiReceiver : MonoBehaviour
         if (frameOrNull == null) return null;
         var frame = (Interop.VideoFrame)frameOrNull;
 
+        // Store the frame information
+        _resolution.Set(frame.Width, frame.Height);
+        _aspectRatio = frame.AspectRatio;
+        _frameRateN = frame.FrameRateN;
+        _frameRateD = frame.FrameRateD;
+        _timecode = frame.Timecode;
+        _timestamp = frame.Timestamp;
+
         // Verify that the frame is supported
         if ((frame.Width & 0xf) != 0)
         {
@@ -70,14 +78,6 @@ public sealed partial class NdiReceiver : MonoBehaviour
         // Pixel format conversion
         var rt = _converter.Decode
           (frame.Width, frame.Height, Util.HasAlpha(frame.FourCC), frame.Data);
-
-        // Store the frame information
-        _resolution.Set(frame.Width, frame.Height);
-        _aspectRatio = frame.AspectRatio;
-        _frameRateN = frame.FrameRateN;
-        _frameRateD = frame.FrameRateD;
-        _timecode = frame.Timecode;
-        _timestamp = frame.Timestamp;
 
         // Metadata retrieval
         if (frame.Metadata != IntPtr.Zero)
