@@ -46,6 +46,27 @@ public sealed partial class NdiReceiver : MonoBehaviour
         if (frameOrNull == null) return null;
         var frame = (Interop.VideoFrame)frameOrNull;
 
+        // Verify that the frame is supported
+        if ((frame.Width & 0xf) != 0)
+        {
+            string text = new($"Width ({frame.Width}) must be a multiple of 16.");
+            if (UnsupportedStreamEvent != null)
+                UnsupportedStreamEvent.Invoke(this, new UnsupportedStreamEventArgs(text, _resolution));
+            else
+                Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+            return null;
+        }
+
+        if ((frame.Height & 0x7) != 0)
+        {
+            string text = new($"Height ({frame.Height}) must be a multiple of 8.");
+            if (UnsupportedStreamEvent != null)
+                UnsupportedStreamEvent.Invoke(this, new UnsupportedStreamEventArgs(text, _resolution));
+            else
+                Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+            return null;
+        }
+
         // Pixel format conversion
         var rt = _converter.Decode
           (frame.Width, frame.Height, Util.HasAlpha(frame.FourCC), frame.Data);

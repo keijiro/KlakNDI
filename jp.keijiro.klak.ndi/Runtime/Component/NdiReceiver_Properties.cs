@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Klak.Ndi {
@@ -78,6 +79,25 @@ public sealed partial class NdiReceiver : MonoBehaviour
     public long timestamp { get => _timestamp; }
 
     public Interop.Recv internalRecvObject => _recv;
+
+    #endregion
+
+    #region Events
+
+    public class UnsupportedStreamEventArgs : EventArgs
+    {
+      public string warning { get; }
+      public Vector2Int resolution { get; }
+
+      public UnsupportedStreamEventArgs(string warning, Vector2Int resolution)
+      {
+        this.warning = warning;
+        this.resolution = resolution;
+      }
+    }
+
+    public delegate void UnsupportedStreamEventHandler(object sender, UnsupportedStreamEventArgs ev);
+    public event UnsupportedStreamEventHandler UnsupportedStreamEvent;
 
     #endregion
 
