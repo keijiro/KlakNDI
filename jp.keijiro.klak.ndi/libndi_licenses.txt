@@ -1,12 +1,12 @@
 ********************************************************************************
 NDI
-Copyright (C) 2023-2024 Vizrt NDI AB. All rights reserved.
+Copyright (C) 2023-2025 Vizrt NDI AB. All rights reserved.
 ********************************************************************************
 
 The NDI SDK license available at:
     http://ndi.link/ndisdk_license
 
-The NDI Embedded SDK license is available at 
+The NDI Advanced SDK license is available at 
     http://ndi.link/ndisdk_embedded_license
 
 For more information about NDI please visit:
