@@ -1,4 +1,4 @@
-﻿using Unity.Collections.LowLevel.Unsafe;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using IntPtr = System.IntPtr;
 using Marshal = System.Runtime.InteropServices.Marshal;
@@ -45,6 +45,35 @@ public sealed partial class NdiReceiver : MonoBehaviour
         var frameOrNull = RecvHelper.TryCaptureVideoFrame(_recv);
         if (frameOrNull == null) return null;
         var frame = (Interop.VideoFrame)frameOrNull;
+
+        // Store the frame information
+        _resolution.Set(frame.Width, frame.Height);
+        _aspectRatio = frame.AspectRatio;
+        _frameRateN = frame.FrameRateN;
+        _frameRateD = frame.FrameRateD;
+        _timecode = frame.Timecode;
+        _timestamp = frame.Timestamp;
+
+        // Verify that the frame is supported
+        if ((frame.Width & 0xf) != 0)
+        {
+            string text = new($"Width ({frame.Width}) must be a multiple of 16.");
+            if (UnsupportedStreamEvent != null)
+                UnsupportedStreamEvent.Invoke(this, new UnsupportedStreamEventArgs(text, _resolution));
+            else
+                Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+            return null;
+        }
+
+        if ((frame.Height & 0x7) != 0)
+        {
+            string text = new($"Height ({frame.Height}) must be a multiple of 8.");
+            if (UnsupportedStreamEvent != null)
+                UnsupportedStreamEvent.Invoke(this, new UnsupportedStreamEventArgs(text, _resolution));
+            else
+                Debug.LogWarning("[KlakNDI] Unsupported frame size: " + text);
+            return null;
+        }
 
         // Pixel format conversion
         var rt = _converter.Decode
