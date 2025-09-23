@@ -1,4 +1,4 @@
-﻿using Unity.Collections.LowLevel.Unsafe;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using IntPtr = System.IntPtr;
 using Marshal = System.Runtime.InteropServices.Marshal;
@@ -49,6 +49,14 @@ public sealed partial class NdiReceiver : MonoBehaviour
         // Pixel format conversion
         var rt = _converter.Decode
           (frame.Width, frame.Height, Util.HasAlpha(frame.FourCC), frame.Data);
+
+        // Store the frame information
+        _resolution.Set(frame.Width, frame.Height);
+        _aspectRatio = frame.AspectRatio;
+        _frameRateN = frame.FrameRateN;
+        _frameRateD = frame.FrameRateD;
+        _timecode = frame.Timecode;
+        _timestamp = frame.Timestamp;
 
         // Metadata retrieval
         if (frame.Metadata != IntPtr.Zero)
