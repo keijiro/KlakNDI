@@ -1,0 +1,22 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Monitor.uss?fileID=7433441132597879392&amp;guid=99310058e5d67c744850334ff889924d&amp;type=3" />
+    <engine:VisualElement name="root-container" style="position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px;">
+        <engine:DropdownField label="Select" name="source-selector" data-source-type="SourceSelector, Assembly-CSharp">
+            <Bindings>
+                <engine:DataBinding property="choices" data-source-path="SourceList" binding-mode="ToTarget" />
+            </Bindings>
+        </engine:DropdownField>
+        <engine:VisualElement name="preview-container" style="flex-grow: 1; flex-direction: row;">
+            <Klak.UIToolkit.AspectRatioElement name="receiver-frame" class="imageFrame">
+                <engine:VisualElement name="receiver-image" class="imageBlock" style="background-image: url(&quot;project://database/Assets/Targets/Receiver.renderTexture?fileID=8400000&amp;guid=7c65fc1810786e040b4aaef4a4a6175b&amp;type=2#Receiver&quot;);">
+                    <engine:Label text="Receiver" name="caption" class="imageCaption" />
+                </engine:VisualElement>
+            </Klak.UIToolkit.AspectRatioElement>
+            <Klak.UIToolkit.AspectRatioElement name="sender-frame" class="imageFrame">
+                <engine:VisualElement name="sender-image" class="imageBlock" style="background-image: url(&quot;project://database/Assets/Targets/Sender.renderTexture?fileID=8400000&amp;guid=0b6c51779f5def34a87daec320a6d328&amp;type=2#Sender&quot;);">
+                    <engine:Label text="Sender" name="caption" class="imageCaption" />
+                </engine:VisualElement>
+            </Klak.UIToolkit.AspectRatioElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

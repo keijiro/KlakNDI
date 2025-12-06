@@ -1,0 +1,70 @@
+.imageCaption {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: rgb(207, 207, 207);
+}
+
+.imageBlock {
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgb(39, 39, 39);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    flex-grow: 1;
+}
+
+.imageFrame {
+    margin-top: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    flex-grow: 1;
+}
+
+.unity-text-element {
+    color: rgb(214, 214, 214);
+    font-size: 24px;
+}
+
+.unity-base-field__label {
+    min-width: 120px;
+    margin: 0 0 0 8px;
+    padding: 0;
+    -unity-text-align: middle-left;
+}
+
+.unity-base-popup-field {
+    border-color: rgb(128, 128, 128);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.unity-base-popup-field__input {
+    background-color: rgba(0, 0, 0, 0);
+    max-width: 50%;
+    border-width: 0;
+    border-bottom-width: 1px;
+    margin: 0 16px 0 8px;
+    padding: 0;
+}
+
+.unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: rgb(214, 214, 214);
+}
+
+.unity-base-popup-field:hover:enabled > .unity-base-popup-field__input {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.unity-base-popup-field:active:enabled > .unity-base-popup-field__input {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.unity-base-dropdown__container-inner {
+    background-color: rgb(53, 53, 53);
+}
+
+.unity-base-dropdown__checkmark {
+    align-self: center;
+}
