@@ -1,12 +1,14 @@
 {
-    "author": "Keijiro Takahashi",
-    "dependencies": { "com.unity.modules.screencapture": "1.0.0" },
-    "description": "NewTek NDI® plugin for Unity",
-    "displayName": "KlakNDI",
-    "keywords": [ "unity" ],
-    "license": "SEE LICENSE IN LICENSE",
-    "name": "jp.keijiro.klak.ndi",
-    "unity": "2021.3",
-    "unityRelease": "0f1",
-    "version": "2.1.5"
+  "name": "jp.keijiro.klak.ndi",
+  "version": "2.1.5",
+  "displayName": "KlakNDI",
+  "description": "NewTek NDI® plugin for Unity",
+  "unity": "2022.3",
+  "author": "Keijiro Takahashi",
+  "dependencies": { "com.unity.modules.screencapture": "1.0.0" },
+  "changelogUrl": "https://github.com/keijiro/KlakNDI/blob/main/CHANGELOG.md",
+  "documentationUrl": "https://github.com/keijiro/KlakNDI",
+  "licensesUrl": "https://github.com/keijiro/KlakNDI/blob/main/LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
+  "_upm": { "changelog": "" }
 }
