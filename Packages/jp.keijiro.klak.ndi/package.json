@@ -1,6 +1,6 @@
 {
   "name": "jp.keijiro.klak.ndi",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "displayName": "KlakNDI",
   "description": "NewTek NDI® plugin for Unity",
   "unity": "2022.3",
@@ -10,5 +10,5 @@
   "documentationUrl": "https://github.com/keijiro/KlakNDI",
   "licensesUrl": "https://github.com/keijiro/KlakNDI/blob/main/LICENSE",
   "license": "SEE LICENSE IN LICENSE",
-  "_upm": { "changelog": "" }
+  "_upm": { "changelog": "<b>Fixed</b><br>- Replaced obsolete shader property utilities with Unity 6.3-compatible API usage." }
 }
