@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEditor;
 using System.Linq;
 
@@ -61,17 +62,16 @@ static class MaterialPropertySelector
     static string[] _cachedPropertyNames;
 
     static bool IsPropertyTexture(Shader shader, int index)
-      => ShaderUtil.GetPropertyType(shader, index) ==
-         ShaderUtil.ShaderPropertyType.TexEnv;
+      => shader.GetPropertyType(index) == ShaderPropertyType.Texture;
 
     static string[] CachePropertyNames(Shader shader)
     {
         if (shader == _cachedShader) return _cachedPropertyNames;
 
         var names =
-          Enumerable.Range(0, ShaderUtil.GetPropertyCount(shader))
+          Enumerable.Range(0, shader.GetPropertyCount())
           .Where(i => IsPropertyTexture(shader, i))
-          .Select(i => ShaderUtil.GetPropertyName(shader, i));
+          .Select(i => shader.GetPropertyName(i));
 
         _cachedShader = shader;
         _cachedPropertyNames = names.ToArray();
